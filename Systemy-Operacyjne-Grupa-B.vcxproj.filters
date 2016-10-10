@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pamiec.cpp">
+    <ClCompile Include="named_pipes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
