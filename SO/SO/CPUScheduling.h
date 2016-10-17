@@ -1,5 +1,7 @@
 #pragma once
 #include "pcb.h"
+#include "psw.h"
+#include "registers.h"
 
 class CPUScheduling
 {
@@ -7,7 +9,7 @@ private:
 	PCB* RUNNING;				//WSKAèNIK DO BLOKU PCB W£AåNIE WYKONYWANEGO
 	PCB* NEXTTRY;				//WSKAèNIK DO BLOKU PCB, KT”RY ZAWIADOWCA B DZIE STARA£ SI  USTAWI∆ JAKO NAST PNY = RUNNING->NEXT_PCB_ALL
 	bool NEXTTRY_MODIFIED;		//R”WNY ZERU, JEåLI WSKAèNIK NEXTTRY NIE ZMIANIA£ SI  OD CHWILI NADANIA MU WARTOåCI PRZEZ ZAWIADOWC 
-
+	PSW_ PSW;				
 
 public:
 	CPUScheduling();
