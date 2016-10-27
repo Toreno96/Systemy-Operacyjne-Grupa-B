@@ -12,3 +12,9 @@ private:
 	int acces_time;
 
 };
+
+class blok_pamieci
+{
+private:
+
+};

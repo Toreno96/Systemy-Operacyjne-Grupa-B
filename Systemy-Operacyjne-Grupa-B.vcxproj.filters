@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pamiec.cpp">
+    <ClCompile Include="system plikow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
