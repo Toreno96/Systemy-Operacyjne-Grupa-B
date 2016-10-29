@@ -266,3 +266,8 @@ __pycache__/
 
 # Cake - Uncomment if you are using it
 # tools/
+
+# Toreno96-specific files
+#
+# Visual Studio Code workspace settings directory
+.vscode/
