@@ -1,38 +1,75 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <array>
 using std::string;
 
 class FCB // blok kontrolny pliku
 {
-public:
-	FCB(char filename_ [8], char atrybut_): filename(filename_), atrybut(atrybut_)// <- blad przy inicjalizacji
-	{}
 private:
 	char user_code;
-	char filename [8];
-	char typ [3]; // rozszerzenie
-	char atrybut; // tylko do odczytu, do modyfikacji
+	std::array <char, 8> filename{};
+	char typ [3]; // typ
+	char user_code;
 	char* indeks1;
 	char* indeks2;
 	char* indeks3;
 	char* indeks4;
 	char* indeks5;
-};
-
-class system_plikow
-{
-private:
-	char pamiec_cashe[32];
-	char bit_vector [128]; //32*32=1024 a kazde reprezentuje 1 bit czyli dzielone/8 = 128
-	//1 - sektor wolny, 0 - sektor zajety
-	std::list <FCB> Katalog{};
-	char dysk_twardy[32][32];
 
 public:
-	system_plikow()
+	FCB(std::array <char, 8> filename_, char atrybut_) : filename(filename_)
+	{}
+};
+
+class Sektor
+{
+private:
+	std::array <bool, 16> bitvector{}; //1 - blok wolny, 0 - blok zajety
+	std::array <char, 16> data{};
+
+public:
+	Sektor() // konstruktor
+	{
+		for (auto it = bitvector.begin(); it != bitvector.end(); it++)
+		{
+			*it = 1; //ozaczanie wszystkich pol sektora jako wolne
+		}
+	}
+
+	void zapisz_plik() {}
+	wypisz plik z folderu() {}
+	wyczysc sektor() {}
+	bool czy_mozna wpisac plik() {}
+
+};
+
+class Dysk
+{
+private:
+	std::array <char, 16> cashe{};
+	std::list <FCB> Katalog{};
+	Sektor dysk [16];
+	void zajmij_byte()
+	{}
+	void zwolnij_byte() {}
+	char wyslij_do_cashe() {}
+	char zapisz_z_cashe() {}
+
+public:
+	Dysk() // konstruktor
 	{
 		for(int i=0; i<32; i++)
-		pamiec_cashe[i] = 0;
+		cashe[i] = 0;
 	}
+
+	void utworz_plik(std::array <char, 8> filename_, std::array <char, 3> typ, unsigned char user_code) {}
+	void usun_plik(std::array <char, 8> filename_, std::array <char, 3> typ, unsigned char user_code) {}
+	void otworz_plik(std::array <char, 8> filename_, std::array <char, 3> typ, unsigned char user_code) {}
+	void edytuj_plik(std::array <char, 8> filename_, std::array <char, 3> typ, unsigned char user_code) {}
+	void wyswietl_liste_plików() {}
+	dostepnosc_sektora() {}
+	szukaj wolnego sektora() {}
+	szukaj sektora po nazwie.
+	
 };
