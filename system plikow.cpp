@@ -1,72 +1,49 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <list>
 #include <array>
 using std::string;
 
+//Podczas tworzenia pliku tworzona jest instancja FCB​
+
 class FCB // blok kontrolny pliku
 {
 private:
-	char user_code;
-	std::array <char, 8> filename{};
-	char typ [3]; // rozszerzenie np txt
-	char* indeks1;
-	char* indeks2;
-	char* indeks3;
-	char* indeks4;
-	char* indeks5;
+	std::array <char, 8> filename;
+	std::array <char, 3> type; // rozszerzenie np. txt​
+	std::array <int, 5> sectorID; // wartosc ujemna – nieprzypisany sektor do pliku​
 
 public:
-	FCB(std::array <char, 8> filename_, char atrybut_) : filename(filename_)
+	FCB(std::array <char, 8> filename_, std::array <char, 3> type_, std::array <int, 5> sectorID_) : filename(filename_), type(type_), sectorID(sectorID_)
 	{}
+	std::array <int, 5> read_sectors() {}
 };
 
-class Sektor
+class Sector
 {
 private:
-	std::array <bool, 16> bitvector{}; //1 - blok wolny, 0 - blok zajety
-	std::array <char, 16> data{};
+	std::array <bool, 16> bitvector; //1 - blok wolny, 0 - blok zajety
+	std::array <char, 16> data;
 
 public:
-	Sektor() // konstruktor
-	{
-		for (auto it = bitvector.begin(); it != bitvector.end(); it++)
-		{
-			*it = 1; //oznaczanie wszystkich pol sektora jako wolne
-		}
-	}
-
-	void zapisz_plik() {}
-	bool czy_mozna wpisac plik() {}
-
+	bool save_data(std::array <char, 16> data_) {} // 1 – operacja zakonczona pomyslnie
+	std::array <char, 16> read_data() {}
+	std::array <bool, 16> get_bitvector() {}
 };
 
-class Dysk
+class HardDrive
 {
 private:
-	std::array <char, 16> cashe{};
-	std::list <FCB> Katalog{};
-	Sektor dysk [16];
-	void zajmij_byte()
-	{}
-	void zwolnij_byte() {}
-	char wyslij_do_cashe() {}
-	char zapisz_z_cashe() {}
+	std::list <FCB> Catalog{};
+	Sector harddrive[16];
+	unsigned int find_empty_sector() {}
 
 public:
-	Dysk() // konstruktor
-	{
-		for(int i=0; i<32; i++)
-		cashe[i] = 0;
-	}
+	bool create_file(std::array <char, 8> filename_, std::array <char, 3> type_) {} // 1 – operacja zakonczona pomyslnie
+	bool delete_file(std::array <char, 8> filename_, std::array <char, 3> type_) {}
+	FCB read_file(std::array <char, 8> filename_, std::array <char, 3> type_) {}
+	bool add_to_file(std::array <char, 8> filename_, std::array <char, 3> type_, std::array <char, 16> data_) {}
 
-	void utworz_plik(std::array <char, 8> filename_, std::array <char, 3> typ, unsigned char user_code) {}
-	void usun_plik(std::array <char, 8> filename_, std::array <char, 3> typ, unsigned char user_code) {}
-	void otworz_plik(std::array <char, 8> filename_, std::array <char, 3> typ, unsigned char user_code) {}
-	void edytuj_plik(std::array <char, 8> filename_, std::array <char, 3> typ, unsigned char user_code) {}
-	void wyswietl_liste_plik�w() {}
-	dostepnosc_sektora() {}
-	szukaj wolnego sektora() {}
-	szukaj sektora po nazwie.
-	
+	std::array <char, 16> read_sector(unsigned int sectorID) {}
+	std::list <FCB> get_file_list() {}
 };
