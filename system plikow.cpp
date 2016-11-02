@@ -9,8 +9,7 @@ class FCB // blok kontrolny pliku
 private:
 	char user_code;
 	std::array <char, 8> filename{};
-	char typ [3]; // typ
-	char user_code;
+	char typ [3]; // rozszerzenie np txt
 	char* indeks1;
 	char* indeks2;
 	char* indeks3;
@@ -33,13 +32,11 @@ public:
 	{
 		for (auto it = bitvector.begin(); it != bitvector.end(); it++)
 		{
-			*it = 1; //ozaczanie wszystkich pol sektora jako wolne
+			*it = 1; //oznaczanie wszystkich pol sektora jako wolne
 		}
 	}
 
 	void zapisz_plik() {}
-	wypisz plik z folderu() {}
-	wyczysc sektor() {}
 	bool czy_mozna wpisac plik() {}
 
 };
