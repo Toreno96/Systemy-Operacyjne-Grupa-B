@@ -144,6 +144,9 @@
   <ItemGroup>
     <ClCompile Include="system plikow.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="system plikow old.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
