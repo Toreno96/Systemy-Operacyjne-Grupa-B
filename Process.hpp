@@ -18,11 +18,9 @@ class Process {
     unsigned int originalPriority_, currentPriority_;
     // Aktualny stan procesu
     State state_;
-    // Rozmiar i pocz¹tek tablicy stron, w której znajduj¹ siê informacje o
-    // ulokowaniu kodu programu. Zamieniæ na typ int w przypadku tego
-    // pierwszego?
-    Undefined pageTableSize_,
-              pageTableBeginning_;
+    // Tablica stron, w której znajduj¹ siê informacje o ulokowaniu kodu
+    // programu.
+    Undefined pageTable;
     // Rejestry. Ile ich?
     Undefined A_, B_, C_;
     // Licznik rozkazów. Zamieniæ na typ int? Nazwê na programCounter/inn¹?
