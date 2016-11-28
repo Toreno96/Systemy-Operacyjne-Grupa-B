@@ -5,13 +5,11 @@
 #include <string>
 #include "Undefined.hpp"
 
-class Process;
-
 // Nazwy stanów na podstawie materia³ów z wa¿niaka. Jestem otwarty na wszelkie
 // sugestie, dotycz¹ce zmiany nazw czy umieszczenia dodatkowych stanów.
 enum class ProcessState { New, Ready, Running, Waiting, Terminated };
 
-class AncestorPCB {
+class Process {
   protected:
     // Referencja na wektor wszystkich, utworzonych dot¹d procesów, znajduj¹cy
     // siê w klasie ProcessManager
@@ -39,15 +37,6 @@ class AncestorPCB {
     // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
     // kompletnie nie znam. Potrzebujê info od Jakuba.
   public:
-    AncestorPCB( std::reference_wrapper< std::vector< Process > > allProcesses, std::string name );
+    Process( std::reference_wrapper< std::vector< Process > > allProcesses, std::string name );
     // Poza tym - helluva getterów i setterów...
 };
-
-// Krótkie podsumowanie ró¿nic miêdzy AncestorPCB, a standardowym PCB:
-//
-// Brak informacji o procesie rodzicielskim, gdy¿ mamy do czynienia z procesem,
-// bed¹cym przodkiem wszystkich innych procesów, tj. nie posiadaj¹cym w³asnego
-// rodzica.
-//
-// Nie jestem pewien, czy niektóre z ju¿ wpisanych sk³adowych s¹ tutaj
-// potrzebne - chocia¿by stan czy priorytety procesu.
