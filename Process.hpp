@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-#include <vector>
 #include <string>
 #include "Undefined.hpp"
 
@@ -11,9 +9,6 @@ enum class ProcessState { New, Ready, Running, Waiting, Terminated };
 
 class Process {
   protected:
-    // Referencja na wektor wszystkich, utworzonych dot¹d procesów, znajduj¹cy
-    // siê w klasie ProcessManager
-    std::reference_wrapper< std::vector< Process > > allProcesses_;
     // Nazwa procesu. Zamieniæ na std::array< char, 8 >?
     std::string name_;
     // Identyfikator, a tak¿e oryginalny i aktualny priorytet procesu
@@ -35,6 +30,6 @@ class Process {
     // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
     // kompletnie nie znam. Potrzebujê info od Jakuba.
   public:
-    Process( std::reference_wrapper< std::vector< Process > > allProcesses, std::string name );
+    Process( std::string name );
     // Poza tym - helluva getterów i setterów...
 };
