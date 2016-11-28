@@ -3,7 +3,6 @@
 #include <string>
 #include "Undefined.hpp"
 
-
 class Process {
   public:
     // Nazwy stanów na podstawie materia³ów z wa¿niaka. Jestem otwarty na wszelkie
@@ -18,8 +17,9 @@ class Process {
     // Getter(y?) dla rejestrów
     Undefined getInstructionCounter() const;
     void setCurrentPriority( unsigned int priority );
-    void setState( State state ); // Zamiast tego powrót do koncepcji osobnych
-    // metod do ustawiania ka¿dego stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym operacji"?
+    // Zamiast tego, powrót do koncepcji osobnych metod do ustawiania ka¿dego
+    // stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym operacji"?
+    void setState( State state );
     // Settery dla rejestrów
     void setInstructionCounter( Undefined instructionCounter );
   protected:
