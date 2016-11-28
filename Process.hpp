@@ -12,15 +12,12 @@ class Process {
     Process( std::string name );
     // Poza tym - helluva getterów i setterów...
   protected:
-    // Nazwa procesu. Zamieniæ na std::array< char, 8 >?
+    // Nazwa procesu, a jednoczeœnie i jego identyfikator
     std::string name_;
-    // Identyfikator, a tak¿e oryginalny i aktualny priorytet procesu
-    unsigned int ID_,
-                 originalPriority_, currentPriority_;
+    // Oryginalny i aktualny priorytet procesu
+    unsigned int originalPriority_, currentPriority_;
     // Aktualny stan procesu
     State state_;
-    // Wartoœæ identyfikatora procesu, jak¹ przyjmie kolejny, utworzony proces
-    static unsigned int IDForNextCreatedProcess_;
     // Rozmiar i pocz¹tek tablicy stron, w której znajduj¹ siê informacje o
     // ulokowaniu kodu programu. Zamieniæ na typ int w przypadku tego
     // pierwszego?
