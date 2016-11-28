@@ -3,11 +3,14 @@
 #include <string>
 #include "Undefined.hpp"
 
-// Nazwy stanów na podstawie materia³ów z wa¿niaka. Jestem otwarty na wszelkie
-// sugestie, dotycz¹ce zmiany nazw czy umieszczenia dodatkowych stanów.
-enum class ProcessState { New, Ready, Running, Waiting, Terminated };
 
 class Process {
+  public:
+    // Nazwy stanów na podstawie materia³ów z wa¿niaka. Jestem otwarty na wszelkie
+    // sugestie, dotycz¹ce zmiany nazw czy umieszczenia dodatkowych stanów.
+    enum class State { New, Ready, Running, Waiting, Terminated };
+    Process( std::string name );
+    // Poza tym - helluva getterów i setterów...
   protected:
     // Nazwa procesu. Zamieniæ na std::array< char, 8 >?
     std::string name_;
@@ -15,7 +18,7 @@ class Process {
     unsigned int ID_,
                  originalPriority_, currentPriority_;
     // Aktualny stan procesu
-    ProcessState state_;
+    State state_;
     // Wartoœæ identyfikatora procesu, jak¹ przyjmie kolejny, utworzony proces
     static unsigned int IDForNextCreatedProcess_;
     // Rozmiar i pocz¹tek tablicy stron, w której znajduj¹ siê informacje o
@@ -29,7 +32,4 @@ class Process {
     Undefined instructionCounter_;
     // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
     // kompletnie nie znam. Potrzebujê info od Jakuba.
-  public:
-    Process( std::string name );
-    // Poza tym - helluva getterów i setterów...
 };
