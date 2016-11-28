@@ -21,8 +21,6 @@ class Process {
                  originalPriority_, currentPriority_;
     // Aktualny stan procesu
     ProcessState state_;
-    // Wektor referencji na procesy pochodne
-    std::vector< std::reference_wrapper< Process > > children_;
     // Wartoœæ identyfikatora procesu, jak¹ przyjmie kolejny, utworzony proces
     static unsigned int IDForNextCreatedProcess_;
     // Rozmiar i pocz¹tek tablicy stron, w której znajduj¹ siê informacje o
