@@ -31,7 +31,7 @@ class Process {
     State state_;
     // Tablica stron, w której znajduj¹ siê informacje o ulokowaniu kodu
     // programu.
-    Undefined pageTable;
+    Undefined pageTable_;
     // Rejestry. Ile ich? Mo¿e lepiej zrobiæ z tego tablicê?
     Undefined A_, B_, C_;
     // Licznik rozkazów. Zamieniæ na typ int? Nazwê na programCounter/inn¹?
