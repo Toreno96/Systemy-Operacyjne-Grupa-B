@@ -19,7 +19,7 @@ class Process {
     void setCurrentPriority( unsigned int priority );
     // Zamiast tego, powrót do koncepcji osobnych metod do ustawiania ka¿dego
     // stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym operacji"?
-    void setState( State state );
+    void setState( const State& state );
     // Settery dla rejestrów
     void setInstructionCounter( Undefined instructionCounter );
   protected:
