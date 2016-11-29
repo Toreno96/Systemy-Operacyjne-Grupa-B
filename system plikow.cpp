@@ -1,9 +1,12 @@
 ﻿#include <iostream>
+#include <fstream>
 #include <string>
 #include <list>
 #include <array>
+#include <vector>
 using std::string;
 using std::array;
+using std::cout;
 const unsigned int max_sector_number = 32;
 //Podczas tworzenia pliku tworzona jest instancja FCB​
 
@@ -51,20 +54,23 @@ public:
 
 	array <bool, 16> get_bitvector() { return bitvector; }
 	array <char, 16> get_data() { return data; }
+	//napisane
 	string get_data_as_string()
 	{
 		string result;
 		auto it = bitvector.begin();
-		auto it2 = 0;
+		auto it2 = data.begin();//auto it2 = 0;
 		for (; *it == 0; it++, it2++)
 		{
-			result.append( data[it2] ); // tu nie appenduje
+			//result.append( data[it2] ); // tu nie appenduje
+			result.push_back(*it2);
 		}
+		return result;
 	}
 	bool get_mode() { return mode; }
 	bool is_free() // 1 - wolny, 0 - zajety
 	{
-		return is_free;
+		return free;
 	}
 };
 
@@ -103,8 +109,7 @@ private:
 		}
 		return data_array;
 	}
-	// trzeba zrobic funkcje, ktora wchodzi wglab danych i jestli sa dane to dolacza do string
-	// a jesli sa indeksy to wchodzi glebiej
+	// napisane
 	void append_to_string_from_deep_index(char firstSectorID, string &result)
 	{
 		if (harddrive[firstSectorID].get_mode() == 0) // jesli sektor jest sektorem indeksowym
@@ -114,7 +119,7 @@ private:
 
 			auto it = copy_of_bitvector.begin();
 			auto it2 = copy_of_indexes.begin();
-			for (; it != copy_of_bitvector.end() || *it == 0; it++, it2++) // dopoki koniec wektora lub char jest zajety
+			for (; it != copy_of_bitvector.end() && *it == 0; it++, it2++) // dopoki koniec wektora lub char jest zajety
 			{
 				if(harddrive[*it2].get_mode() == 0) // jesli zagniezdzony indeks jest sektorem indeksowym
 				{
@@ -122,9 +127,13 @@ private:
 				}
 				else // jesli zagniezdzony indeks jest sektorem danych
 				{
-					result.append( harddrive[*it2].get_data() );// dokonczyc
+					result.append( harddrive[*it2].get_data_as_string() );
 				}
 			}
+		}
+		{
+			string message = "Sektor nie jest sektorem indekswym. Blad nieznany.";
+			cout << message;
 		}
 	}
 
@@ -142,7 +151,7 @@ public:
 		return 0;
 	}
 	//zrobione
-	bool create_file (array <char, 8> filename_, array <char, 3> type_) // 1 – operacja zakonczona pomyslnie, 0 - cos poszlo nie tak
+	bool create_empty_file (array <char, 8> filename_, array <char, 3> type_) // 1 – operacja zakonczona pomyslnie, 0 - cos poszlo nie tak
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -180,7 +189,40 @@ public:
 			return 0; // brak miejsca na dysku
 		}
 	}
-	//bool add_to_file(array <char, 8> filename_, array <char, 3> type_, array <char, 16> data_) {}
+	// potem skonczyc to
+	bool load_file_from_Windows(string filename_)
+	{ // uwaga. Co sie dzieje z \n itp znakami? czy sie zapisuja?
+		string line;
+		string good;
+		std::ifstream infile; infile.open(filename_);
+		while (infile.good())
+		{
+			getline(infile, line);
+			good.append(line);
+		}
+		infile.close();
+
+		array<bool, 16> bitvector = create_empty_bitvector();
+		array<char, 16> data = create_empty_data_array();
+		//std::vector <array< char, 16 > > x;
+		
+		while ( !(good.empty()) )
+		{
+			for (int i = 0; i < 16 && !(good.empty()); i++)
+			{
+				bitvector[i] = 0; // oznaczamy char jako uzywany
+				data[i] = *(good.begin()); // wyluskanie wartosci begin
+				good.erase(good.begin()); // usuwa pierwszy el.
+			}
+			//tworzymy nowy sektor z tego co mamy
+			// nadpisujemy prawdziwy sektor tym naszym cudem :D
+			//trzeba te x tablic jakos zapisac na harddrive
+			// trzeba dopisac do sektora indeksowego
+			//nowo zajete indeksy
+		}
+
+	}
+	//napisane
 	string read_file(array <char, 8> filename_, array <char, 3> type_)
 	{
 		if (file_exist(filename_, type_))
@@ -191,23 +233,12 @@ public:
 				if (it->get_filename() == filename_ && it->get_type() == type_)
 				{
 					char firstSectorID = it->get_firstSectorID(); // SectorID odczytane z katalogu
-					if(harddrive[firstSectorID].get_mode() == 0 ) // jesli sektor jest sektorem idneksowym
-					{
-						auto copy_of_bitvector = harddrive[firstSectorID].get_bitvector();
-						auto copy_of_data = harddrive[firstSectorID].get_data();
-
-						auto it = copy_of_bitvector.begin();
-						auto it2 = copy_of_data.begin();
-						for(; it != copy_of_bitvector.end() || *it == 0; it ++, it2++) // dopoki koniec wektora lub char jest zajety
-						{
-							//harddrive[*it2].get_mode();
-						}
-					}
-					else
-					{
-						string message = "Sektor nie jest sektorem indekswym. Blad nieznany.";
-						return message;
-					}
+					append_to_string_from_deep_index(firstSectorID, file);
+				}
+				else
+				{
+					string message = "Niby plik istnieje ale jednak nie ma zgodnosci???";
+					return message;
 				}
 			}
 		}
@@ -217,7 +248,7 @@ public:
 			return message;
 		}
 	}
-
+	//najpierw to
 	bool add_to_file(array <char, 8> filename_, array <char, 3> type_, string data_string)
 	{
 		if (file_exist(filename_, type_))
@@ -234,7 +265,7 @@ public:
 	//zrobione
 	std::list <FCB> get_file_list ()
 	{
-		return Catalog; // czy tak mozna zrobic?
+		return Catalog;
 	}
 	
 };
