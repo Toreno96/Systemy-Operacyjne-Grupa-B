@@ -44,17 +44,32 @@ public:
 		{
 			*it = 0; // zerujemy wszystkie bloki
 		}
-		mode = 0; // tryb nie ma znaczenia, gdy state i tak jest wolny;
+		mode = 1; // tryb nie ma znaczenia, gdy state i tak jest wolny;
 		free = 1; // oznaczamy sektor jako wolny
 	}
-	bool save_data(array <bool, 16> data_bitvector, array <char, 16> data_data, bool mode_) // 1 – operacja zakonczona pomyslnie
+	bool save_data(array <bool, 16> bitvector, array <char, 16> data, bool mode_) // 1 – operacja zakonczona pomyslnie
 	{
-		bitvector = data_bitvector; data = data_data; bool mode = mode_; free = 0; return 1;
+		bitvector = bitvector; data = data; bool mode = mode_; free = 0; return 1;
 	}
-
 	array <bool, 16> get_bitvector() { return bitvector; }
 	array <char, 16> get_data() { return data; }
-	//napisane
+	bool add_one_data(char one_data)
+	{
+		auto it = bitvector.begin();
+		int i = 0;
+		for (; it != bitvector.end() && *it !=1; it++, i++) // szukamy wolnego bool czyli char w array data
+		{}
+		if (it != bitvector.end() && *it == 1)
+		{
+			data[i] = one_data;
+		}
+
+	}
+	bool set_mode(bool mode_)
+	{
+		mode = mode_;
+		return 1; // zakonczone pomyslnie
+	}
 	string get_data_as_string()
 	{
 		string result;
@@ -136,6 +151,15 @@ private:
 			cout << message;
 		}
 	}
+	string array_type_as_string(array <char, 8> filename_, array <char, 3> type_)
+	{
+		string file_type_as_string;
+		for (auto it = filename_.begin(); it != filename_.end(); it++)
+		{
+			file_type_as_string.push_back(*it);
+		}
+		return file_type_as_string;
+	}
 
 public:
 	//zrobione
@@ -158,31 +182,16 @@ public:
 			return 0; // taki plik juz istnieje
 		}
 
-		//rezerwujemy sektor na dane
-		auto data_sector_ID = find_empty_sector();
-		if (data_sector_ID < max_sector_number)
+		//rezerwujemy sektor na baze sektorow z danymi
+		auto index_sector_ID = find_empty_sector();
+		if (index_sector_ID < max_sector_number)
 		{
-			array<bool, 16> data_bitvector = create_empty_bitvector();
-			array<char, 16> data_data = create_empty_data_array();
-
-			//rezerwujemy sektor na baze sektorow z danymi
-			auto index_sector_ID = find_empty_sector();
-			if (index_sector_ID < max_sector_number)
-			{
-				array<bool, 16> index_bitvector = create_empty_bitvector();
-				array<char, 16> index_data = create_empty_data_array();
-				index_data[0] = data_sector_ID; // pierwszy char sektora indeksowego zawiera indeks sektora z danymi
-
-				harddrive[data_sector_ID].save_data(data_bitvector, data_data, 1); // Sektor przechowuje dane
-				harddrive[index_sector_ID].save_data(index_bitvector, index_data, 0); // Sektor przechowuje indeksy innych sektorow
-				FCB new_fcb{ filename_, type_, index_sector_ID };
-				Catalog.push_back(new_fcb);
-				return 1; // operacja zakonczona pomyslnie
-			}
-			else
-			{
-				return 0; // brak miejsca na dysku
-			}
+			Sector index_sector{}; //tworzymy pusty sector
+			index_sector.set_mode(0); // Sektor przechowuje indeksy innych sektorow
+			harddrive[index_sector_ID]= index_sector;
+			FCB new_fcb{ filename_, type_, index_sector_ID };
+			Catalog.push_back(new_fcb);
+			return 1; // operacja zakonczona pomyslnie
 		}
 		else
 		{
@@ -190,40 +199,46 @@ public:
 		}
 	}
 	// potem skonczyc to
-	bool load_file_from_Windows(string filename_)
+	bool load_file_from_Windows_and_save_on_harddrive(array <char, 8> filename_, array <char, 3> type_) // 1 - operacja zakonczona powodzeniem
 	{ // uwaga. Co sie dzieje z \n itp znakami? czy sie zapisuja?
+
+		//zamiana array filename_ i type_ na string
+		string filename_string = array_type_as_string(filename_, type_);
+
+		//wczytujemy plik z systemu windows
 		string line;
 		string good;
-		std::ifstream infile; infile.open(filename_);
+		std::ifstream infile; infile.open(filename_string);
 		while (infile.good())
 		{
 			getline(infile, line);
 			good.append(line);
 		}
 		infile.close();
-
-		array<bool, 16> bitvector = create_empty_bitvector();
-		array<char, 16> data = create_empty_data_array();
-		//std::vector <array< char, 16 > > x;
 		
 		while ( !(good.empty()) )
 		{
+			//zamiana string na sektory
+			array <bool, 16> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
+			array <char, 16> data = create_empty_data_array();
 			for (int i = 0; i < 16 && !(good.empty()); i++)
 			{
 				bitvector[i] = 0; // oznaczamy char jako uzywany
 				data[i] = *(good.begin()); // wyluskanie wartosci begin
-				good.erase(good.begin()); // usuwa pierwszy el.
+				good.erase(good.begin()); // usuwa pierwszy element
 			}
-			//tworzymy nowy sektor z tego co mamy
+			Sector sector;
+			sector.save_data(bitvector, data, 1);
+			add_data_sector_to_file(filename_, type_, sector);
 			// nadpisujemy prawdziwy sektor tym naszym cudem :D
-			//trzeba te x tablic jakos zapisac na harddrive
 			// trzeba dopisac do sektora indeksowego
+			//trzeba te x tablic jakos zapisac na harddrive
 			//nowo zajete indeksy
 		}
 
 	}
 	//napisane
-	string read_file(array <char, 8> filename_, array <char, 3> type_)
+	string read_file(array <char, 8> filename_, array <char, 3> type_)//zwraca caly plik jako string
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -241,6 +256,7 @@ public:
 					return message;
 				}
 			}
+			return file;
 		}
 		else
 		{
@@ -248,13 +264,22 @@ public:
 			return message;
 		}
 	}
-	//najpierw to
-	bool add_to_file(array <char, 8> filename_, array <char, 3> type_, string data_string)
+	//napisane
+	bool add_data_sector_to_file(array <char, 8> filename_, array <char, 3> type_, Sector sector) // nazwa, rozszerzenie i sektor do dopisania
 	{
 		if (file_exist(filename_, type_))
 		{
-			// trzeba zczytac wszystkie dane, zrobic z tego string, potem append data_string,
-			//znow porozdzielac na sektory, sprawdzic ilosc, przypisac, dopisac sektory do sektora indeksowego
+			auto it = Catalog.begin();
+			for (; it != Catalog.end() && it->get_filename() != filename_ && it->get_type() !=type_; it++) // szukamy danego pliku
+			{}
+			if (it->get_filename() == filename_ && it->get_type() == type_)
+			{
+				auto firstSectorID = it->get_firstSectorID();
+				auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapameitujemy jego indeks
+				harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor
+				harddrive[firstSectorID].add_one_data(free_sector_id);//dodajemy indeks do sektora indeksowego
+				return 1; // zakonczone poprawnie
+			}
 		}
 		else
 		{
