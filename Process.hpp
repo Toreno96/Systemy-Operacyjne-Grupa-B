@@ -28,7 +28,7 @@ class Process {
     void setState( const State& state );
     // Settery dla rejestrów TO-DO
     void setInstructionCounter( Undefined instructionCounter );
-  protected:
+  private:
     // Do tego rejestry, jeœli ostatecznie rzeczywiœcie umieszczone zostan¹ one
     // w kontenerze (1), a tak¿e licznik rozkazów, jeœli jego typem oka¿e siê
     // byæ typ fundamentalny
