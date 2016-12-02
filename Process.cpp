@@ -1,6 +1,12 @@
 #include "Process.hpp"
 
-// Process::Process( const std::string& name, const Undefined& pageTable ) : Process::name_( name ), Process::pageTable_( pageTable )
+Process::Process( const std::string& name, const Undefined& pageTable ) :
+        Process( name, 0u, Process::State::New, pageTable ) {}
+Process::Process( const std::string& name, unsigned int originalPriority,
+    const State& state, const Undefined& pageTable ) :
+        name_( name ), originalPriority_( originalPriority ),
+        currentPriority_( originalPriority ), state_( state ),
+        pageTable_( pageTable ) {}
 std::string Process::getName() const {
   return name_;
 }

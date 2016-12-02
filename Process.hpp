@@ -29,6 +29,11 @@ class Process {
     // Settery dla rejestrów TO-DO
     void setInstructionCounter( Undefined instructionCounter );
   protected:
+    // Do tego rejestry, jeœli ostatecznie rzeczywiœcie umieszczone zostan¹ one
+    // w kontenerze (1), a tak¿e licznik rozkazów, jeœli jego typem oka¿e siê
+    // byæ typ fundamentalny
+    Process( const std::string& name, unsigned int originalPriority,
+        const State& state, const Undefined& pageTable );
     // Nazwa procesu, a jednoczeœnie i jego identyfikator
     std::string name_;
     // Oryginalny i aktualny priorytet procesu
