@@ -11,13 +11,15 @@ class Process {
     enum class State { New, Ready, Running, Waiting, Terminated };
     Process( const std::string& name, const Undefined& pageTable );
     std::string getName() const;
-    unsigned int getOriginalPriority() const;
+    unsigned int getOriginalPriority() const; // Zbêdne?
     unsigned int getCurrentPriority() const;
     State getState() const;
     Undefined getPageTable() const;
     // Getter(y?) dla rejestrów TO-DO
     Undefined getInstructionCounter() const;
-    void setCurrentPriority( unsigned int priority );
+    void restoreOriginalPriority(); // "Minimal" zamiast "Original"?
+    void setPriority( unsigned int priority ); // Inkrementacja zamiast
+    // swobodnej modyfikacji?
     // Zamiast tego, powrót do koncepcji osobnych metod do ustawiania ka¿dego
     // stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym operacji"?
     void setState( const State& state );

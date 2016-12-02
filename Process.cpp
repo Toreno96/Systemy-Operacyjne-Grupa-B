@@ -19,7 +19,10 @@ Undefined Process::getPageTable() const {
 Undefined Process::getInstructionCounter() const {
   return instructionCounter_;
 }
-void Process::setCurrentPriority( unsigned int priority ) {
+void Process::restoreOriginalPriority() {
+  currentPriority_ = originalPriority_;
+}
+void Process::setPriority( unsigned int priority ) {
   currentPriority_ = priority;
 }
 void Process::setState( const Process::State& state ) {
