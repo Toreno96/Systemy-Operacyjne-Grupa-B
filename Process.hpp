@@ -8,7 +8,7 @@ class Process {
     // Nazwy stanów na podstawie materia³ów z wa¿niaka (Jestem otwarty na
     // wszelkie sugestie, dotycz¹ce zmiany nazw czy umieszczenia dodatkowych
     // stanów)
-    enum class State { New, Ready, Running, Waiting, Terminated };
+    enum class State { Ready, Running, Waiting, Terminated };
     Process( const std::string& name, const Undefined& pageTable );
     std::string getName() const;
     // Zbêdne?

@@ -1,7 +1,7 @@
 #include "Process.hpp"
 
 Process::Process( const std::string& name, const Undefined& pageTable ) :
-        Process( name, 0u, Process::State::New, pageTable ) {}
+        Process( name, 0u, Process::State::Ready, pageTable ) {}
 Process::Process( const std::string& name, unsigned int originalPriority,
     const State& state, const Undefined& pageTable ) :
         name_( name ), originalPriority_( originalPriority ),
