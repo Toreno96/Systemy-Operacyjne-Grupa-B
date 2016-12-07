@@ -1,4 +1,4 @@
-﻿/*
+﻿#pragma once
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -19,7 +19,7 @@ private:
 	char firstSectorID;
 
 public:
-	FCB(array <char, 8> filename_, array <char, 3> type_, char firstSectorID_) : filename(filename_), type(type_), firstSectorID (firstSectorID_) {}
+	FCB(array <char, 8> filename_, array <char, 3> type_, char firstSectorID_) : filename(filename_), type(type_), firstSectorID(firstSectorID_) {}
 	array <char, 8> get_filename() { return filename; }
 	array <char, 3> get_type() { return type; }
 	char get_firstSectorID() { return firstSectorID; }
@@ -32,6 +32,25 @@ private:
 	array <char, 16> data; // liczba 0 oznacza, że mimo wszystko to nie jest żadna informacja. znak ma sens <=> znak>0
 	bool mode; // 0 - przechowuje indeksy innych sektorow, 1 - przechowuje dane
 	bool free; // 1 wolny, 0 - zajety
+			   //metody pomocnicze
+	array<bool, 16> create_empty_bitvector()//metoda pomocnicza
+	{
+		array<bool, 16> bitvector;
+		for (auto it = bitvector.begin(); it != bitvector.end(); it++)
+		{
+			*it = 1;
+		}
+		return bitvector;
+	}
+	array<char, 16> create_empty_data_array()//metoda pomocnicza
+	{
+		array<char, 16> data_array;
+		for (auto it = data_array.begin(); it != data_array.end(); it++)
+		{
+			*it = 0;
+		}
+		return data_array;
+	}
 
 public:
 	Sector() // konstruktor
@@ -54,16 +73,34 @@ public:
 	}
 	array <bool, 16> get_bitvector() { return bitvector; }
 	array <char, 16> get_data() { return data; }
-	bool add_one_data(char one_data)
+	//rozszerzyc o tworzony nowy sektor indeksowy jesli chcemy zajac ostatni indeks
+	bool add_one_data(char one_data) // 1 jesli zakonczone pomyslnie
 	{
-		auto it = bitvector.begin();
+		auto it = bitvector.begin();//iterator pierwotny
+		auto it2 = bitvector.begin();//iterator ktory zatrzyma sie szybciej
+		it2++;
+		//dzieki temu it bedzie wskazywac na ostatni element a it2 na koniec bitvectora
 		int i = 0;
-		for (; it != bitvector.end() && *it !=1; it++, i++) // szukamy wolnego bool czyli char w array data
-		{}
-		if (it != bitvector.end() && *it == 1)
+		for (; it2 != bitvector.end() && *it != 1; it++, it2++, i++) // szukamy wolnego bool czyli char w array data
+		{
+		}
+		if (it2 != bitvector.end() && *it == 1) // jesli it nie wczesniej niz ostatnim elemencie i *it jest wolny
 		{
 			data[i] = one_data;
+			return 1;
 		}
+		if (it2 == bitvector.end() && *it == 1) // jesli it stoi na ostatnim elemencie i *it jest wolny
+		{
+			array <bool, 16> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
+			array <char, 16> data = create_empty_data_array();
+			Sector sector;
+			sector.save_data(bitvector, data, 0); // tryb przechowywania indeksow
+												  // trzeba znalezc wolny sektor ktory mozemy do tego celu zarezerwowac
+												  // chyba z poziomu twardego dysku
+												  //bitvector[16-1] =  //przypisujemy do tego charu indeks tego noego wolnego sektoru
+			return 1;
+		}
+
 
 	}
 	bool set_mode(bool mode_)
@@ -137,13 +174,13 @@ private:
 			auto it2 = copy_of_indexes.begin();
 			for (; it != copy_of_bitvector.end() && *it == 0; it++, it2++) // dopoki koniec wektora lub char jest zajety
 			{
-				if(harddrive[*it2].get_mode() == 0) // jesli zagniezdzony indeks jest sektorem indeksowym
+				if (harddrive[*it2].get_mode() == 0) // jesli zagniezdzony indeks jest sektorem indeksowym
 				{
 					append_to_string_from_deep_index(*it2, result);
 				}
 				else // jesli zagniezdzony indeks jest sektorem danych
 				{
-					result.append( harddrive[*it2].get_data_as_string() );
+					result.append(harddrive[*it2].get_data_as_string());
 				}
 			}
 		}
@@ -176,7 +213,7 @@ public:
 		return 0;
 	}
 	//zrobione
-	bool create_empty_file (array <char, 8> filename_, array <char, 3> type_) // 1 – operacja zakonczona pomyslnie, 0 - cos poszlo nie tak
+	bool create_empty_file(array <char, 8> filename_, array <char, 3> type_) // 1 – operacja zakonczona pomyslnie, 0 - cos poszlo nie tak
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -189,7 +226,7 @@ public:
 		{
 			Sector index_sector{}; //tworzymy pusty sector
 			index_sector.set_mode(0); // Sektor przechowuje indeksy innych sektorow
-			harddrive[index_sector_ID]= index_sector;
+			harddrive[index_sector_ID] = index_sector;
 			FCB new_fcb{ filename_, type_, index_sector_ID };
 			Catalog.push_back(new_fcb);
 			return 1; // operacja zakonczona pomyslnie
@@ -201,8 +238,7 @@ public:
 	}
 	// potem skonczyc to
 	bool load_file_from_Windows_and_save_on_harddrive(array <char, 8> filename_, array <char, 3> type_) // 1 - operacja zakonczona powodzeniem
-	{ // uwaga. Co sie dzieje z \n itp znakami? czy sie zapisuja?
-
+	{
 		//zamiana array filename_ i type_ na string
 		string filename_string = array_type_as_string(filename_, type_);
 
@@ -212,12 +248,12 @@ public:
 		std::ifstream infile; infile.open(filename_string);
 		while (infile.good())
 		{
-			getline(infile, line);
+			getline(infile, line);//jak to zamienic na get?
 			good.append(line);
 		}
 		infile.close();
-		
-		while ( !(good.empty()) )
+
+		while (!(good.empty()))
 		{
 			//zamiana string na sektory
 			array <bool, 16> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
@@ -230,11 +266,9 @@ public:
 			}
 			Sector sector;
 			sector.save_data(bitvector, data, 1);
-			add_data_sector_to_file(filename_, type_, sector);
-			// nadpisujemy prawdziwy sektor tym naszym cudem :D
-			// trzeba dopisac do sektora indeksowego
-			//trzeba te x tablic jakos zapisac na harddrive
-			//nowo zajete indeksy
+			add_data_sector_to_file(filename_, type_, sector);// nadpisujemy prawdziwy sektor naszym sektorem
+															  //trzeba te x tablic jakos zapisac na harddrive
+															  //nowo zajete indeksy
 		}
 
 	}
@@ -266,17 +300,19 @@ public:
 		}
 	}
 	//napisane
-	bool add_data_sector_to_file(array <char, 8> filename_, array <char, 3> type_, Sector sector) // nazwa, rozszerzenie i sektor do dopisania
+	bool add_data_sector_to_file(array <char, 8> filename_, array <char, 3> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
 	{
 		if (file_exist(filename_, type_))
 		{
 			auto it = Catalog.begin();
-			for (; it != Catalog.end() && it->get_filename() != filename_ && it->get_type() !=type_; it++) // szukamy danego pliku
-			{}
+			for (; it != Catalog.end() && it->get_filename() != filename_ && it->get_type() != type_; it++) // szukamy danego pliku
+			{
+			}
+
 			if (it->get_filename() == filename_ && it->get_type() == type_)
 			{
 				auto firstSectorID = it->get_firstSectorID();
-				auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapameitujemy jego indeks
+				auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
 				harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor
 				harddrive[firstSectorID].add_one_data(free_sector_id);//dodajemy indeks do sektora indeksowego
 				return 1; // zakonczone poprawnie
@@ -287,12 +323,11 @@ public:
 			return 0; // plik nie istnieje
 		}
 	}
-	bool delete_file (array <char, 8> filename_, array <char, 3> type_) {}
+	bool delete_file(array <char, 8> filename_, array <char, 3> type_) {}
 	//zrobione
-	std::list <FCB> get_file_list ()
+	std::list <FCB> get_file_list()
 	{
 		return Catalog;
 	}
-	
+
 };
-*/

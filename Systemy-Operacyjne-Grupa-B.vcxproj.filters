@@ -23,5 +23,8 @@
     <ClInclude Include="system plikow old.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="sytem plikow 2.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
