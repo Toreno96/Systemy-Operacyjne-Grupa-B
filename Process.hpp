@@ -15,30 +15,30 @@ class Process {
     unsigned int getCurrentPriority() const;
     State getState() const;
     Undefined getPageTable() const;
-    // Getter(y?) dla rejestr√≥w TO-DO
+    // Getter(y?) dla rejestrÛw TO-DO
     int getInstructionCounter() const;
     int getCurrentPriorityDuration() const;
     void restoreOriginalPriority();
     void increasePriority();
-    // Zamiast poni≈ºszego, powr√≥t do koncepcji osobnych metod do ustawiania
-    // ka≈ºdego stanu i wykonania "ewentualnych dodatkowych, zwiƒÖzanych z tym
+    // Zamiast poniøszego, powrÛt do koncepcji osobnych metod do ustawiania
+    // kaødego stanu i wykonania "ewentualnych dodatkowych, zwiπzanych z tym
     // operacji"?
     void setState( const State& state );
-    // Settery dla rejestr√≥w TO-DO
+    // Settery dla rejestrÛw TO-DO
     void setInstructionCounter( int instructionCounter );
     void increaseCurrentPriorityDuration();
   private:
     void setPriority( unsigned int priority );
     void resetCurrentPriorityDuration();
-    // Nazwa procesu jest jednocze≈õnie jego identyfikatorem
+    // Nazwa procesu jest jednoczeúnie jego identyfikatorem
     std::string name_;
     unsigned int originalPriority_, currentPriority_;
     State state_;
     Undefined pageTable_;
-    // Mo≈ºe lepiej umie≈õciƒá rejestry w jakim≈õ kontenerze?
+    // Moøe lepiej umieúciÊ rejestry w jakimú kontenerze?
     Undefined A_, B_, C_, D_;
     int instructionCounter_,
         currentPriorityDuration_;
-    // Poza tym - sk≈Çadowe potrzebne do komunikacji, ale wyglƒÖdu tych ju≈º
-    // kompletnie nie znam. Potrzebujƒô info od Jakuba.
+    // Poza tym - sk≥adowe potrzebne do komunikacji, ale wyglπdu tych juø
+    // kompletnie nie znam. PotrzebujÍ info od Jakuba.
 };
