@@ -17,7 +17,7 @@ class Process {
     State getState() const;
     Undefined getPageTable() const;
     // Getter(y?) dla rejestrów TO-DO
-    Undefined getInstructionCounter() const;
+    int getInstructionCounter() const;
     // "Minimal" zamiast "Original"?
     void restoreOriginalPriority();
     // Inkrementacja zamiast swobodnej modyfikacji?
@@ -27,7 +27,7 @@ class Process {
     // operacji"?
     void setState( const State& state );
     // Settery dla rejestrów TO-DO
-    void setInstructionCounter( Undefined instructionCounter );
+    void setInstructionCounter( int instructionCounter );
   private:
     // Do tego rejestry, jeœli ostatecznie rzeczywiœcie umieszczone zostan¹ one
     // w kontenerze (1), a tak¿e licznik rozkazów, jeœli jego typem oka¿e siê
@@ -45,8 +45,8 @@ class Process {
     Undefined pageTable_;
     // Rejestry. (1) Mo¿e lepiej umieœciæ je w jakimœ kontenerze?
     Undefined A_, B_, C_, D_;
-    // Licznik rozkazów. Zamieniæ na typ int? Nazwê na programCounter/inn¹?
-    Undefined instructionCounter_;
+    // Licznik rozkazów
+    int instructionCounter_;
     // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
     // kompletnie nie znam. Potrzebujê info od Jakuba.
 };

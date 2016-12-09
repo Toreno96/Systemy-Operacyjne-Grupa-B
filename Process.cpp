@@ -22,7 +22,7 @@ Process::State Process::getState() const {
 Undefined Process::getPageTable() const {
   return pageTable_;
 }
-Undefined Process::getInstructionCounter() const {
+int Process::getInstructionCounter() const {
   return instructionCounter_;
 }
 void Process::restoreOriginalPriority() {
@@ -34,6 +34,6 @@ void Process::setPriority( unsigned int priority ) {
 void Process::setState( const Process::State& state ) {
   state_ = state;
 }
-void Process::setInstructionCounter( Undefined instructionCounter ) {
+void Process::setInstructionCounter( int instructionCounter ) {
   instructionCounter_ = instructionCounter;
 }
