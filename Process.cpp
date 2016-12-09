@@ -9,6 +9,7 @@ Process::Process( const std::string& name, unsigned int priority,
         currentPriority_( priority ), state_( Process::State::Ready ),
         pageTable_( pageTable ), instructionCounter_( 0 ),
         currentPriorityDuration_( 0 ) {}
+
 std::string Process::getName() const {
   return name_;
 }
