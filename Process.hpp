@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "Registers.h"
 #include "Undefined.hpp"
 
 class Process {
@@ -15,7 +16,7 @@ class Process {
     unsigned int getCurrentPriority() const;
     State getState() const;
     Undefined getPageTable() const;
-    // Getter(y?) dla rejestrów TO-DO
+    Registers getRegistersBackup() const;
     int getInstructionCounter() const;
     int getCurrentPriorityDuration() const;
     void restoreOriginalPriority();
@@ -24,7 +25,7 @@ class Process {
     // ka¿dego stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym
     // operacji"?
     void setState( const State& state );
-    // Settery dla rejestrów TO-DO
+    void setRegistersBackup( const Registers& registers );
     void setInstructionCounter( int instructionCounter );
     void increaseCurrentPriorityDuration();
   private:
@@ -35,8 +36,7 @@ class Process {
     unsigned int originalPriority_, currentPriority_;
     State state_;
     Undefined pageTable_;
-    // Mo¿e lepiej umieœciæ rejestry w jakimœ kontenerze?
-    Undefined A_, B_, C_, D_;
+    Registers registersBackup_;
     int instructionCounter_,
         currentPriorityDuration_;
     // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
