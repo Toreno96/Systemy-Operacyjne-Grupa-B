@@ -8,10 +8,12 @@ class Process {
     // Nazwy stanów na podstawie materia³ów z wa¿niaka (Jestem otwarty na
     // wszelkie sugestie, dotycz¹ce zmiany nazw czy umieszczenia dodatkowych
     // stanów)
-    enum class State { Ready, Running, Waiting, Terminated };
-    Process( const std::string& name, const Undefined& pageTable );
-    std::string getName() const;
+    static const unsigned int minPriority;
     static const unsigned int maxPriority;
+    enum class State { Ready, Running, Waiting, Terminated };
+    Process( const std::string& name, unsigned int priority,
+        const Undefined& pageTable );
+    std::string getName() const;
     unsigned int getOriginalPriority() const;
     unsigned int getCurrentPriority() const;
     State getState() const;
@@ -29,11 +31,6 @@ class Process {
     void setInstructionCounter( int instructionCounter );
     void increaseCurrentPriorityDuration();
   private:
-    // Do tego rejestry, jeœli ostatecznie rzeczywiœcie umieszczone zostan¹ one
-    // w kontenerze (1), a tak¿e licznik rozkazów, jeœli jego typem oka¿e siê
-    // byæ typ fundamentalny
-    Process( const std::string& name, unsigned int originalPriority,
-        const State& state, const Undefined& pageTable );
     void setPriority( unsigned int priority );
     void resetCurrentPriorityDuration();
     // Nazwa procesu, a jednoczeœnie i jego identyfikator

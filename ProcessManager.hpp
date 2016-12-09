@@ -7,7 +7,7 @@ class ProcessManager {
   public:
     std::vector< Process >& processes();
     void createProcess( const std::string& name,
-        const Undefined& programCode );
+        const Undefined& programCode, unsigned int priority = 0 );
     void removeTerminatedProcesses();
   private:
     std::vector< Process > processes_;

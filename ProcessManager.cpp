@@ -6,12 +6,12 @@ std::vector< Process >& ProcessManager::processes() {
   return processes_;
 }
 void ProcessManager::createProcess( const std::string& name,
-    const Undefined& programCode ) {
+    const Undefined& programCode, unsigned int priority ) {
   // W przysz³oœci pojawi siê inicjalizacja obiektem zwróconym przez tê funkcjê
   // modu³u zarz¹dzania pamiêci¹ operacyjn¹, która odpowiedzialna jest za
   // przeniesienie kodu programu z pamiêci dyskowej do pamiêci RAM. TO-DO
   Undefined pageTable;
-  processes_.push_back( Process( name, pageTable ) );
+  processes_.push_back( Process( name, priority, pageTable ) );
 }
 void ProcessManager::removeTerminatedProcesses() {
   auto isTerminated = []( const Process& process ){

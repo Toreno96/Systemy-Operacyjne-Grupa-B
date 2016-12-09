@@ -1,14 +1,14 @@
 #include "Process.hpp"
 
+const unsigned int Process::minPriority = 0;
 const unsigned int Process::maxPriority = 7;
 
-Process::Process( const std::string& name, const Undefined& pageTable ) :
-        Process( name, 0u, Process::State::Ready, pageTable ) {}
-Process::Process( const std::string& name, unsigned int originalPriority,
-    const State& state, const Undefined& pageTable ) :
-        name_( name ), originalPriority_( originalPriority ),
-        currentPriority_( originalPriority ), state_( state ),
-        pageTable_( pageTable ) {}
+Process::Process( const std::string& name, unsigned int priority,
+    const Undefined& pageTable ) :
+        name_( name ), originalPriority_( priority ),
+        currentPriority_( priority ), state_( Process::State::Ready ),
+        pageTable_( pageTable ), instructionCounter_( 0 ),
+        currentPriorityDuration_( 0 ) {}
 std::string Process::getName() const {
   return name_;
 }
