@@ -34,9 +34,8 @@ void Process::restoreOriginalPriority() {
   setPriority( originalPriority_ );
 }
 void Process::increasePriority() {
-  if( currentPriority_ != maxPriority )
+  if( currentPriority_ < maxPriority )
     setPriority( currentPriority_ + 1 );
-  // W przeciwnym wypadku wyj¹tek?
 }
 void Process::setState( const Process::State& state ) {
   state_ = state;
