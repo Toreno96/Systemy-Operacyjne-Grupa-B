@@ -5,9 +5,6 @@
 
 class Process {
   public:
-    // Nazwy stanów na podstawie materia³ów z wa¿niaka (Jestem otwarty na
-    // wszelkie sugestie, dotycz¹ce zmiany nazw czy umieszczenia dodatkowych
-    // stanów)
     static const unsigned int minPriority;
     static const unsigned int maxPriority;
     enum class State { Ready, Running, Waiting, Terminated };
@@ -33,18 +30,13 @@ class Process {
   private:
     void setPriority( unsigned int priority );
     void resetCurrentPriorityDuration();
-    // Nazwa procesu, a jednoczeœnie i jego identyfikator
+    // Nazwa procesu jest jednoczeœnie jego identyfikatorem
     std::string name_;
-    // Oryginalny i aktualny priorytet procesu
     unsigned int originalPriority_, currentPriority_;
-    // Aktualny stan procesu
     State state_;
-    // Tablica stron, w której znajduj¹ siê informacje o ulokowaniu kodu
-    // programu
     Undefined pageTable_;
-    // Rejestry. (1) Mo¿e lepiej umieœciæ je w jakimœ kontenerze?
+    // Mo¿e lepiej umieœciæ rejestry w jakimœ kontenerze?
     Undefined A_, B_, C_, D_;
-    // Licznik rozkazów
     int instructionCounter_,
         currentPriorityDuration_;
     // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
