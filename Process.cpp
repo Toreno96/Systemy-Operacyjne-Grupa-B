@@ -1,5 +1,7 @@
 #include "Process.hpp"
 
+const unsigned int Process::maxPriority = 7;
+
 Process::Process( const std::string& name, const Undefined& pageTable ) :
         Process( name, 0u, Process::State::Ready, pageTable ) {}
 Process::Process( const std::string& name, unsigned int originalPriority,
@@ -31,9 +33,10 @@ int Process::getCurrentPriorityDuration() const {
 void Process::restoreOriginalPriority() {
   setPriority( originalPriority_ );
 }
-void Process::setPriority( unsigned int priority ) {
-  currentPriority_ = priority;
-  resetCurrentPriorityDuration();
+void Process::increasePriority() {
+  if( currentPriority_ != maxPriority )
+    setPriority( currentPriority_ + 1 );
+  // W przeciwnym wypadku wyj¹tek?
 }
 void Process::setState( const Process::State& state ) {
   state_ = state;
@@ -43,6 +46,10 @@ void Process::setInstructionCounter( int instructionCounter ) {
 }
 void Process::increaseCurrentPriorityDuration() {
   ++currentPriorityDuration_;
+}
+void Process::setPriority( unsigned int priority ) {
+  currentPriority_ = priority;
+  resetCurrentPriorityDuration();
 }
 void Process::resetCurrentPriorityDuration() {
   currentPriorityDuration_ = 0;

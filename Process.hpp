@@ -11,7 +11,7 @@ class Process {
     enum class State { Ready, Running, Waiting, Terminated };
     Process( const std::string& name, const Undefined& pageTable );
     std::string getName() const;
-    // Zbêdne?
+    static const unsigned int maxPriority;
     unsigned int getOriginalPriority() const;
     unsigned int getCurrentPriority() const;
     State getState() const;
@@ -19,10 +19,8 @@ class Process {
     // Getter(y?) dla rejestrów TO-DO
     int getInstructionCounter() const;
     int getCurrentPriorityDuration() const;
-    // "Minimal" zamiast "Original"?
     void restoreOriginalPriority();
-    // Inkrementacja zamiast swobodnej modyfikacji?
-    void setPriority( unsigned int priority );
+    void increasePriority();
     // Zamiast poni¿szego, powrót do koncepcji osobnych metod do ustawiania
     // ka¿dego stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym
     // operacji"?
@@ -36,6 +34,7 @@ class Process {
     // byæ typ fundamentalny
     Process( const std::string& name, unsigned int originalPriority,
         const State& state, const Undefined& pageTable );
+    void setPriority( unsigned int priority );
     void resetCurrentPriorityDuration();
     // Nazwa procesu, a jednoczeœnie i jego identyfikator
     std::string name_;
