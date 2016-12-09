@@ -1,6 +1,7 @@
-#pragma once
+ï»¿#pragma once
 
 #include <string>
+#include "Registers.h"
 #include "Undefined.hpp"
 
 class Process {
@@ -15,30 +16,29 @@ class Process {
     unsigned int getCurrentPriority() const;
     State getState() const;
     Undefined getPageTable() const;
-    // Getter(y?) dla rejestrów TO-DO
+    Registers getRegistersBackup() const;
     int getInstructionCounter() const;
     int getCurrentPriorityDuration() const;
     void restoreOriginalPriority();
     void increasePriority();
-    // Zamiast poni¿szego, powrót do koncepcji osobnych metod do ustawiania
-    // ka¿dego stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym
+    // Zamiast poniÂ¿szego, powrÃ³t do koncepcji osobnych metod do ustawiania
+    // kaÂ¿dego stanu i wykonania "ewentualnych dodatkowych, zwiÄ…zanych z tym
     // operacji"?
     void setState( const State& state );
-    // Settery dla rejestrów TO-DO
+    void setRegistersBackup( const Registers& registers );
     void setInstructionCounter( int instructionCounter );
     void increaseCurrentPriorityDuration();
   private:
     void setPriority( unsigned int priority );
     void resetCurrentPriorityDuration();
-    // Nazwa procesu jest jednoczeœnie jego identyfikatorem
+    // Nazwa procesu jest jednoczeÅ›nie jego identyfikatorem
     std::string name_;
     unsigned int originalPriority_, currentPriority_;
     State state_;
     Undefined pageTable_;
-    // Mo¿e lepiej umieœciæ rejestry w jakimœ kontenerze?
-    Undefined A_, B_, C_, D_;
+    Registers registersBackup_;
     int instructionCounter_,
         currentPriorityDuration_;
-    // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
-    // kompletnie nie znam. Potrzebujê info od Jakuba.
+    // Poza tym - skÅ‚adowe potrzebne do komunikacji, ale wyglÄ…du tych juÂ¿
+    // kompletnie nie znam. PotrzebujÄ™ info od Jakuba.
 };
