@@ -25,15 +25,25 @@ Undefined Process::getPageTable() const {
 int Process::getInstructionCounter() const {
   return instructionCounter_;
 }
+int Process::getCurrentPriorityDuration() const {
+  return currentPriorityDuration_;
+}
 void Process::restoreOriginalPriority() {
-  currentPriority_ = originalPriority_;
+  setPriority( originalPriority_ );
 }
 void Process::setPriority( unsigned int priority ) {
   currentPriority_ = priority;
+  resetCurrentPriorityDuration();
 }
 void Process::setState( const Process::State& state ) {
   state_ = state;
 }
 void Process::setInstructionCounter( int instructionCounter ) {
   instructionCounter_ = instructionCounter;
+}
+void Process::increaseCurrentPriorityDuration() {
+  ++currentPriorityDuration_;
+}
+void Process::resetCurrentPriorityDuration() {
+  currentPriorityDuration_ = 0;
 }

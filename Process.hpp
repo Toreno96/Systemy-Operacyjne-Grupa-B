@@ -18,6 +18,7 @@ class Process {
     Undefined getPageTable() const;
     // Getter(y?) dla rejestrów TO-DO
     int getInstructionCounter() const;
+    int getCurrentPriorityDuration() const;
     // "Minimal" zamiast "Original"?
     void restoreOriginalPriority();
     // Inkrementacja zamiast swobodnej modyfikacji?
@@ -28,12 +29,14 @@ class Process {
     void setState( const State& state );
     // Settery dla rejestrów TO-DO
     void setInstructionCounter( int instructionCounter );
+    void increaseCurrentPriorityDuration();
   private:
     // Do tego rejestry, jeœli ostatecznie rzeczywiœcie umieszczone zostan¹ one
     // w kontenerze (1), a tak¿e licznik rozkazów, jeœli jego typem oka¿e siê
     // byæ typ fundamentalny
     Process( const std::string& name, unsigned int originalPriority,
         const State& state, const Undefined& pageTable );
+    void resetCurrentPriorityDuration();
     // Nazwa procesu, a jednoczeœnie i jego identyfikator
     std::string name_;
     // Oryginalny i aktualny priorytet procesu
@@ -46,7 +49,8 @@ class Process {
     // Rejestry. (1) Mo¿e lepiej umieœciæ je w jakimœ kontenerze?
     Undefined A_, B_, C_, D_;
     // Licznik rozkazów
-    int instructionCounter_;
+    int instructionCounter_,
+        currentPriorityDuration_;
     // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
     // kompletnie nie znam. Potrzebujê info od Jakuba.
 };
