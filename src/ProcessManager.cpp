@@ -14,8 +14,9 @@ void ProcessManager::createProcess( const std::string& name,
   processes_.push_back( Process( name, priority, pageTable ) );
 }
 void ProcessManager::removeTerminatedProcesses() {
-  auto isTerminated = []( const Process& process ){
-      return process.getState() == Process::State::Terminated; };
-  processes_.erase( std::remove( processes_.begin(), processes_.end(),
-      isTerminated ), processes_.end() );
+  // Powoduje b³êdy linkera; do naprawienia TO-DO
+  // auto isTerminated = []( const Process& process ){
+  //     return process.getState() == Process::State::Terminated; };
+  // processes_.erase( std::remove( processes_.begin(), processes_.end(),
+  //     isTerminated ), processes_.end() );
 }
