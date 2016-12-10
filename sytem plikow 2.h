@@ -76,37 +76,61 @@ public:
 	//rozszerzyc o tworzony nowy sektor indeksowy jesli chcemy zajac ostatni indeks
 	bool add_one_data(char one_data) // 1 jesli zakonczone pomyslnie
 	{
-		auto it = bitvector.begin();//iterator pierwotny
-		auto it2 = bitvector.begin();//iterator ktory zatrzyma sie szybciej
-		it2++;
-		//dzieki temu it bedzie wskazywac na ostatni element a it2 na koniec bitvectora
-		int i = 0;
-		for (; it2 != bitvector.end() && *it != 1; it++, it2++, i++) // szukamy wolnego bool czyli char w array data
+		if (mode == 1) // jesli sektor jest sektorem tylko od danych
 		{
+			auto it = bitvector.begin();//iterator bitvectora
+			int i = 0;
+			for (; it != bitvector.end() && *it != 1; it++, i++) // szukamy wolnego bool czyli char w array data
+			{}
+			if (it != bitvector.end() && *it == 1) // jesli znalezlismy wolny elemeny
+			{
+				data[i] = one_data;
+				return 1;
+			}
+			else if (it == bitvector.end()) // jesli wszystko jest zajete
+			{
+				return 0;
+			}
 		}
-		if (it2 != bitvector.end() && *it == 1) // jesli it nie wczesniej niz ostatnim elemencie i *it jest wolny
-		{
-			data[i] = one_data;
-			return 1;
-		}
-		if (it2 == bitvector.end() && *it == 1) // jesli it stoi na ostatnim elemencie i *it jest wolny
-		{
-			array <bool, 16> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
-			array <char, 16> data = create_empty_data_array();
-			Sector sector;
-			sector.save_data(bitvector, data, 0); // tryb przechowywania indeksow
-												  // trzeba znalezc wolny sektor ktory mozemy do tego celu zarezerwowac
-												  // chyba z poziomu twardego dysku
-												  //bitvector[16-1] =  //przypisujemy do tego charu indeks tego noego wolnego sektoru
-			return 1;
-		}
+		else if (mode == 0) // jesli sektor jest sektorem indeksowym
+			{
+				auto it = bitvector.begin();//iterator pierwotny
+				auto it2 = bitvector.begin();//iterator ktory zatrzyma sie szybciej
+				it2++;
+				//dzieki temu it bedzie wskazywac na ostatni element a it2 na koniec bitvectora
+				int i = 0;
+				for (; it2 != bitvector.end() && *it != 1; it++, it2++, i++) // szukamy wolnego bool czyli char w array data
+				{
+				}
+				if (it2 != bitvector.end() && *it == 1) // jesli it jest wczesniej niz na ostatnim elemencie i *it jest wolny
+				{
+					data[i] = one_data;
+					return 1;
+				}
+				if (it2 == bitvector.end() && *it == 0) // jesli it stoi na ostatnim elemencie i *it jest zajety
+				{
+
+				}
+				if (it2 == bitvector.end() && *it == 1) // jesli it stoi na ostatnim elemencie i *it jest wolny
+				{
+
+					//array <bool, 16> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
+					//array <char, 16> data = create_empty_data_array();
+					//Sector sector;
+					//sector.save_data(bitvector, data, 0); // tryb przechowywania indeksow
+														  // trzeba znalezc wolny sektor ktory mozemy do tego celu zarezerwowac
+														  // chyba z poziomu twardego dysku
+														  //bitvector[16-1] =  //przypisujemy do tego charu indeks tego noego wolnego sektoru
+					return 0; // to znaczy, ze juz nie mozna dodwac danych bo nie ma kolejnego sektora indeksowego
+					// czyli trzeba go dopisac
+				}
+			}
 
 
 	}
-	bool set_mode(bool mode_)
+	void set_mode(bool mode_)
 	{
 		mode = mode_;
-		return 1; // zakonczone pomyslnie
 	}
 	string get_data_as_string()
 	{
@@ -198,6 +222,7 @@ private:
 		}
 		return file_type_as_string;
 	}
+	bool add_next_index_sector() {}
 
 public:
 	//zrobione
@@ -253,7 +278,7 @@ public:
 		}
 		infile.close();
 
-		while (!(good.empty()))
+		while ( !(good.empty()) )
 		{
 			//zamiana string na sektory
 			array <bool, 16> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
@@ -265,7 +290,7 @@ public:
 				good.erase(good.begin()); // usuwa pierwszy element
 			}
 			Sector sector;
-			sector.save_data(bitvector, data, 1);
+			sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
 			add_data_sector_to_file(filename_, type_, sector);// nadpisujemy prawdziwy sektor naszym sektorem
 															  //trzeba te x tablic jakos zapisac na harddrive
 															  //nowo zajete indeksy
