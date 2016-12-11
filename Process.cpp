@@ -25,6 +25,9 @@ Process::State Process::getState() const {
 Undefined Process::getPageTable() const {
   return pageTable_;
 }
+Registers Process::getRegistersBackup() const {
+  return registersBackup_;
+}
 int Process::getInstructionCounter() const {
   return instructionCounter_;
 }
@@ -37,10 +40,12 @@ void Process::restoreOriginalPriority() {
 void Process::increasePriority() {
   if( currentPriority_ < maxPriority )
     setPriority( currentPriority_ + 1 );
-  // W przeciwnym wypadku wyj¹tek?
 }
 void Process::setState( const Process::State& state ) {
   state_ = state;
+}
+void Process::setRegistersBackup( const Registers& registers ) {
+  registersBackup_ = registers;
 }
 void Process::setInstructionCounter( int instructionCounter ) {
   instructionCounter_ = instructionCounter;
