@@ -14,8 +14,8 @@ void ProcessManager::createProcess( const std::string& name,
   processes_.push_back( Process( name, priority, pageTable ) );
 }
 void ProcessManager::removeTerminatedProcesses() {
-  auto isTerminated = []( const Process& process ){
+  auto isTerminated = []( const Process& process ) {
       return process.getState() == Process::State::Terminated; };
-  processes_.erase( std::remove( processes_.begin(), processes_.end(),
+  processes_.erase( std::remove_if( processes_.begin(), processes_.end(),
       isTerminated ), processes_.end() );
 }
