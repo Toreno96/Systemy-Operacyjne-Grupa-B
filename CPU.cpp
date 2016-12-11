@@ -12,14 +12,14 @@ void CPU::Scheduler(std::vector<Process>& processes)
 
 	Process* processWithBiggestPriority = &processes[0];
 
-	for (auto p: processes)
+	for (auto p : processes)
 	{
 		if (p.getState() == Process::State::Ready)
 		{
 			if (running != nullptr)
 			{
 				p.increaseCurrentPriorityDuration();
-				
+
 				if (p.getCurrentPriorityDuration() >= instructionsToIncreasePriority)
 				{
 					p.increasePriority();
@@ -28,24 +28,31 @@ void CPU::Scheduler(std::vector<Process>& processes)
 
 			if (p.getCurrentPriority() > processWithBiggestPriority->getCurrentPriority()) //zapewnia FIFO, dla procesów o równych priorytetach
 			{
-				processWithBiggestPriority = &p; 
+				processWithBiggestPriority = &p;
 			}
 		}
 	}
 
-	if (processWithBiggestPriority->getName() != running->getName())
+	if (running != nullptr)
 	{
-		if (running != nullptr)
+		if (processWithBiggestPriority->getName() != running->getName())
 		{
-			if(running->getState()==Process::State::Running)    //tu¿ po zablokowaniu procesu on nadal jest pod running*
-			running->setState(Process::State::Ready);
+
+			if (running->getState() == Process::State::Running)    //tu¿ po zablokowaniu procesu on nadal jest pod running*
+				running->setState(Process::State::Ready);
 			running->restoreOriginalPriority();
 			running->setRegistersBackup(registers);
 		}
-
-		running = processWithBiggestPriority;
-		running->setState(Process::State::Running);
-		registers = running->getRegistersBackup();
+		else
+		{
+			return;
+		}
 	}
+
+	running = processWithBiggestPriority;
+	running->setState(Process::State::Running);
+	registers = running->getRegistersBackup();
+	return;
+
 }
 
