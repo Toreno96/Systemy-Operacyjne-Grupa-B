@@ -6,15 +6,28 @@ int main()
 {
 	CPU cpus;
 	Interpreter interpreter(nullptr, &cpus);
-	std::cout << *cpus.getRegisters();
-	interpreter.makeInstruction("AD", std::vector<std::string>{"A", "10"});
-	std::cout << *cpus.getRegisters();
-	interpreter.makeInstruction("AD", std::vector<std::string>{"B", "8"});
-	std::cout << *cpus.getRegisters();
-	interpreter.makeInstruction("SB", std::vector<std::string>{"A", "B"});
-	std::cout << *cpus.getRegisters();
-	interpreter.makeInstruction("MU", std::vector<std::string>{"A", "B"});
-	std::cout << *cpus.getRegisters();
+	ProcessManager pm;
+	pm.createProcess("pierwszy", Undefined(), 3);
+	pm.createProcess("drugi", Undefined(), 5);
+	pm.createProcess("trzeci", Undefined(), 5);
+
+
+	int i = 30;
+	while(i>0)
+	{
+		cpus.Scheduler(pm.processes());
+		for (auto p : pm.processes())
+		{
+			if (p.getState() == Process::State::Running)
+				std::cout << p.getName() << " " << p.getCurrentPriority() << std::endl;
+				
+		}
+
+		i--;
+		
+	}
+
+
 	std::cin.ignore();
 	return 0;
 }
