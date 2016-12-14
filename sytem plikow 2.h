@@ -98,7 +98,7 @@ public:
 				cout << "\nNieznany blad";
 			}
 		}
-		if (mode == 1)// jesli sektor przechowuje dane
+		else if (mode == 1)// jesli sektor przechowuje dane
 		{
 			auto it = bitvector.begin();//iterator bitvectora
 			int i = 0;
@@ -119,6 +119,10 @@ public:
 				return 0;
 				cout << "\nNieznany blad";
 			}
+		}
+		else
+		{
+			cout << "\nBieznany blad. Tryb pliku nierozpoznany";
 		}
 	}
 	bool add_last_data(char one_data) // 1 operacja zakonczona pomyslnie
@@ -226,8 +230,9 @@ private:
 				}
 			}
 		}
+		else
 		{
-			string message = "Sektor nie jest sektorem indekswym. Blad nieznany.";
+			string message = "Sektor nie jest sektorem indeksowym. Blad nieznany.";
 			cout << message;
 		}
 	}
@@ -240,10 +245,8 @@ private:
 		}
 		return file_type_as_string;
 	}
-	//bool add_next_index_sector() {}
 
 public:
-	//tworzenie nowego pliku z okreslona zawartoscia (string) na dysku wirtualnym zrobic
 	//zrobione
 	bool file_exist(array <char, 8> filename_, array <char, 3> type_) // 1 - plik istnieje, 0 - plik nieistnieje
 	{
@@ -264,7 +267,7 @@ public:
 			return 0; // taki plik juz istnieje
 		}
 
-		//rezerwujemy sektor na baze sektorow z danymi
+		//rezerwujemy sektor indeksowy
 		auto index_sector_ID = find_empty_sector();
 		if (index_sector_ID < max_sector_number)
 		{
@@ -277,10 +280,11 @@ public:
 		}
 		else
 		{
+			cout << "\nBrak miejsca na dysku by utworzyc nowy plik.";
 			return 0; // brak miejsca na dysku
 		}
 	}
-	// potem skonczyc to
+	//zrobione
 	bool load_file_from_Windows_and_save_on_harddrive(array <char, 8> filename_, array <char, 3> type_) // 1 - operacja zakonczona powodzeniem
 	{
 		//zamiana array filename_ i type_ na string
@@ -297,6 +301,8 @@ public:
 		}
 		infile.close();
 
+		create_empty_file(filename_, type_);
+
 		while ( !(good.empty()) )
 		{
 			//zamiana string na sektory
@@ -310,9 +316,7 @@ public:
 			}
 			Sector sector;
 			sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
-			add_data_sector_to_file(filename_, type_, sector);// nadpisujemy prawdziwy sektor naszym sektorem
-															  //trzeba te x tablic jakos zapisac na harddrive
-															  //nowo zajete indeksy
+			add_data_sector_to_file(filename_, type_, sector);//dodajmy sektor do pliku
 		}
 
 	}
@@ -350,7 +354,7 @@ public:
 		{
 			if (!(harddrive[ID].get_last_bitvector())) // jestli element jest zajety
 			{
-				find_deep_index_sector_ID(harddrive[ID].get_last_data());//wywolujemy metode szukajaca glebiej - sama siebie
+				return (find_deep_index_sector_ID(harddrive[ID].get_last_data()) );//wywolujemy metode szukajaca glebiej - sama siebie
 			}
 			else
 			{
@@ -363,7 +367,7 @@ public:
 			return errorchar;
 		}
 	}
-	//zrobione chyba
+	//zrobione
 	bool add_data_sector_to_file(array <char, 8> filename_, array <char, 3> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
 	{
 		if (file_exist(filename_, type_))
@@ -377,33 +381,49 @@ public:
 			{
 				auto index_sector_ID = it->get_firstSectorID();
 				auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
-				harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor
-				index_sector_ID = find_deep_index_sector_ID(index_sector_ID); // znajdujemy najglebszy sektor indeksowy
-				if (harddrive[index_sector_ID].add_one_data(free_sector_id))//dodajemy indeks do sektora indeksowego
+				if (free_sector_id < max_sector_number)
 				{
-					return 1; // udalo sie
+					harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor
+					index_sector_ID = find_deep_index_sector_ID(index_sector_ID); // znajdujemy najglebszy sektor indeksowy
+					if (harddrive[index_sector_ID].add_one_data(free_sector_id))//dodajemy indeks do sektora indeksowego
+					{
+						return 1; // udalo sie
+					}
+					else // jesli mozemy dodac juz tylko ostatni element
+					{//sektor indeksowy sie skonczyl. rezerwujemy nowy i bedziemy przypisywac kolejne indeksy do nowego
+						auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
+						if (free_sector_id < max_sector_number)
+						{
+							Sector new_index_sector;
+							new_index_sector.set_mode(0); // 0 - przechowuje indeksy
+							new_index_sector.set_free(0); // ustawiamy na zajety
+							if (harddrive[index_sector_ID].add_last_data(free_sector_id))//dodajemy ostatni indeks do sektora indeksowego
+							{
+								index_sector_ID = free_sector_id; // nadpisujemy firstSectorID by juz sie do niego nie odnosic bo jest zajety
+								return 1;
+							}
+							else
+							{
+								cout << "\nBlad nieznany\nten sektor jest zajety a nie powinen byc";
+								return 0;
+							}
+						}
+						else
+						{
+							cout << "\nBrak miejsca na dysku";
+							return 0;
+						}
+					}
 				}
-				else // jesli mozemy dodac juz tylko ostatni element
-				{//sektor indeksowy sie skonczyl. rezerwujemy nowy i bedziemy przypisywac kolejne indeksy do nowego
-					auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
-					Sector new_index_sector;
-					new_index_sector.set_mode(0); // 0 - przechowuje indeksy
-					new_index_sector.set_free(0); // ustawiamy na zajety
-					if (harddrive[index_sector_ID].add_last_data(free_sector_id))//dodajemy ostatni indeks do sektora indeksowego
-					{
-						index_sector_ID = free_sector_id; // nadpisujemy firstSectorID by juz sie do niego nie odnosic bo jest zajety
-						return 1;
-					}
-					else
-					{
-						cout << "\nBlad nieznany\nten sektor jest zajety a nie powinen byc";
-						return 0;
-					}
+				else
+				{
+					cout << "\nBrak miejsca na dysku";
+					return 0;
 				}
 			}
 			else
 			{
-				cout << "\nNieznany blad z plikiem - blad 1";
+				cout << "\nNieznany blad z plikiem";
 				return 0;
 			}
 		}
