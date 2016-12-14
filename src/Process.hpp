@@ -21,6 +21,7 @@ class Process {
     int getCurrentPriorityDuration() const;
     void restoreOriginalPriority();
     void increasePriority();
+    void decreasePriority();
     // Zamiast poni¿szego, powrót do koncepcji osobnych metod do ustawiania
     // ka¿dego stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym
     // operacji"?
