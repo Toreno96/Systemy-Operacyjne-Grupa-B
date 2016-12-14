@@ -2,57 +2,75 @@
 
 
 CPU::CPU()
-	:running(nullptr)
 {
 }
 
 void CPU::Scheduler(std::vector<Process>& processes)
 {
-	const int instructionsToIncreasePriority = 5;
+	Process* p = nullptr;
+	const int instructionsToIncreasePriority = 3;
 
-	Process* processWithBiggestPriority = &processes[0];
-
-	for (auto p : processes)
+	for (auto element : processes)
 	{
-		if (p.getState() == Process::State::Ready)
+		if (element.getState() == Process::State::Running || element.getState() == Process::State::Ready)
 		{
-			if (running != nullptr)
+			if (element.getState() == Process::State::Ready)
 			{
-				p.increaseCurrentPriorityDuration();
-
-				if (p.getCurrentPriorityDuration() >= instructionsToIncreasePriority)
+				element.increaseCurrentPriorityDuration();
+				if (element.getCurrentPriorityDuration() == instructionsToIncreasePriority)
 				{
-					p.increasePriority();
+					element.increasePriority();
 				}
 			}
 
-			if (p.getCurrentPriority() > processWithBiggestPriority->getCurrentPriority()) //zapewnia FIFO, dla procesów o równych priorytetach
+			if (p == nullptr)
 			{
-				processWithBiggestPriority = &p;
+				p = &element;
 			}
-		}
+			else
+			{
+				if (element.getCurrentPriority() > p->getCurrentPriority())
+				{
+					if (p->getState() == Process::State::Running)
+					{
+						p->restoreOriginalPriority();
+						p->setState(Process::State::Ready);
+						p->setRegistersBackup(registers);
+					}
+					p = &element;
+				}
+				else
+				{
+					if (element.getState() == Process::State::Running)
+					{
+						element.restoreOriginalPriority();
+						element.setState(Process::State::Ready);
+						element.setRegistersBackup(registers);
+					}
+				}
+			}
+		}	
 	}
 
-	if (running != nullptr)
+	if (p->getState() == Process::State::Running)
 	{
-		if (processWithBiggestPriority->getName() != running->getName())
+		if (p->getCurrentPriority() > p->getOriginalPriority())
 		{
-
-			if (running->getState() == Process::State::Running)    //tu¿ po zablokowaniu procesu on nadal jest pod running*
-				running->setState(Process::State::Ready);
-			running->restoreOriginalPriority();
-			running->setRegistersBackup(registers);
+			//tu daniel mi da metode
 		}
-		else
-		{
-			return;
-		}
+		return;
+	}
+	else
+	{
+		p->setState(Process::State::Running);
+		registers = p->getRegistersBackup();
+		return;
 	}
 
-	running = processWithBiggestPriority;
-	running->setState(Process::State::Running);
-	registers = running->getRegistersBackup();
-	return;
+}
 
+Registers * CPU::getRegisters()
+{
+	return &registers;
 }
 

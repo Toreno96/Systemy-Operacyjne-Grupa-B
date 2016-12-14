@@ -6,9 +6,10 @@ class CPU
 {
 private:
 	Registers registers;
-	Process* running;
 
 public:
 	CPU();
 	void Scheduler(std::vector<Process>& processes);
+	Registers* getRegisters();
+
 };
