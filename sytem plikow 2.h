@@ -367,6 +367,18 @@ public:
 			return errorchar;
 		}
 	}
+	//zrobic
+	void delete_deep_index_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
+	{
+		if (harddrive[ID].get_mode() == 0) // jesli jest to sektor indeksowy
+		{
+			harddrive[ID].set_free(1);
+			if (!(harddrive[ID].get_last_bitvector())) // jestli element jest zajety
+			{
+				delete_deep_index_sector_ID(harddrive[ID].get_last_data());//wywolujemy metode szukajaca glebiej - sama siebie
+			}
+		}
+	}
 	//zrobione
 	bool add_data_sector_to_file(array <char, 8> filename_, array <char, 3> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
 	{
@@ -433,7 +445,31 @@ public:
 		}
 	}
 	//to napisac
-	//bool delete_file(array <char, 8> filename_, array <char, 3> type_) {}
+	bool delete_file(array <char, 8> filename_, array <char, 3> type_) // 1 zakonczone powodzeniem
+	{
+		if (file_exist(filename_, type_))
+		{
+			for (auto it = Catalog.begin(); it != Catalog.end(); it++)
+			{
+				if (it->get_filename() == filename_ && it->get_type() == type_)
+				{
+					delete_deep_index_sector_ID(it->get_firstSectorID);
+					//trzeba usunac wpis katalogowy od tego pliku
+				}
+				else
+				{
+					cout << "Niby plik istnieje ale jednak nie ma zgodnosci???";
+					return 0;
+				}
+			}
+			return 1;//?
+		}
+		else
+		{
+			cout << "No such file.";
+			return 0;
+		}
+	}
 	//metoda tworzaca plik o zadanym stringu
 	//metoda dopisywania danych do pliku tylko jak bedzie czas
 	//zrobione
