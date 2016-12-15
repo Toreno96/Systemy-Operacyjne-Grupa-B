@@ -41,6 +41,10 @@ void Process::increasePriority() {
   if( currentPriority_ < maxPriority )
     setPriority( currentPriority_ + 1 );
 }
+void Process::decreasePriority() {
+  if( currentPriority_ > minPriority )
+    setPriority( currentPriority_ - 1 );
+}
 void Process::setState( const Process::State& state ) {
   state_ = state;
 }

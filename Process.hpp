@@ -21,8 +21,14 @@ class Process {
     int getCurrentPriorityDuration() const;
     void restoreOriginalPriority();
     void increasePriority();
+<<<<<<< HEAD:Process.hpp
     // Zamiast poniÂ¿szego, powrÃ³t do koncepcji osobnych metod do ustawiania
     // kaÂ¿dego stanu i wykonania "ewentualnych dodatkowych, zwiÄ…zanych z tym
+=======
+    void decreasePriority();
+    // Zamiast poni¿szego, powrót do koncepcji osobnych metod do ustawiania
+    // ka¿dego stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym
+>>>>>>> refs/remotes/origin/zarzÄ…dzanie-procesami:src/Process.hpp
     // operacji"?
     void setState( const State& state );
     void setRegistersBackup( const Registers& registers );
