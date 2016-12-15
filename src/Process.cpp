@@ -6,7 +6,7 @@ const unsigned int Process::maxPriority = 7;
 Process::Process( const std::string& name, unsigned int priority,
     Undefined& pageTable ) :
         name_( name ), originalPriority_( priority ),
-        currentPriority_( priority ), state_( Process::State::Ready ),
+        currentPriority_( priority ), state_( Process::State::New ),
         pageTable_( std::ref( pageTable ) ), instructionCounter_( 0 ),
         currentPriorityDuration_( 0 ) {}
 std::string Process::getName() const {

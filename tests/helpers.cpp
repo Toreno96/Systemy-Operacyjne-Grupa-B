@@ -3,6 +3,8 @@
 
 std::string convertProcessStateToString( Process::State state ) {
   switch( state ) {
+    case Process::State::New:
+      return "New";
     case Process::State::Ready:
       return "Ready";
     case Process::State::Running:

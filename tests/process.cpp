@@ -10,18 +10,18 @@ int main() {
   printProcessData( p1 );
 
   p1.increaseCurrentPriorityDuration();
-  p1.setState( Process::State::Running );
+  p1.setState( Process::State::Ready );
   printProcessData( p1 );
 
   p1.increaseCurrentPriorityDuration();
+  p1.setState( Process::State::Running );
+  printProcessData( p1 );
+
+  p1.increasePriority();
   p1.setState( Process::State::Waiting );
   printProcessData( p1 );
   
-  p1.increasePriority();
-  p1.setState( Process::State::Terminated );
-  printProcessData( p1 );
-
   p1.restoreOriginalPriority();
-  p1.setState( Process::State::Ready );
+  p1.setState( Process::State::Terminated );
   printProcessData( p1 );
 }

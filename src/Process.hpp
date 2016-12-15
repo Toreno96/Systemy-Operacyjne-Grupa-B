@@ -9,7 +9,7 @@ class Process {
   public:
     static const unsigned int minPriority;
     static const unsigned int maxPriority;
-    enum class State { Ready, Running, Waiting, Terminated };
+    enum class State { New, Ready, Running, Waiting, Terminated };
     Process( const std::string& name, unsigned int priority,
         Undefined& pageTable );
     std::string getName() const;
