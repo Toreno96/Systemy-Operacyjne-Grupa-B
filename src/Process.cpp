@@ -21,7 +21,7 @@ unsigned int Process::getCurrentPriority() const {
 Process::State Process::getState() const {
   return state_;
 }
-Undefined Process::getPageTable() const {
+Undefined& Process::pageTable() {
   return pageTable_;
 }
 Registers Process::getRegistersBackup() const {

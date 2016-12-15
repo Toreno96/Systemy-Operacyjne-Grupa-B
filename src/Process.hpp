@@ -15,7 +15,7 @@ class Process {
     unsigned int getOriginalPriority() const;
     unsigned int getCurrentPriority() const;
     State getState() const;
-    Undefined getPageTable() const;
+    Undefined& pageTable();
     Registers getRegistersBackup() const;
     int getInstructionCounter() const;
     int getCurrentPriorityDuration() const;
