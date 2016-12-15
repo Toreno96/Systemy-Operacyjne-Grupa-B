@@ -11,9 +11,9 @@ int main() {
   
   processManager.createProcess( "p1", Undefined() );
   processManager.createProcess( "p2", Undefined(), 1 );
-  // Wymóg dodania w ProcessManager::createProcess sprawdzania, czy nie
-  // powtarza siê nazwa procesu
-  processManager.createProcess( "p2", Undefined(), 2 );
+  // Powoduje rzucenie wyj¹tku
+  //processManager.createProcess( "p2", Undefined(), 2 );
+  processManager.createProcess( "p3", Undefined(), 2 );
   std::cout << "Vector of processes after adding three processes:\n\n";
   std::vector< Process >& processes = processManager.processes();
   std::for_each( processes.begin(), processes.end(), printProcessData );

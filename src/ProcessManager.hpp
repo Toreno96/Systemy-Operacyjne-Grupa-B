@@ -10,6 +10,7 @@ class ProcessManager {
         const Undefined& programCode, unsigned int priority = 0 );
     void removeTerminatedProcesses();
   private:
+    bool isNameUsed( const std::string& name );
     std::vector< Process > processes_;
 };
 
