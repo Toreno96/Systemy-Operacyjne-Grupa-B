@@ -1,17 +1,17 @@
 #pragma once
 
-#include <vector>
+#include <list>
 #include "Process.hpp"
 
 class ProcessManager {
   public:
-    std::vector< Process >& processes();
+    std::list< Process >& processes();
     void createProcess( const std::string& name,
         const Undefined& programCode, unsigned int priority = 0 );
     void removeTerminatedProcesses();
   private:
     bool isNameUsed( const std::string& name );
-    std::vector< Process > processes_;
+    std::list< Process > processes_;
 };
 
 // Jeœli modu³ zarz¹dzania pamiêci¹ operacyjn¹ zostanie ubrany w klasê (bardzo

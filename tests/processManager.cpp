@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <iostream>
-#include <vector>
+#include <list>
 #include "../src/Process.hpp"
 #include "../src/ProcessManager.hpp"
 #include "../src/Undefined.hpp"
@@ -15,8 +15,8 @@ int main() {
   // Powoduje rzucenie wyj¹tku
   //processManager.createProcess( "p2", pPageTable, 2 );
   processManager.createProcess( "p3", p3PageTable, 2 );
-  std::cout << "Vector of processes after adding three processes:\n\n";
-  std::vector< Process >& processes = processManager.processes();
+  std::cout << "List of processes after adding three processes:\n\n";
+  std::list< Process >& processes = processManager.processes();
   std::for_each( processes.begin(), processes.end(), printProcessData );
 
   auto changeStateToTerminated = []( Process& process ) {
@@ -24,10 +24,10 @@ int main() {
       };
   std::for_each( processes.begin(), processes.end(),
       changeStateToTerminated );
-  std::cout << "Vector of processes after changing these processes' state to terminated:\n\n";
+  std::cout << "List of processes after changing these processes' state to terminated:\n\n";
   std::for_each( processes.begin(), processes.end(), printProcessData );
   
-  std::cout << "Vector of processes after removing all terminated processes:\n\n";
+  std::cout << "List of processes after removing all terminated processes:\n\n";
   processManager.removeTerminatedProcesses();
   std::for_each( processes.begin(), processes.end(), printProcessData );
 }

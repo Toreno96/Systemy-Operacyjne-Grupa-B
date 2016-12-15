@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <iostream>
-#include <vector>
+#include <list>
 #include "../src/Process.hpp"
 #include "../src/ProcessManager.hpp"
 #include "../src/Undefined.hpp"
@@ -13,8 +13,8 @@ int main() {
   processManager.createProcess( "p2", Undefined(), 1 );
   processManager.createProcess( "p3", Undefined(), 4 );
   processManager.createProcess( "p4", Undefined() );
-  std::cout << "Vector of processes after adding three processes:\n\n";
-  std::vector< Process >& processes = processManager.processes();
+  std::cout << "List of processes after adding three processes:\n\n";
+  std::list< Process >& processes = processManager.processes();
   std::for_each( processes.begin(), processes.end(), printProcessData );
 
   auto itProcess = std::find_if( processes.begin(), processes.end(),
@@ -22,6 +22,6 @@ int main() {
   Process* pProcess = &( *itProcess );
   pProcess->setState( Process::State::Running );
 
-  std::cout << "Vector of processes after changing third process' state:\n\n";
+  std::cout << "List of processes after changing third process' state:\n\n";
   std::for_each( processes.begin(), processes.end(), printProcessData );
 }

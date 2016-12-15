@@ -3,7 +3,7 @@
 #include "ProcessManager.hpp"
 // Za³¹czenie modu³u zarz¹dzania pamiêci¹ operacyjn¹ TO-DO
 
-std::vector< Process >& ProcessManager::processes() {
+std::list< Process >& ProcessManager::processes() {
   return processes_;
 }
 void ProcessManager::createProcess( const std::string& name,
