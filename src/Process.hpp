@@ -33,7 +33,9 @@ class Process {
   private:
     void setPriority( unsigned int priority );
     void resetCurrentPriorityDuration();
-    // Nazwa procesu jest jednoczeœnie jego identyfikatorem
+    // Nazwa procesu jest jednoczeœnie jego identyfikatorem, gdy¿ jest ona
+    // unikatowa, ze wzglêdu na istnienie tylko jednej grupy procesów w naszym
+    // systemie
     std::string name_;
     unsigned int originalPriority_, currentPriority_;
     State state_;
