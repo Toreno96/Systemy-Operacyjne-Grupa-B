@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include "Registers.h"
 #include "Undefined.hpp"
@@ -10,7 +11,7 @@ class Process {
     static const unsigned int maxPriority;
     enum class State { Ready, Running, Waiting, Terminated };
     Process( const std::string& name, unsigned int priority,
-        const Undefined& pageTable );
+        Undefined& pageTable );
     std::string getName() const;
     unsigned int getOriginalPriority() const;
     unsigned int getCurrentPriority() const;
@@ -36,7 +37,7 @@ class Process {
     std::string name_;
     unsigned int originalPriority_, currentPriority_;
     State state_;
-    Undefined pageTable_;
+    std::reference_wrapper< Undefined > pageTable_;
     Registers registersBackup_;
     int instructionCounter_,
         currentPriorityDuration_;

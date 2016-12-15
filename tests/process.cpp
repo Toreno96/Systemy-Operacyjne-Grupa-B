@@ -4,7 +4,9 @@
 #include "helpers.hpp"
 
 int main() {
-  Process p1( "p1", Process::minPriority, Undefined() );
+  Undefined p1PageTable;
+
+  Process p1( "p1", Process::minPriority, p1PageTable );
   printProcessData( p1 );
 
   p1.increaseCurrentPriorityDuration();
