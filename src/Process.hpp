@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <string>
 #include "Registers.h"
 #include "Undefined.hpp"
@@ -20,6 +21,9 @@ class Process {
     Registers getRegistersBackup() const;
     int getInstructionCounter() const;
     int getCurrentPriorityDuration() const;
+    // W przypadku podania etykiety, której adres nie jest zapisany w bloku
+    // PCB, rzucony zostaje wyj¹tek std::out_of_range
+    int getLabelAddress( const std::string& label ) const;
     void restoreOriginalPriority();
     void increasePriority();
     void decreasePriority();
@@ -30,6 +34,7 @@ class Process {
     void setRegistersBackup( const Registers& registers );
     void setInstructionCounter( int instructionCounter );
     void increaseCurrentPriorityDuration();
+    void saveLabelAddress( const std::string& label, int address );
   private:
     void setPriority( unsigned int priority );
     void resetCurrentPriorityDuration();
@@ -43,6 +48,7 @@ class Process {
     Registers registersBackup_;
     int instructionCounter_,
         currentPriorityDuration_;
+    std::map< std::string, int > labelsAddresses;
     // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
     // kompletnie nie znam. Potrzebujê info od Jakuba.
 };

@@ -33,6 +33,9 @@ int Process::getInstructionCounter() const {
 int Process::getCurrentPriorityDuration() const {
   return currentPriorityDuration_;
 }
+int Process::getLabelAddress( const std::string& label ) const {
+  return labelsAddresses.at( label );
+}
 void Process::restoreOriginalPriority() {
   setPriority( originalPriority_ );
 }
@@ -62,4 +65,7 @@ void Process::setPriority( unsigned int priority ) {
 }
 void Process::resetCurrentPriorityDuration() {
   currentPriorityDuration_ = 0;
+}
+void Process::saveLabelAddress( const std::string& label, int address ) {
+  labelsAddresses[ label ] = address;
 }
