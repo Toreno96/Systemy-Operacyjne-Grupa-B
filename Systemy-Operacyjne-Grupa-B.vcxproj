@@ -142,11 +142,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="system plikow.cpp" />
+    <ClInclude Include="FCB.h" />
+    <ClInclude Include="filesystemcommon.h" />
+    <ClInclude Include="filesystemUI.h" />
+    <ClInclude Include="HardDrive.h" />
+    <ClInclude Include="Sector.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="system plikow old.h" />
-    <ClInclude Include="sytem plikow 2.h" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <iostream>
 using std::cout;
 #include <fstream>
@@ -7,170 +7,9 @@ using std::string;
 #include <list>
 #include <array>
 using std::array;
-const unsigned int max_sector_number = 32;//max liczba sektorow na dysku
-const unsigned int n = 16; //max liczba znakow w jednym sektorze
-//Podczas tworzenia pliku tworzona jest instancja FCB​
-
-class FCB // blok kontrolny pliku
-{
-private:
-	array <char, 8> filename;
-	array <char, 3> type; // rozszerzenie np. txt​
-	char firstSectorID;
-	
-public:
-	FCB(array <char, 8> filename_, array <char, 3> type_, char firstSectorID_) : filename(filename_), type(type_), firstSectorID(firstSectorID_) {}
-	array <char, 8> get_filename() { return filename; }
-	array <char, 3> get_type() { return type; }
-	char get_firstSectorID() { return firstSectorID; }
-};
-
-class Sector
-{
-private:
-	array <bool, n> bitvector; //1 - blok wolny, 0 - blok zajety
-	array <char, n> data; // nie wiem czy trzymac sie tej zasady //liczba 0 oznacza, że mimo wszystko to nie jest żadna informacja. znak ma sens <=> znak>0
-	bool mode; // 0 - przechowuje indeksy innych sektorow, 1 - przechowuje dane
-	bool free; // 1 wolny, 0 - zajety
-			   //metody pomocnicze
-	array<bool, n> create_empty_bitvector()//metoda pomocnicza
-	{
-		array<bool, n> bitvector;
-		for (auto it = bitvector.begin(); it != bitvector.end(); it++)
-		{
-			*it = 1;
-		}
-		return bitvector;
-	}
-	array<char, n> create_empty_data_array()//metoda pomocnicza
-	{
-		array<char, n> data_array;
-		for (auto it = data_array.begin(); it != data_array.end(); it++)
-		{
-			*it = 0;
-		}
-		return data_array;
-	}
-
-public:
-	Sector() // konstruktor
-	{
-		for (auto it = bitvector.begin(); it != bitvector.end(); it++)
-		{
-			*it = 1; // wszystkie bloki oznaczamy jako wolne
-		}
-
-		for (auto it = data.begin(); it != data.end(); it++)
-		{
-			*it = 0; // zerujemy wszystkie bloki
-		}
-		mode = 1; // tryb nie ma znaczenia, gdy state i tak jest wolny;
-		free = 1; // oznaczamy sektor jako wolny
-	}
-	bool save_data(array <bool, n> bitvector, array <char, n> data, bool mode_) // 1 – operacja zakonczona pomyslnie
-	{
-		bitvector = bitvector; data = data; bool mode = mode_; free = 0; return 1;
-	}
-	array <bool, n> get_bitvector() { return bitvector; }
-	array <char, n> get_data() { return data; }
-	bool add_one_data(char one_data) // 1 jesli zakonczone pomyslnie
-	{
-		if (mode == 0)//jesli sektor przechowuje indeksy plikow
-		{//podzial wynika z tego ze na koncu sektora indeksowego musi byc indeks kolejnego sektora indeksowego
-			auto it = bitvector.begin();//iterator bitvectora
-			int i = 0;
-			for (; (it+1) != bitvector.end() && (*it != 1); it++, i++) // szukamy wolnego bool czyli char w array data
-			{
-			}
-			if ((it+1) != bitvector.end() && *it == 1) // jesli znalezlismy wolny element
-			{
-				data[i] = one_data;
-				return 1;
-			}
-			else if ((it+1) == bitvector.end()) // jesli wszystko az do przedostatniego jest zajete
-			{
-				return 0;
-			}
-			else
-			{
-				return 0;
-				cout << "\nNieznany blad";
-			}
-		}
-		else if (mode == 1)// jesli sektor przechowuje dane
-		{
-			auto it = bitvector.begin();//iterator bitvectora
-			int i = 0;
-			for (; it != bitvector.end() && (*it != 1); it++, i++) // szukamy wolnego bool czyli char w array data
-			{
-			}
-			if (it != bitvector.end() && *it == 1) // jesli znalezlismy wolny element
-			{
-				data[i] = one_data;
-				return 1;
-			}
-			else if (it == bitvector.end()) // jesli wszystko jest zajete
-			{
-				return 0;
-			}
-			else
-			{
-				return 0;
-				cout << "\nNieznany blad";
-			}
-		}
-		else
-		{
-			cout << "\nBieznany blad. Tryb pliku nierozpoznany";
-		}
-	}
-	bool add_last_data(char one_data) // 1 operacja zakonczona pomyslnie
-	{//umozliwia dodanie swiadomie ostatniego elementu w przypadku sektora indeksowego
-		if (bitvector[n - 1] == 1)//jesli ostatni element jest wolny
-		{
-			data[n - 1] = one_data;
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-		
-	}
-	void set_mode(bool mode_)
-	{
-		mode = mode_;
-	}
-	void set_free(bool free_)
-	{
-		free = free_;
-	}
-	string get_data_as_string()
-	{
-		string result;
-		auto it = bitvector.begin();
-		auto it2 = data.begin();//auto it2 = 0;
-		for (; *it == 0; it++, it2++)
-		{
-			//result.append( data[it2] ); // tu nie appenduje
-			result.push_back(*it2);
-		}
-		return result;
-	}
-	bool get_mode() { return mode; }
-	bool is_free() // 1 - wolny, 0 - zajety
-	{
-		return free;
-	}
-	bool get_last_bitvector()
-	{
-		return bitvector[n - 1];
-	}
-	char get_last_data() // zwraca ostatni element niezaleznie czy jest uzywany czy jest smieciami
-	{
-		return data[n - 1];
-	}
-};
+#include "filesystemcommon.h"
+#include "FCB.h"
+#include "Sector.h"
 
 class HardDrive
 {
@@ -350,7 +189,7 @@ public:
 		}
 		return 0;
 	}
-	bool create_empty_file(array <char, 8> filename_, array <char, 3> type_) // 1 – operacja zakonczona pomyslnie, 0 - cos poszlo nie tak
+	bool create_empty_file(array <char, 8> filename_, array <char, 3> type_) // 1 � operacja zakonczona pomyslnie, 0 - cos poszlo nie tak
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -392,7 +231,7 @@ public:
 
 		create_empty_file(filename_, type_);
 
-		while ( !(good.empty()) )
+		while (!(good.empty()))
 		{
 			//zamiana string na sektory
 			array <bool, n> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
@@ -450,7 +289,7 @@ public:
 			{
 				if (it->get_filename() == filename_ && it->get_type() == type_)
 				{
-					delete_deep_index_sector_ID(it->get_firstSectorID);
+					delete_deep_index_sector_ID(it->get_firstSectorID());
 					Catalog.erase(it);//trzeba usunac wpis katalogowy od tego pliku
 					return 1;
 				}
@@ -483,8 +322,9 @@ public:
 			}
 			Sector sector;
 			sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
-			if(add_data_sector_to_file(filename_, type_, sector))//dodajmy sektor do pliku
-			{ }
+			if (add_data_sector_to_file(filename_, type_, sector))//dodajmy sektor do pliku
+			{
+			}
 			else
 			{
 				cout << "\nBrak miejsca na dysku";
@@ -497,5 +337,9 @@ public:
 	std::list <FCB> get_file_list()
 	{
 		return Catalog;
+	}
+	Sector get_sector(char number)
+	{
+		return harddrive[number];
 	}
 };
