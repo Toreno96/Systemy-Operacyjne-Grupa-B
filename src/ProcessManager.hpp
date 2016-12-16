@@ -1,16 +1,22 @@
 #pragma once
 
 #include <list>
+#include <random>
 #include "Process.hpp"
 
 class ProcessManager {
   public:
+    ProcessManager();
     std::list< Process >& processes();
     void createProcess( const std::string& name,
-        const Undefined& programCode, unsigned int priority = 0 );
+        const Undefined& programCode );
+    void createProcess( const std::string& name,
+        const Undefined& programCode, unsigned int priority );
     void removeTerminatedProcesses();
   private:
     bool isNameUsed( const std::string& name );
+    std::random_device::result_type generateSeed();
+    std::mt19937 randomNumberGenerator_;
     std::list< Process > processes_;
 };
 
