@@ -1,33 +1,23 @@
 #include "Registers.h"
 #include <iostream>
 #include "Interpreter.h"
+#include "ZarzadzaniePamiecia.h"
 
 int main()
 {
 	CPU cpus;
-	Interpreter interpreter(nullptr, &cpus);
 	ProcessManager pm;
-	pm.createProcess("pierwszy", Undefined(), 3);
-	pm.createProcess("drugi", Undefined(), 5);
-	pm.createProcess("trzeci", Undefined(), 5);
-
-
-	int i = 30;
-	while(i>0)
-	{
-		cpus.Scheduler(pm.processes());
-		for (auto p : pm.processes())
-		{
-			if (p.getState() == Process::State::Running)
-				std::cout << p.getName() << " " << p.getCurrentPriority() << std::endl;
-				
-		}
-
-		i--;
-		
-	}
+	//ZarzadzaniePamiecia zp;
+	//Interpreter interpreter(&pm, &cpus, nullptr);
+	pm.createProcess("kapec", Undefined(), 6);
+	pm.createProcess("szlafrok", Undefined(), 8);
+	pm.createProcess("hultaj", Undefined(), 7);
+	cpus.Scheduler(pm.processes());
+	//cpus.Scheduler(pm.processes());
+	//std::cout << cpus.getRegisters();
 
 
 	std::cin.ignore();
+	
 	return 0;
 }

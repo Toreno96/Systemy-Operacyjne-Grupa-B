@@ -5,12 +5,12 @@ CPU::CPU()
 {
 }
 
-void CPU::Scheduler(std::vector<Process>& processes)
+void CPU::Scheduler(std::list<Process>& processes)
 {
 	Process* p = nullptr;
 	const int instructionsToIncreasePriority = 3;
 
-	for (auto element : processes)
+	for (auto& element : processes)
 	{
 		if (element.getState() == Process::State::Running || element.getState() == Process::State::Ready)
 		{
@@ -56,7 +56,7 @@ void CPU::Scheduler(std::vector<Process>& processes)
 	{
 		if (p->getCurrentPriority() > p->getOriginalPriority())
 		{
-			//tu daniel mi da metode
+			p->decreasePriority();
 		}
 		return;
 	}

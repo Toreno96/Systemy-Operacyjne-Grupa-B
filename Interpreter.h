@@ -6,23 +6,24 @@
 #include "ProcessManager.hpp"
 #include "CPU.h"
 #include <locale>
-//+ pliki i pamiêæ
+#include "ZarzadzaniePamiecia.h"
+//+ stumyki i pamiêæ
 
 class Interpreter
 {
 private:
 	ProcessManager* processManager_;
 	CPU* cpu_;
-	//analogicznie pliki i pamiêæ
+	ZarzadzaniePamiecia* zarzadzaniePamiecia_;
+	//analogicznie pliki i komunikacja
 	std::map<std::string, std::function<void(std::vector<std::string>)>> instruction;
 	void initInstructions();
 	bool is_number(const std::string& s);
+	Register interpreteRegister(std::string reg);
+	std::vector<std::string> loadInstruction();
+	void doInstruction(std::string name, std::vector<std::string>);
 
 public:
-	Interpreter();
-	Interpreter(ProcessManager* pm, CPU* cpu_);
-	Register interpreteRegister(std::string reg);
-	void loadInstruction();
-	void makeInstruction(std::string name, std::vector<std::string>);
-	
+	Interpreter(ProcessManager* pm, CPU* cpu_, ZarzadzaniePamiecia* zp);	
+	void work();
 };

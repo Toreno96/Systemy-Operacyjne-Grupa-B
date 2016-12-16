@@ -1,29 +1,36 @@
-#pragma once
+ï»¿#pragma once
 
-#include <vector>
+#include <list>
+#include <random>
 #include "Process.hpp"
 
 class ProcessManager {
-  public:
-    std::vector< Process >& processes();
-    void createProcess( const std::string& name,
-        const Undefined& programCode, unsigned int priority = 0 );
-    void removeTerminatedProcesses();
-  private:
-    std::vector< Process > processes_;
+public:
+	ProcessManager();
+	std::list< Process >& processes();
+	void createProcess(const std::string& name,
+		const Undefined& programCode);
+	void createProcess(const std::string& name,
+		const Undefined& programCode, unsigned int priority);
+	void removeTerminatedProcesses();
+private:
+	bool isNameUsed(const std::string& name);
+	std::random_device::result_type generateSeed();
+	std::mt19937 randomNumberGenerator_;
+	std::list< Process > processes_;
 };
 
-// Jeœli modu³ zarz¹dzania pamiêci¹ operacyjn¹ zostanie ubrany w klasê (bardzo
-// pewne), jego funkcje (a wtedy ju¿ metody) przestan¹ mieæ globalny zakres i
-// pojawi siê wymóg przekazywania obiektu wy¿ej wspomnianej klasy do niektórych
+// JeÅ›li moduÅ‚ zarzÄ…dzania pamiÄ™ciÄ… operacyjnÄ… zostanie ubrany w klasÄ™ (bardzo
+// pewne), jego funkcje (a wtedy juÅ¼ metody) przestanÄ… mieÄ‡ globalny zakres i
+// pojawi siÄ™ wymÃ³g przekazywania obiektu wyÅ¼ej wspomnianej klasy do niektÃ³rych
 // metod klasy ProcessManager jako argument.
 //
-// Przy za³o¿eniu, ¿e klasa IZP = klasa implementuj¹ca modu³ zarz¹dzania pamiêcia operacyjn¹:
+// Przy zaÅ‚oÅ¼eniu, Å¼e klasa IZP = klasa implementujÄ…ca moduÅ‚ zarzÄ…dzania pamiÄ™cia operacyjnÄ…:
 //
-// Aby to zniwelowaæ, mo¿na by pokusiæ siê o uczynienie metod klasy IZP
-// statycznymi, ale nawet lepszym pomys³em by³oby umieœciæ wœród sk³adowych
-// klasy ProcessManager odwo³anie (wskaŸnik/referencjê) do obiektu klasy IZP.
+// Aby to zniwelowaÄ‡, moÅ¼na by pokusiÄ‡ siÄ™ o uczynienie metod klasy IZP
+// statycznymi, ale nawet lepszym pomysÅ‚em byÅ‚oby umieÅ›ciÄ‡ wÅ›rÃ³d skÅ‚adowych
+// klasy ProcessManager odwoÅ‚anie (wskaÅºnik/referencjÄ™) do obiektu klasy IZP.
 //
-// Wtedy nale¿a³oby takie odwo³anie zapewniæ np. przez konstruktor klasy
-// ProcessManager przy tworzeniu instancji tej klasy w klasie zespalaj¹cej
-// wszystkie modu³y ca³ego systemu operacyjnego.
+// Wtedy naleÅ¼aÅ‚oby takie odwoÅ‚anie zapewniÄ‡ np. przez konstruktor klasy
+// ProcessManager przy tworzeniu instancji tej klasy w klasie zespalajÄ…cej
+// wszystkie moduÅ‚y caÅ‚ego systemu operacyjnego.

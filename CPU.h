@@ -1,7 +1,7 @@
 #pragma once
 #include "Registers.h"
 #include "Process.hpp"
-#include <vector>
+#include <list>
 class CPU
 {
 private:
@@ -9,7 +9,7 @@ private:
 
 public:
 	CPU();
-	void Scheduler(std::vector<Process>& processes);
+	void Scheduler(std::list<Process>& processes);
 	Registers* getRegisters();
 
 };
