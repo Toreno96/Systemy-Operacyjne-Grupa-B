@@ -59,59 +59,45 @@ array <char, tn> convert_type_to_array(string type_as_string)
 	}
 }
 
-void display_harddrive(HardDrive &harddrive)
+void display_harddrive(HardDrive &harddrive, bool mode) // 1 czyli z bitvectorem, 0 bez bitvectora
 {
-	cout << "\tDane\t\t\tTryb\tstan";
-	for (int i = 0; i < n; i++)
+	cout << "\nLp.\tDane\t\t\tTryb\tstan";
+	for (int i = 0; i < max_sector_number; i++)
 	{
 		Sector sector = harddrive.get_sector(i);
-		array<char, n> data = sector.get_data();
-		cout << "\n" << i << "\t";
-		int counter = 0;
-		for (auto it = data.begin(); it != data.end(); it++, counter++)
-		{
-			if (counter == (n / 2))
-				cout << " ";
-			if (*it == '\n')
-				cout << ";";
-			else
-				cout << *it;
-		}
-		cout << "\t" << sector.get_mode() << "\t" << sector.is_free();
-	}
-}
-
-void display_harddrive_2(HardDrive &harddrive)
-{
-	cout << "\tDane\t\t\tTryb\tstan";
-	for (int i = 0; i < n; i++)
-	{
-		Sector sector = harddrive.get_sector(i);
-		array<char, n> data = sector.get_data();
 		array<bool, n> bitvector = sector.get_bitvector();
+		array<char, n> data = sector.get_data();
 		cout << "\n" << i << "\t";
 		int counter = 0;
-
-		for (auto it = data.begin(); it != data.end(); it++, counter++)
+		if (mode)
 		{
-			if (counter == (n / 2))
-				cout << " ";
-			if (*it == '\n')
-				cout << ";";
-			else
+			for (auto it = bitvector.begin(); it != bitvector.end(); it++, counter++)
+			{
+				if (counter == (n / 2))
+					cout << " ";
 				cout << *it;
+			}
+			cout << "\n\t";
 		}
-		cout << "\n\t";
 
 		counter = 0;
 		for (auto it = data.begin(); it != data.end(); it++, counter++)
 		{
-			if (counter == (n / 2))
-				cout << " ";
-			if (*it == '\n')
-				cout << ";";
-			else
-				cout << *it;
+			if (sector.get_mode() == 0) //tryb indeksowy
+			{
+				if (counter == (n / 2))
+					cout << " ";
+				cout << (int)*it;
+			}
+			else //1 - tryb przechowywania danych
+			{
+				if (counter == (n / 2))
+					cout << " ";
+				if (*it == '\n')
+					cout << ";";
+				else
+					cout << *it;
+			}
 		}
 		cout << "\t" << sector.get_mode() << "\t" << sector.is_free();
 	}
@@ -125,7 +111,7 @@ void display_file_list(std::list <FCB> &file_list)
 	}
 	else
 	{
-		cout << "\nLista plików:";
+		cout << "\nLista plikow:";
 		for (auto it = file_list.begin(); it != file_list.end(); it++)
 		{
 			cout << "\n" << it->get_filename_as_string() << "." << it->get_type_as_string();

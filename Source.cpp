@@ -29,12 +29,12 @@ int main()
 		}
 	case 2:
 		{
-			display_harddrive(harddrive);
+			display_harddrive(harddrive, 0);
 			break;
 		}
 		case 3:
 		{
-			display_harddrive_2(harddrive);
+			display_harddrive(harddrive, 1);
 			break;
 		}
 		case 4:

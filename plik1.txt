@@ -2,4 +2,18 @@ Zdanie pierwsze.
 Zdanie numer 2;
 A to zdanie numer 3?
 Tak :)
+Zdanie numer 5
+Zdanie numer 6
+Zdanie numer 7
+Zdanie numer 8
+Zdanie numer 9
+Zdanie numer 10
+Zdanie numer 11
+Zdanie numer 12
+Zdanie numer 13
+Zdanie numer 14
+Zdanie numer 15
+Zdanie numer 16
+Zdanie numer 17
+
 Koniec!

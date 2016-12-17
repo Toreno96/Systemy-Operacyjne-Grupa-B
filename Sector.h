@@ -43,7 +43,7 @@ public:
 
 		for (auto it = data.begin(); it != data.end(); it++)
 		{
-			*it = 35; // wypelniamy wszystkie bloki znakiem #
+			*it = 0; // wypelniamy wszystkie bloki znakiem 0
 		}
 		mode = 1; // tryb nie ma znaczenia, gdy state i tak jest wolny;
 		free = 1; // oznaczamy sektor jako wolny

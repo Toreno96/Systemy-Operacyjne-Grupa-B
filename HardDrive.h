@@ -109,20 +109,35 @@ private:
 			return errorchar;
 		}
 	}
-	void delete_deep_index_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
+	//w trakcie
+	void delete_deep_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
 	{
+		cout << "\nMamy usunac sektor " << (int)ID;
+		Sector clear_sector;
 		if (harddrive[ID].get_mode() == 0) // jesli jest to sektor indeksowy
-		{
-			harddrive[ID].set_free(1);
-			if (!(harddrive[ID].get_last_bitvector())) // jestli element jest zajety
+		{//trzeba zwolnic wszystkie sektory z danymi
+			auto bitvector = harddrive[ID].get_bitvector();
+			auto data = harddrive[ID].get_data();
+			for (char i = 0; i < (n - 1); i++)//iterujemy po wszystkich elementach bitvectora
 			{
-				delete_deep_index_sector_ID(harddrive[ID].get_last_data());//wywolujemy metode szukajaca glebiej - sama siebie
+				if (bitvector[i] == 0)//jesli element jest zajety
+				{
+					harddrive[data[i]] = clear_sector;
+					bitvector[i] = 1;
+					data[i] = 0;
+				}
+			}
+
+			if (harddrive[ID].get_last_bitvector() == 0) // jestli element jest zajety
+			{
+				delete_deep_sector_ID(harddrive[ID].get_last_data());//wywolujemy metode szukajaca glebiej - sama siebie
 			}
 		}
+			harddrive[ID] = clear_sector; // tworzymy pusty sektor i nadpisujemy ten stary
 	}
 	bool add_data_sector_to_file(array <char, fn> filename_, array <char, tn> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
 	{
-		cout << "\n\nWeszlismy do add_data_sector_to_file";
+		//cout << "\n\nWeszlismy do add_data_sector_to_file";
 		if (file_exist(filename_, type_))
 		{
 			auto it = Catalog.begin();
@@ -138,11 +153,12 @@ private:
 				if (free_sector_id < max_sector_number)
 				{
 					harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor
-					cout << "\nNadpisalismy sektor " << (int)free_sector_id;
+					//cout << "\nNadpisalismy sektor " << (int)free_sector_id;
 					index_sector_ID = find_deep_index_sector_ID(index_sector_ID); // znajdujemy najglebszy sektor indeksowy
+					cout << "\naktualny index_sector_ID: " << (int)index_sector_ID;
 					if (harddrive[index_sector_ID].add_one_data(free_sector_id))//dodajemy indeks do sektora indeksowego
 					{
-						cout << "\ndodajemy indeks do sektora indeksowego";
+						//cout << "\ndodajemy indeks do sektora indeksowego";
 						return 1; // udalo sie
 					}
 					else // jesli mozemy dodac juz tylko ostatni element
@@ -326,7 +342,7 @@ public:
 				if (it->get_filename() == filename_ && it->get_type() == type_)
 				{
 					//cout << "\nNa pewno taki plik istnieje, bo jestesmy az tu";
-					delete_deep_index_sector_ID(it->get_firstSectorID());
+					delete_deep_sector_ID(it->get_firstSectorID());
 					Catalog.erase(it);//trzeba usunac wpis katalogowy od tego pliku
 					return 1;
 				}//else nie robilby nic
