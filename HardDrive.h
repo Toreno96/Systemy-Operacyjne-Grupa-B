@@ -122,6 +122,7 @@ private:
 	}
 	bool add_data_sector_to_file(array <char, fn> filename_, array <char, tn> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
 	{
+		cout << "\n\nWeszlismy do add_data_sector_to_file";
 		if (file_exist(filename_, type_))
 		{
 			auto it = Catalog.begin();
@@ -133,16 +134,20 @@ private:
 			{
 				auto index_sector_ID = it->get_firstSectorID();
 				auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
+				//cout << "\nWolny jest sektor " << (int)free_sector_id;
 				if (free_sector_id < max_sector_number)
 				{
 					harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor
+					cout << "\nNadpisalismy sektor " << (int)free_sector_id;
 					index_sector_ID = find_deep_index_sector_ID(index_sector_ID); // znajdujemy najglebszy sektor indeksowy
 					if (harddrive[index_sector_ID].add_one_data(free_sector_id))//dodajemy indeks do sektora indeksowego
 					{
+						cout << "\ndodajemy indeks do sektora indeksowego";
 						return 1; // udalo sie
 					}
 					else // jesli mozemy dodac juz tylko ostatni element
 					{//sektor indeksowy sie skonczyl. rezerwujemy nowy i bedziemy przypisywac kolejne indeksy do nowego
+						cout << "\nSektor indeksowy sie skonczyl";
 						auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
 						if (free_sector_id < max_sector_number)
 						{
@@ -228,7 +233,6 @@ public:
 		string myfile = filename_and_type_as_string(filename_, type_);
 
 		//wczytujemy plik z systemu windows
-		
 		string good;
 		std::ifstream infile; infile.open(myfile);
 		if (infile.is_open())
@@ -247,17 +251,22 @@ public:
 			bool is_ok = true;
 			while (!(good.empty()))
 			{
-				cout << "\nzamiana string na sektory";//zamiana string na sektory
+				//cout << "\nzamiana string na sektory";//zamiana string na sektory
 				array <bool, n> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
 				array <char, n> data = create_empty_data_array();
 				for (int i = 0; i < n && !(good.empty()); i++)
 				{
 					bitvector[i] = 0; // oznaczamy char jako uzywany
 					data[i] = *(good.begin()); // wyluskanie wartosci begin
+					//cout << "\ndata " << i << ": " << data[i];
 					good.erase(good.begin()); // usuwa pierwszy element
 				}
 				Sector sector;
 				sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
+				//
+				//auto temp = sector.get_data_as_string();
+				//cout << "\ntemp: " << temp;
+				//
 				if (add_data_sector_to_file(filename_, type_, sector))//dodajmy sektor do pliku
 				{
 					cout << "\nUdalo sie poprawnie dopisac sektor";

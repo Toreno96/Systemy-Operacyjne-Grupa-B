@@ -70,9 +70,12 @@ void display_harddrive(HardDrive &harddrive)
 		int counter = 0;
 		for (auto it = data.begin(); it != data.end(); it++, counter++)
 		{
-			if (counter == 8)
+			if (counter == (n / 2))
 				cout << " ";
-			cout << *it;
+			if (*it == '\n')
+				cout << ";";
+			else
+				cout << *it;
 		}
 		cout << "\t" << sector.get_mode() << "\t" << sector.is_free();
 	}
@@ -89,20 +92,26 @@ void display_harddrive_2(HardDrive &harddrive)
 		cout << "\n" << i << "\t";
 		int counter = 0;
 
-		for (auto it = bitvector.begin(); it != bitvector.end(); it++, counter++)
+		for (auto it = data.begin(); it != data.end(); it++, counter++)
 		{
-			if (counter == 8)
+			if (counter == (n / 2))
 				cout << " ";
-			cout << *it;
+			if (*it == '\n')
+				cout << ";";
+			else
+				cout << *it;
 		}
 		cout << "\n\t";
 
 		counter = 0;
 		for (auto it = data.begin(); it != data.end(); it++, counter++)
 		{
-			if (counter == 8)
+			if (counter == (n / 2))
 				cout << " ";
-			cout << *it;
+			if (*it == '\n')
+				cout << ";";
+			else
+				cout << *it;
 		}
 		cout << "\t" << sector.get_mode() << "\t" << sector.is_free();
 	}
@@ -116,9 +125,10 @@ void display_file_list(std::list <FCB> &file_list)
 	}
 	else
 	{
+		cout << "\nLista plików:";
 		for (auto it = file_list.begin(); it != file_list.end(); it++)
 		{
-			cout << it->get_filename_as_string() << "." << it->get_type_as_string() << std::endl;
+			cout << "\n" << it->get_filename_as_string() << "." << it->get_type_as_string();
 		}
 	}
 }
@@ -226,7 +236,7 @@ void load_file_from_Windows_and_save_on_harddrive(HardDrive &harddrive)
 		{
 			auto result = harddrive.load_file_from_Windows_and_save_on_harddrive(filename, type);
 			if (result == 1)
-				cout << "File saved properly";
+				cout << "\nFile saved properly";
 			else
 				cout << "\nBrak miejsca na dysku";
 		}
