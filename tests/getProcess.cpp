@@ -19,13 +19,13 @@ int main() {
   std::list< Process >& processes = processManager.processes();
   std::for_each( processes.begin(), processes.end(), printProcessData );
 
-  processManager.getProcess( "p2" ).setState( Process::State::Ready );
-  processManager.getProcess( "p3" ).setState( Process::State::Ready );
-  std::cout << "List of processes after readying processes \"p2\" and \"p3\":\n\n";
+  processManager.getProcess( "p2" ).ready();
+  processManager.getProcess( "p3" ).ready();
+  std::cout << "List of processes after readying all processes:\n\n";
   std::for_each( processes.begin(), processes.end(), printProcessData );
 
-  processManager.getProcess( "p1" ).setState( Process::State::Running );
-  std::cout << "List of processes after running process \"p1\":\n\n";
+  processManager.getProcess( "p2" ).run();
+  std::cout << "List of processes after running process \"p2\":\n\n";
   std::for_each( processes.begin(), processes.end(), printProcessData );
 
   std::cout << "Running process' name: " << processManager.getRunningProcess().getName() << '\n';

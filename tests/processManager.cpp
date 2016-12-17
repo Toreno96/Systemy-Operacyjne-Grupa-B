@@ -1,3 +1,6 @@
+// Compile with:
+// clang++ -std=c++14 -Wall -Wextra -Wshadow -Wpedantic src/Registers.cpp src/Process.cpp src/ProcessManager.cpp tests/helpers.cpp tests/processManager.cpp -o tests/processManager.exe
+
 #include <algorithm>
 #include <iostream>
 #include <list>
@@ -19,7 +22,9 @@ int main() {
   std::for_each( processes.begin(), processes.end(), printProcessData );
 
   auto changeStateToTerminated = []( Process& process ) {
-        process.setState( Process::State::Terminated );
+        process.ready();
+        process.run();
+        process.terminate();
       };
   std::for_each( processes.begin(), processes.end(),
       changeStateToTerminated );

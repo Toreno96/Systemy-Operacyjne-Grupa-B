@@ -27,10 +27,10 @@ class Process {
     void restoreOriginalPriority();
     void increasePriority();
     void decreasePriority();
-    // Zamiast poni¿szego, powrót do koncepcji osobnych metod do ustawiania
-    // ka¿dego stanu i wykonania "ewentualnych dodatkowych, zwi¹zanych z tym
-    // operacji"?
-    void setState( const State& state );
+    void ready();
+    void run();
+    void wait();
+    void terminate();
     void setRegistersBackup( const Registers& registers );
     void setInstructionCounter( int instructionCounter );
     void increaseCurrentPriorityDuration();

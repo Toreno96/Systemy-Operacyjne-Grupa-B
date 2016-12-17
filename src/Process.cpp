@@ -47,8 +47,22 @@ void Process::decreasePriority() {
   if( currentPriority_ > minPriority )
     setPriority( currentPriority_ - 1 );
 }
-void Process::setState( const Process::State& state ) {
-  state_ = state;
+void Process::ready() {
+  if( state_ == State::New || state_ == State::Running ||
+      state_ == State::Waiting )
+    state_ = State::Ready;
+}
+void Process::run() {
+  if( state_ == State::Ready )
+    state_ = State::Running;
+}
+void Process::wait() {
+  if( state_ == State::Running )
+    state_ = State::Waiting;
+}
+void Process::terminate() {
+  if( state_ == State::Running )
+    state_ = State::Terminated;
 }
 void Process::setRegistersBackup( const Registers& registers ) {
   registersBackup_ = registers;

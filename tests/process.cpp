@@ -1,3 +1,6 @@
+// Compile with:
+// clang++ -std=c++14 -Wall -Wextra -Wshadow -Wpedantic src/Registers.cpp src/Process.cpp tests/helpers.cpp tests/process.cpp -o tests/process.exe
+
 #include <iostream>
 #include "../src/Process.hpp"
 #include "../src/Undefined.hpp"
@@ -10,18 +13,21 @@ int main() {
   printProcessData( p1 );
 
   p1.increaseCurrentPriorityDuration();
-  p1.setState( Process::State::Ready );
+  p1.ready();
   printProcessData( p1 );
 
   p1.increaseCurrentPriorityDuration();
-  p1.setState( Process::State::Running );
+  p1.run();
   printProcessData( p1 );
 
   p1.increasePriority();
-  p1.setState( Process::State::Waiting );
+  p1.wait();
   printProcessData( p1 );
+
+  p1.ready();
+  p1.run();
   
   p1.restoreOriginalPriority();
-  p1.setState( Process::State::Terminated );
+  p1.terminate();
   printProcessData( p1 );
 }

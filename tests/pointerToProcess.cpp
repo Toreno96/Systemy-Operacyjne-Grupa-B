@@ -1,3 +1,6 @@
+// Compile with:
+// clang++ -std=c++14 -Wall -Wextra -Wshadow -Wpedantic src/Registers.cpp src/Process.cpp src/ProcessManager.cpp tests/helpers.cpp tests/pointerToProcess.cpp -o tests/pointerToProcess.exe
+
 #include <algorithm>
 #include <iostream>
 #include <list>
@@ -13,14 +16,14 @@ int main() {
   processManager.createProcess( "p2", Undefined(), 1 );
   processManager.createProcess( "p3", Undefined(), 4 );
   processManager.createProcess( "p4", Undefined() );
-  std::cout << "List of processes after adding three processes:\n\n";
+  std::cout << "List of processes after adding four processes:\n\n";
   std::list< Process >& processes = processManager.processes();
   std::for_each( processes.begin(), processes.end(), printProcessData );
 
   auto itProcess = std::find_if( processes.begin(), processes.end(),
       []( const Process& process ){ return process.getName() == "p3"; } );
   Process* pProcess = &( *itProcess );
-  pProcess->setState( Process::State::Running );
+  pProcess->ready();
 
   std::cout << "List of processes after changing third process' state:\n\n";
   std::for_each( processes.begin(), processes.end(), printProcessData );
