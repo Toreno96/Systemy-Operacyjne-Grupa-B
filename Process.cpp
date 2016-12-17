@@ -62,4 +62,4 @@ void Process::setPriority(unsigned int priority) {
 }
 void Process::resetCurrentPriorityDuration() {
 	currentPriorityDuration_ = 0;
-}
+}	

@@ -76,6 +76,11 @@ void Registers::multiplyRegister(Register target, int from)
 	getRegister(target) = getRegister(target) * from;
 }
 
+bool Registers::jumpCounterIsEmpty() const
+{
+	return C==0;
+}
+
 std::ostream & operator<<(std::ostream & o, Registers a)
 {
 	o << "Rejestry: " << std::endl << "A: " << a.A << std::endl << "B: " << a.B << std::endl << "C: " << a.C << std::endl << "D: " << a.D << std::endl;

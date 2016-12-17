@@ -7,63 +7,65 @@ CPU::CPU()
 
 void CPU::Scheduler(std::list<Process>& processes)
 {
-	Process* p = nullptr;
+	Process* processWithBiggestPriority = nullptr;
 	const int instructionsToIncreasePriority = 3;
 
-	for (auto& element : processes)
+	for (auto& process : processes)
 	{
-		if (element.getState() == Process::State::Running || element.getState() == Process::State::Ready)
+		if (process.getState() == Process::State::Running || process.getState() == Process::State::Ready)
 		{
-			if (element.getState() == Process::State::Ready)
+			if (process.getState() == Process::State::Ready)
 			{
-				element.increaseCurrentPriorityDuration();
-				if (element.getCurrentPriorityDuration() == instructionsToIncreasePriority)
+				process.increaseCurrentPriorityDuration();
+				if (process.getCurrentPriorityDuration() == instructionsToIncreasePriority)
 				{
-					element.increasePriority();
+					process.increasePriority();
 				}
 			}
 
-			if (p == nullptr)
+			if (processWithBiggestPriority == nullptr)
 			{
-				p = &element;
+				processWithBiggestPriority = &process;
 			}
 			else
 			{
-				if (element.getCurrentPriority() > p->getCurrentPriority())
+				if (process.getCurrentPriority() > processWithBiggestPriority->getCurrentPriority())
 				{
-					if (p->getState() == Process::State::Running)
+					if (processWithBiggestPriority->getState() == Process::State::Running)
 					{
-						p->restoreOriginalPriority();
-						p->setState(Process::State::Ready);
-						p->setRegistersBackup(registers);
+						processWithBiggestPriority->restoreOriginalPriority();
+						processWithBiggestPriority->setState(Process::State::Ready);
+						processWithBiggestPriority->setRegistersBackup(registers);
 					}
-					p = &element;
+					processWithBiggestPriority = &process;
 				}
 				else
 				{
-					if (element.getState() == Process::State::Running)
+					if (process.getState() == Process::State::Running)
 					{
-						element.restoreOriginalPriority();
-						element.setState(Process::State::Ready);
-						element.setRegistersBackup(registers);
+						process.restoreOriginalPriority();
+						process.setState(Process::State::Ready);
+						process.setRegistersBackup(registers);
 					}
 				}
 			}
 		}	
 	}
 
-	if (p->getState() == Process::State::Running)
+	if (processWithBiggestPriority == nullptr) return;
+
+	if (processWithBiggestPriority->getState() == Process::State::Running)
 	{
-		if (p->getCurrentPriority() > p->getOriginalPriority())
+		if (processWithBiggestPriority->getCurrentPriority() > processWithBiggestPriority->getOriginalPriority())
 		{
-			p->decreasePriority();
+			processWithBiggestPriority->decreasePriority();
 		}
 		return;
 	}
 	else
 	{
-		p->setState(Process::State::Running);
-		registers = p->getRegistersBackup();
+		processWithBiggestPriority->setState(Process::State::Running);
+		registers = processWithBiggestPriority->getRegistersBackup();
 		return;
 	}
 

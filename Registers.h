@@ -28,4 +28,7 @@ public:
 	void multiplyRegister(Register target, int from);
 
 	friend std::ostream& operator << (std::ostream& o, Registers a);
+
+	bool jumpCounterIsEmpty() const;
+
 };

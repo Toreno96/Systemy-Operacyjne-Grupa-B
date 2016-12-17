@@ -21,9 +21,10 @@ private:
 	bool is_number(const std::string& s);
 	Register interpreteRegister(std::string reg);
 	std::vector<std::string> loadInstruction();
-	void doInstruction(std::string name, std::vector<std::string>);
+	
 
 public:
 	Interpreter(ProcessManager* pm, CPU* cpu_, ZarzadzaniePamiecia* zp);	
+	void doInstruction(std::string name, std::vector<std::string>);
 	void work();
 };

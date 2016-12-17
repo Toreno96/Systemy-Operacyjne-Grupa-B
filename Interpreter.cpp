@@ -78,7 +78,13 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["JM"] = [this](std::vector<std::string> arguments) {
-
+		
+		for (auto& a : processManager_->processes())
+		{
+			if (a.getState() == Process::State::Running && !cpu_->getRegisters()->jumpCounterIsEmpty())
+				//	a.setInstructionCounter(a.getLabelAdress(arguments[0]));
+				;
+		}
 	};
 
 	instruction["MV"] = [this](std::vector<std::string> arguments) {
@@ -146,27 +152,50 @@ std::vector<std::string> Interpreter::loadInstruction()
 	std::string last;
 	char ch = '0';
 	int adress;
-	typ_tablicy_stron tablica_stron;
+	int adress_iterator;
+	typ_tablicy_stron pageTable;
 	for (auto& a : processManager_->processes())
 	{
 		if (a.getState() == Process::State::Running)
 		{
-			adress = a.getInstructionCounter();
-			//tablica_stron = a.pageTable();
+			adress = adress_iterator = a.getInstructionCounter();
+			//pageTable = a.pageTable();
 		}
 	}
 
 	while (ch != '\n')
 	{
-	//	ch = zarzadzaniePamiecia_->daj_mi_litere();
-		if (ch == '\n');
+	//	ch = zarzadzaniePamiecia_->daj_mi_litere(adress, pageTable);
+	// adress_iterator++;
+		if (ch == '\n')
+		{
+
+		}
 		else if (ch == ' ' ||ch==',')
 		{
 			ins.push_back(last);
 		}
+		else if (ch == ':')
+		{
+			for (auto& a : processManager_->processes())
+			{
+				if (a.getState() == Process::State::Running)
+				{
+					//a.saveLabelAdress(last,adress);
+				}
+			}
+		}
 		else
 		{
 			last.push_back(ch);
+		}
+	}
+
+	for (auto& a : processManager_->processes())
+	{
+		if (a.getState() == Process::State::Running)
+		{
+			a.setInstructionCounter(adress_iterator);
 		}
 	}
 
@@ -182,6 +211,7 @@ void Interpreter::doInstruction(std::string name, std::vector<std::string>argume
 void Interpreter::work()
 {
 	std::vector<std::string> ins_ = loadInstruction();
+	if (ins_.empty()) return;
 	std::string name_ = ins_[0];
 	ins_.erase(ins_.begin());
 	doInstruction(name_, ins_);
