@@ -1,22 +1,48 @@
-#include "HardDrive.h"
-
+#include "filesystemUI.h"
+using std::cin;
 int main()
 {
 	HardDrive harddrive;
-	cout << "Dane\t\t\tTryb\tstan";
-	for (int i = 0; i < n; i++)
+	int choice = 0;
+	do
 	{
-		Sector sector = harddrive.get_sector(i);
-		array<char, n> data = sector.get_data();
-		cout << "\n";
-		int counter = 0;
-		for (auto it = data.begin(); it != data.end(); it++, counter++)
+		cout << "\n\n0 - exit"
+			<< "\n1 - display_file_list"
+			<< "\n2 - display_harddrive"
+			<< "\n3 - display_harddrive_2"
+			<< "\n4 - create_empty_file"
+			<< "\nWybierz: ";
+		cin >> choice;
+
+		switch (choice)
 		{
-			if (counter == 8)
-				cout << " ";
-			cout << *it;
+		case 0:
+			{
+				break;
+			}
+		case 1:
+		{
+			display_file_list(harddrive.get_file_list());
+			break;
 		}
-		cout << "\t" << sector.get_mode() << "\t" << sector.is_free();
-	}
+	case 2:
+		{
+			display_harddrive(harddrive);
+			break;
+		}
+		case 3:
+		{
+			display_harddrive_2(harddrive);
+			break;
+		}
+		case 4:
+		{
+			create_empty_file(harddrive);
+			break;
+		}
+		default:
+			break;
+		}
+	} while (choice != 0);
 	return 0;
 }

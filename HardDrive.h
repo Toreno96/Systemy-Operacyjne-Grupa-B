@@ -189,7 +189,7 @@ public:
 		}
 		return 0;
 	}
-	bool create_empty_file(array <char, 8> filename_, array <char, 3> type_) // 1 – operacja zakonczona pomyslnie, 0 - cos poszlo nie tak
+	char create_empty_file(array <char, 8> filename_, array <char, 3> type_) // 2 - brak miejsca, 1 - ok, 0 - plik juz istnieje
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -209,8 +209,7 @@ public:
 		}
 		else
 		{
-			cout << "\nBrak miejsca na dysku by utworzyc nowy plik.";
-			return 0; // brak miejsca na dysku
+			return 2; // brak miejsca na dysku
 		}
 	}
 	bool load_file_from_Windows_and_save_on_harddrive(array <char, 8> filename_, array <char, 3> type_) // 1 - operacja zakonczona powodzeniem
