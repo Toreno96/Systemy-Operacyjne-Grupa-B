@@ -207,14 +207,14 @@ void delete_file(HardDrive &harddrive)
 void load_file_from_Windows_and_save_on_harddrive(HardDrive &harddrive)
 {
 	string filename_as_string;
-	cout << "\nPodaj nazwe pliku: "; //tylko filename
+	cout << "\nType a filename: "; //tylko filename
 	cin >> filename_as_string;
 	auto filename = convert_filename_to_array(filename_as_string); // auto to array <char, fn>
 
 	if (*filename.begin() != 0)
 	{
 		string type_as_string;
-		cout << "\nPodaj rozszerzenie pliku: "; //tylko rozszerzenei
+		cout << "\nType an extension: "; //tylko rozszerzenie
 		cin >> type_as_string;
 		auto type = convert_type_to_array(type_as_string);
 
@@ -226,7 +226,7 @@ void load_file_from_Windows_and_save_on_harddrive(HardDrive &harddrive)
 			else if (result == 0)
 				cout << "\nNo such file.";
 			else if(result == 2)
-				cout << "\Not enough space.";
+				cout << "\nNot enough space.";
 		}
 		else
 			cout << "\nTo long type";

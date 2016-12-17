@@ -68,11 +68,11 @@ public:
 			{
 			}
 			cout << "\nWolny char to " << i;
-			if ((it + 1) != bitvector.end() && *it == 1) // jesli znalezlismy wolny element
+			if ((it + 1) != bitvector.end() && *it == 1) // jesli znalezlismy wolny element i nie jest on ostatni
 			{
 				*it = 0; // oznaczamy char jako zajety
 				data[i] = one_data;
-				cout << "\nPrzypisalismy cos do chara " << i;
+				cout << "\nPrzypisalismy " << (int)one_data << " do chara " << i;
 				return 1;
 			}
 			else if ((it + 1) == bitvector.end()) // jesli wszystko az do przedostatniego jest zajete

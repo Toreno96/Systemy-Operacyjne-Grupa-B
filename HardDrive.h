@@ -154,29 +154,34 @@ private:
 				if (free_sector_id < max_sector_number)
 				{
 					harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor
-					//cout << "\nNadpisalismy sektor " << (int)free_sector_id;
+					cout << "\nNadpisalismy sektor " << (int)free_sector_id;
 					index_sector_ID = find_deep_index_sector_ID(index_sector_ID); // znajdujemy najglebszy sektor indeksowy
 					cout << "\n\nAktualny index_sector_ID: " << (int)index_sector_ID;
 					if (harddrive[index_sector_ID].add_one_data(free_sector_id))//dodajemy indeks do sektora indeksowego
 					{
-						//cout << "\ndodajemy indeks do sektora indeksowego";
+						cout << "\ndodajemy indeks do sektora indeksowego " << index_sector_ID;
 						return 1; // udalo sie
 					}
 					else // jesli mozemy dodac juz tylko ostatni element
 					{//sektor indeksowy sie skonczyl. rezerwujemy nowy i bedziemy przypisywac kolejne indeksy do nowego
 						cout << "\nSektor indeksowy sie skonczyl";
-						auto next_free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
-						cout << "\nKolejny wolny sektor indeksowy to " << (int)next_free_sector_id;
-						if (next_free_sector_id < max_sector_number)
+						auto next_index_sector_ID = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
+						cout << "\nKolejny wolny sektor indeksowy to " << (int)next_index_sector_ID;
+						if (next_index_sector_ID < max_sector_number)
 						{
-							harddrive[next_free_sector_id].set_mode(0); // 0 - przechowuje indeksy
-							harddrive[next_free_sector_id].set_free(0);// ustawiamy na zajety
+							"\nWeszlismy tu";
+							harddrive[next_index_sector_ID].set_mode(0); // 0 - przechowuje indeksy
+							harddrive[next_index_sector_ID].set_free(0);// ustawiamy na zajety
+							auto cos = harddrive[next_index_sector_ID].add_one_data(free_sector_id);//dodajemy sektor z danymi do nowego sektora indeksowego 
+
 							//Sector next_index_sector;
 							//next_index_sector.set_mode(0); // 0 - przechowuje indeksy
 							//next_index_sector.set_free(0); // ustawiamy na zajety
-							if (harddrive[index_sector_ID].add_last_data(next_free_sector_id))//dodajemy ostatni indeks do sektora indeksowego
+							if (harddrive[index_sector_ID].add_last_data(next_index_sector_ID))//dodajemy ostatni indeks do wczesniejszego sektora indeksowego
 							{
-								index_sector_ID = next_free_sector_id; // nadpisujemy index_sector_ID by juz sie do niego nie odnosic bo jest zajety
+								//to chyba jest niepotrzebne
+								cout << "\nZmiana z " << (int)index_sector_ID << " na " << (int)next_index_sector_ID;
+								index_sector_ID = next_index_sector_ID; // nadpisujemy index_sector_ID by juz sie do niego nie odnosic bo jest zajety
 								return 1;
 							}
 							else
