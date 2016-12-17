@@ -47,22 +47,32 @@ void Process::decreasePriority() {
   if( currentPriority_ > minPriority )
     setPriority( currentPriority_ - 1 );
 }
+// Zmiana pojawiajacego siê ni¿ej wyj¹tku na w³asny, dziedzicz¹cy po
+// standardowym?
 void Process::ready() {
   if( state_ == State::New || state_ == State::Running ||
       state_ == State::Waiting )
     state_ = State::Ready;
+  else
+    throw std::logic_error( "State change impossible" );
 }
 void Process::run() {
   if( state_ == State::Ready )
     state_ = State::Running;
+  else
+    throw std::logic_error( "State change impossible" );
 }
 void Process::wait() {
   if( state_ == State::Running )
     state_ = State::Waiting;
+  else
+    throw std::logic_error( "State change impossible" );
 }
 void Process::terminate() {
   if( state_ == State::Running )
     state_ = State::Terminated;
+  else
+    throw std::logic_error( "State change impossible" );
 }
 void Process::setRegistersBackup( const Registers& registers ) {
   registersBackup_ = registers;

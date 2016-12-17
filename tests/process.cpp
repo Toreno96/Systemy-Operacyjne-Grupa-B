@@ -24,6 +24,7 @@ int main() {
   p1.wait();
   printProcessData( p1 );
 
+  // Zakomentowanie poni¿szych dwóch linijek powoduje rzucenie wyj¹tku
   p1.ready();
   p1.run();
   
