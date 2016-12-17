@@ -34,7 +34,7 @@ void CPU::Scheduler(std::list<Process>& processes)
 					if (processWithBiggestPriority->getState() == Process::State::Running)
 					{
 						processWithBiggestPriority->restoreOriginalPriority();
-						processWithBiggestPriority->setState(Process::State::Ready);
+						processWithBiggestPriority->ready();
 						processWithBiggestPriority->setRegistersBackup(registers);
 					}
 					processWithBiggestPriority = &process;
@@ -44,7 +44,7 @@ void CPU::Scheduler(std::list<Process>& processes)
 					if (process.getState() == Process::State::Running)
 					{
 						process.restoreOriginalPriority();
-						process.setState(Process::State::Ready);
+						process.ready();
 						process.setRegistersBackup(registers);
 					}
 				}
@@ -64,7 +64,7 @@ void CPU::Scheduler(std::list<Process>& processes)
 	}
 	else
 	{
-		processWithBiggestPriority->setState(Process::State::Running);
+		processWithBiggestPriority->run();
 		registers = processWithBiggestPriority->getRegistersBackup();
 		return;
 	}

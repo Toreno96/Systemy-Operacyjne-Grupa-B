@@ -1,13 +1,11 @@
 #include "Interpreter.h"
 
+const std::array<char, 3U> ext{ 't','x','t' };
+
 void Interpreter::initInstructions()
 {
 	instruction["HLT"] = [this](std::vector<std::string> arguments) {
-		for (auto& a : processManager_->processes())
-		{
-			if (a.getState() == Process::State::Running)
-				a.setState(Process::State::Terminated);
-		}
+		processManager_->getRunningProcess().terminate();
 	};
 
 	instruction["AD"] = [this](std::vector<std::string> arguments) {
@@ -38,53 +36,46 @@ void Interpreter::initInstructions()
 	};
 	
 	instruction["XC"] = [this](std::vector<std::string> arguments) {
-	//	processManager_->createProcess(arguments[0], Undefined(programCode)); //****
+		std::string programCode;
+	//	if(hardDrive_->read_file(convertToFileName(arguments[1]),ext,programCode))
+	//	processManager_->createProcess(arguments[0],programCode); //****
 	};
 
 	instruction["XD"] = [this](std::vector<std::string> arguments) {
-		for (auto& a : processManager_->processes())
-		{
-			if (a.getName() == arguments[0])
-				a.setState(Process::State::Terminated);
-		}
+		processManager_->getProcess(arguments[0]).terminate();
 	};
 
 	instruction["XR"] = [this](std::vector<std::string> arguments) {
-
+		//potoki
 	};
 
 	instruction["XS"] = [this](std::vector<std::string> arguments) {
-
+		//potoki
 	};
 
 	instruction["XN"] = [this](std::vector<std::string> arguments) {
-		
+		for (auto& process: processManager_->processes())
+		{
+			if (process.getName() == arguments[0]) {
+				cpu_->getRegisters()->moveToRegister(Register::A, 1);
+				return;
+			}
+		}
+		cpu_->getRegisters()->moveToRegister(Register::A, 0);
+
 	};
 
 	instruction["XY"] = [this](std::vector<std::string> arguments) {
-		for (auto& a : processManager_->processes())
-		{
-			if (a.getName() == arguments[0])
-				a.setState(Process::State::Ready);
-		}
+		processManager_->getProcess(arguments[0]).ready();
 	};
 
 	instruction["XZ"] = [this](std::vector<std::string> arguments) {
-		for (auto& a : processManager_->processes())
-		{
-			if (a.getName() == arguments[0])                                //*******
-				a.setState(Process::State::Waiting);  
-		}
+		processManager_->getProcess(arguments[0]).wait();
 	};
 
 	instruction["JM"] = [this](std::vector<std::string> arguments) {
 		
-		for (auto& a : processManager_->processes())
-		{
-			if (a.getState() == Process::State::Running && !cpu_->getRegisters()->jumpCounterIsEmpty())
-				//	a.setInstructionCounter(a.getLabelAdress(arguments[0]));
-				;
-		}
+		processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0]));
 	};
 
 	instruction["MV"] = [this](std::vector<std::string> arguments) {
@@ -96,33 +87,39 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["MF"] = [this](std::vector<std::string> arguments) {
+		
 
+		
+
+		hardDrive_->create_empty_file(convertToFileName(arguments[0]), ext);
 	};
 
 	instruction["WF"] = [this](std::vector<std::string> arguments) {
-
+		//jeszcze nie gotowe hardDrive_->
 	};
 
 	instruction["WR"] = [this](std::vector<std::string> arguments) {
-
+	//^^
 	};
 
 	instruction["DF"] = [this](std::vector<std::string> arguments) {
+		
 
+		hardDrive_->delete_file(convertToFileName(arguments[0]), ext);
 	};
 
 	instruction["PO"] = [this](std::vector<std::string> arguments) {
-
+		std::cout << arguments[0] << std::endl; //???
 	};
 
 }
 
 
-Interpreter::Interpreter(ProcessManager * pm, CPU * cpu_, ZarzadzaniePamiecia* zp)
-	:processManager_(pm),cpu_(cpu_),zarzadzaniePamiecia_(zp)
-{
-	initInstructions();
-}
+Interpreter::Interpreter(ProcessManager * pm, CPU * cpu_, HardDrive* hd)
+	:processManager_(pm),cpu_(cpu_),hardDrive_(hd)
+	{
+		initInstructions();
+	}
 
 Register Interpreter::interpreteRegister(std::string reg)
 {
@@ -153,20 +150,17 @@ std::vector<std::string> Interpreter::loadInstruction()
 	char ch = '0';
 	int adress;
 	int adress_iterator;
-	typ_tablicy_stron pageTable;
-	for (auto& a : processManager_->processes())
-	{
-		if (a.getState() == Process::State::Running)
-		{
-			adress = adress_iterator = a.getInstructionCounter();
-			//pageTable = a.pageTable();
-		}
-	}
+	//typ_tablicy_stron pageTable;
+	
+			adress = adress_iterator = processManager_->getRunningProcess().getInstructionCounter();
+			//pageTable = processManager_->getRunningProcess().pageTable();
+		
+	
 
 	while (ch != '\n')
 	{
-	//	ch = zarzadzaniePamiecia_->daj_mi_litere(adress, pageTable);
-	// adress_iterator++;
+	//ch = zarzadzaniePamiecia_->daj_mi_litere(adress_iterator, pageTable);
+	adress_iterator++;
 		if (ch == '\n')
 		{
 
@@ -177,13 +171,7 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 		else if (ch == ':')
 		{
-			for (auto& a : processManager_->processes())
-			{
-				if (a.getState() == Process::State::Running)
-				{
-					//a.saveLabelAdress(last,adress);
-				}
-			}
+					processManager_->getRunningProcess().saveLabelAddress(last,adress);
 		}
 		else
 		{
@@ -191,16 +179,19 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 	}
 
-	for (auto& a : processManager_->processes())
-	{
-		if (a.getState() == Process::State::Running)
-		{
-			a.setInstructionCounter(adress_iterator);
-		}
-	}
+	processManager_->getRunningProcess().setInstructionCounter(adress_iterator);
 
 	return ins;
 
+}
+
+std::array<char, 8U> Interpreter::convertToFileName(std::string fileName)
+{
+	std::array <char, 8U> fileName_converted;
+	for (int i = 0; i < 8; i++)
+	{
+		fileName_converted[i] = fileName[i];
+	}
 }
 
 void Interpreter::doInstruction(std::string name, std::vector<std::string>arguments)

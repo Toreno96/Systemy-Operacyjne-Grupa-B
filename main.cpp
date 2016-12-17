@@ -1,14 +1,14 @@
 #include "Registers.h"
 #include <iostream>
 #include "Interpreter.h"
-#include "ZarzadzaniePamiecia.h"
 #include "ProcessManager.hpp"
-
+#include "HardDrive.h"
 int main()
 {
 	CPU cpus;
 	ProcessManager pm;
-	Interpreter interpreter(&pm, &cpus, nullptr);
+	HardDrive hd;
+	Interpreter interpreter(&pm, &cpus, &hd);
 	pm.createProcess("kapec", Undefined(), 3);
 	pm.createProcess("szlafrok", Undefined(), 4);
 	pm.createProcess("hultaj", Undefined(), 4);
@@ -16,7 +16,7 @@ int main()
 	for (auto& a : pm.processes())
 
 	{
-		a.setState(Process::State::Ready);
+		a.ready();
 	}
 	
 	for (int i = 0; i < 10; i++)

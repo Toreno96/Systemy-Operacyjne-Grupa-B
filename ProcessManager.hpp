@@ -12,8 +12,12 @@ public:
 		const Undefined& programCode);
 	void createProcess(const std::string& name,
 		const Undefined& programCode, unsigned int priority);
+	Process& getProcess(const std::string& name);
+	Process& getRunningProcess();
 	void removeTerminatedProcesses();
 private:
+	Process& getProcess(
+		std::function< bool(const Process& process) > unaryPredicate);
 	bool isNameUsed(const std::string& name);
 	std::random_device::result_type generateSeed();
 	std::mt19937 randomNumberGenerator_;

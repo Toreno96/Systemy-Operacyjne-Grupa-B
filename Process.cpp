@@ -1,4 +1,4 @@
-#include "Process.hpp"
+﻿#include "Process.hpp"
 
 const unsigned int Process::minPriority = 0;
 const unsigned int Process::maxPriority = 7;
@@ -33,6 +33,9 @@ int Process::getInstructionCounter() const {
 int Process::getCurrentPriorityDuration() const {
 	return currentPriorityDuration_;
 }
+int Process::getLabelAddress(const std::string& label) const {
+	return labelsAddresses.at(label);
+}
 void Process::restoreOriginalPriority() {
 	setPriority(originalPriority_);
 }
@@ -44,8 +47,32 @@ void Process::decreasePriority() {
 	if (currentPriority_ > minPriority)
 		setPriority(currentPriority_ - 1);
 }
-void Process::setState(const Process::State& state) {
-	state_ = state;
+// Zmiana pojawiajacego siê ni¿ej wyj¹tku na w³asny, dziedzicz¹cy po
+// standardowym?
+void Process::ready() {
+	if (state_ == State::New || state_ == State::Running ||
+		state_ == State::Waiting)
+		state_ = State::Ready;
+	else
+		throw std::logic_error("State change impossible");
+}
+void Process::run() {
+	if (state_ == State::Ready)
+		state_ = State::Running;
+	else
+		throw std::logic_error("State change impossible");
+}
+void Process::wait() {
+	if (state_ == State::Running)
+		state_ = State::Waiting;
+	else
+		throw std::logic_error("State change impossible");
+}
+void Process::terminate() {
+	if (state_ == State::Running)
+		state_ = State::Terminated;
+	else
+		throw std::logic_error("State change impossible");
 }
 void Process::setRegistersBackup(const Registers& registers) {
 	registersBackup_ = registers;
@@ -62,4 +89,7 @@ void Process::setPriority(unsigned int priority) {
 }
 void Process::resetCurrentPriorityDuration() {
 	currentPriorityDuration_ = 0;
-}	
+}
+void Process::saveLabelAddress(const std::string& label, int address) {
+	labelsAddresses[label] = address;
+}

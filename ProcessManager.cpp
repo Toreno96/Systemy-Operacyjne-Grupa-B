@@ -41,3 +41,18 @@ std::random_device::result_type ProcessManager::generateSeed() {
 	std::random_device randomDevice;
 	return randomDevice();
 }
+Process& ProcessManager::getProcess(const std::string& name) {
+	return getProcess([&name](const Process& process) {
+		return process.getName() == name;
+	});
+}
+Process& ProcessManager::getRunningProcess() {
+	return getProcess([](const Process& process) {
+		return process.getState() == Process::State::Running;
+	});
+}
+Process& ProcessManager::getProcess(
+	std::function< bool(const Process& process) > unaryPredicate) {
+	return *(std::find_if(processes_.begin(), processes_.end(),
+		unaryPredicate));
+}
