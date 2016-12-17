@@ -223,12 +223,14 @@ void load_file_from_Windows_and_save_on_harddrive(HardDrive &harddrive)
 			auto result = harddrive.load_file_from_Windows_and_save_on_harddrive(filename, type);
 			if (result == 1)
 				cout << "\nFile saved properly";
-			else
-				cout << "\nBrak miejsca na dysku";
+			else if (result == 0)
+				cout << "\nNo such file.";
+			else if(result == 2)
+				cout << "\Not enough space.";
 		}
 		else
-			cout << "\nRozszerzenie pliku jest za dlugie";
+			cout << "\nTo long type";
 	}
 	else
-		cout << "\nNazwa pliku jest za dluga ";
+		cout << "\nTo long filename";
 }

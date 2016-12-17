@@ -72,6 +72,7 @@ public:
 			{
 				*it = 0; // oznaczamy char jako zajety
 				data[i] = one_data;
+				cout << "\nPrzypisalismy cos do chara " << i;
 				return 1;
 			}
 			else if ((it + 1) == bitvector.end()) // jesli wszystko az do przedostatniego jest zajete
@@ -116,6 +117,7 @@ public:
 	{//umozliwia dodanie swiadomie ostatniego elementu w przypadku sektora indeksowego
 		if (bitvector[n - 1] == 1)//jesli ostatni element jest wolny
 		{
+			bitvector[n - 1] = 0; //ustawiamy char na zajety
 			data[n - 1] = one_data;
 			return 1;
 		}

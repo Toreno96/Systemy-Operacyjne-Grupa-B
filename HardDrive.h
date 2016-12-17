@@ -100,6 +100,7 @@ private:
 			}
 			else
 			{
+				//cout << "\nNajglebszy sektor indeksowy to " << (int)ID;
 				return ID; // jestli nie ma kolejnych sektorow indeksowych zwracamy nasze id jako ze jestesmy ostatni
 			}
 		}
@@ -155,7 +156,7 @@ private:
 					harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor
 					//cout << "\nNadpisalismy sektor " << (int)free_sector_id;
 					index_sector_ID = find_deep_index_sector_ID(index_sector_ID); // znajdujemy najglebszy sektor indeksowy
-					cout << "\naktualny index_sector_ID: " << (int)index_sector_ID;
+					cout << "\n\nAktualny index_sector_ID: " << (int)index_sector_ID;
 					if (harddrive[index_sector_ID].add_one_data(free_sector_id))//dodajemy indeks do sektora indeksowego
 					{
 						//cout << "\ndodajemy indeks do sektora indeksowego";
@@ -164,15 +165,18 @@ private:
 					else // jesli mozemy dodac juz tylko ostatni element
 					{//sektor indeksowy sie skonczyl. rezerwujemy nowy i bedziemy przypisywac kolejne indeksy do nowego
 						cout << "\nSektor indeksowy sie skonczyl";
-						auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
-						if (free_sector_id < max_sector_number)
+						auto next_free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
+						cout << "\nKolejny wolny sektor indeksowy to " << (int)next_free_sector_id;
+						if (next_free_sector_id < max_sector_number)
 						{
-							Sector new_index_sector;
-							new_index_sector.set_mode(0); // 0 - przechowuje indeksy
-							new_index_sector.set_free(0); // ustawiamy na zajety
-							if (harddrive[index_sector_ID].add_last_data(free_sector_id))//dodajemy ostatni indeks do sektora indeksowego
+							harddrive[next_free_sector_id].set_mode(0); // 0 - przechowuje indeksy
+							harddrive[next_free_sector_id].set_free(0);// ustawiamy na zajety
+							//Sector next_index_sector;
+							//next_index_sector.set_mode(0); // 0 - przechowuje indeksy
+							//next_index_sector.set_free(0); // ustawiamy na zajety
+							if (harddrive[index_sector_ID].add_last_data(next_free_sector_id))//dodajemy ostatni indeks do sektora indeksowego
 							{
-								index_sector_ID = free_sector_id; // nadpisujemy firstSectorID by juz sie do niego nie odnosic bo jest zajety
+								index_sector_ID = next_free_sector_id; // nadpisujemy index_sector_ID by juz sie do niego nie odnosic bo jest zajety
 								return 1;
 							}
 							else
@@ -243,7 +247,7 @@ public:
 			return 2; // brak miejsca na dysku
 		}
 	}
-	bool load_file_from_Windows_and_save_on_harddrive(array <char, fn> filename_, array <char, tn> type_) // 1 - operacja zakonczona powodzeniem
+	char load_file_from_Windows_and_save_on_harddrive(array <char, fn> filename_, array <char, tn> type_) // 1 - operacja zakonczona powodzeniem
 	{
 		//zamiana array filename_ i type_ na string
 		string myfile = filename_and_type_as_string(filename_, type_);
@@ -285,11 +289,11 @@ public:
 				//
 				if (add_data_sector_to_file(filename_, type_, sector))//dodajmy sektor do pliku
 				{
-					cout << "\nUdalo sie poprawnie dopisac sektor";
+					//cout << "\nUdalo sie poprawnie dopisac sektor";
 				}
 				else
 				{
-					cout << "\nNie udalo sie dopisac sektoru";
+					//cout << "\nNie udalo sie dopisac sektoru";
 					is_ok = false;
 					delete_file(filename_, type_);
 					break; // wyjsc z petli for
@@ -298,11 +302,10 @@ public:
 			if (is_ok)
 				return 1;
 			else
-				return 0;
+				return 2;
 		}
 		else
 		{
-			cout << "\nPlik nie zostal otwarty";
 			return 0;
 		}
 	}
