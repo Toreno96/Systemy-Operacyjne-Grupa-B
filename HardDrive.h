@@ -16,7 +16,7 @@ class HardDrive
 private:
 	std::list <FCB> Catalog{};
 	array <Sector, max_sector_number> harddrive;
-	char find_empty_sector() // sektor 32 oznacza brak wolnego sektoru
+	char find_empty_sector() // sektor tn2 oznacza brak wolnego sektoru
 	{
 		char sector_ID = 0;
 		for (auto it = harddrive.begin(); it != harddrive.end(); it++, sector_ID++)
@@ -73,13 +73,21 @@ private:
 			cout << message;
 		}
 	}
-	string array_type_as_string(array <char, 8> filename_, array <char, 3> type_)
+	string filename_and_type_as_string(array <char, fn> filename_, array <char, tn> type_)
 	{
 		string file_type_as_string;
 		for (auto it = filename_.begin(); it != filename_.end(); it++)
 		{
-			file_type_as_string.push_back(*it);
+			if(*it != 0)
+				file_type_as_string.push_back(*it);
 		}
+		file_type_as_string.push_back('.');
+		for (auto it = type_.begin(); it != type_.end(); it++)
+		{
+			if (*it != 0)
+				file_type_as_string.push_back(*it);
+		}
+		//cout << "\nfile_type_as_string: " << file_type_as_string;
 		return file_type_as_string;
 	}
 	char find_deep_index_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
@@ -112,7 +120,7 @@ private:
 			}
 		}
 	}
-	bool add_data_sector_to_file(array <char, 8> filename_, array <char, 3> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
+	bool add_data_sector_to_file(array <char, fn> filename_, array <char, tn> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -154,14 +162,14 @@ private:
 						}
 						else
 						{
-							cout << "\nBrak miejsca na dysku";
+							cout << "\nBrak miejsca na dysku. Skonczyly sie sektory";
 							return 0;
 						}
 					}
 				}
 				else
 				{
-					cout << "\nBrak miejsca na dysku";
+					cout << "\nBrak miejsca na dysku. Skonczyly sie wolne sektory";
 					return 0;
 				}
 			}
@@ -178,18 +186,19 @@ private:
 	}
 
 public:
-	bool file_exist(array <char, 8> filename_, array <char, 3> type_) // 1 - plik istnieje, 0 - plik nieistnieje
+	bool file_exist(array <char, fn> filename_, array <char, tn> type_) // 1 - plik istnieje, 0 - plik nieistnieje
 	{
 		for (auto it = Catalog.begin(); it != Catalog.end(); it++)
 		{
 			if (it->get_filename() == filename_ && it->get_type() == type_)
 			{
+				//cout << "\nfile_exist mowi, ze plik istnieje";
 				return 1;
 			}
 		}
 		return 0;
 	}
-	char create_empty_file(array <char, 8> filename_, array <char, 3> type_) // 2 - brak miejsca, 1 - ok, 0 - plik juz istnieje
+	char create_empty_file(array <char, fn> filename_, array <char, tn> type_) // 2 - brak miejsca, 1 - ok, 0 - plik juz istnieje
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -200,8 +209,9 @@ public:
 		auto index_sector_ID = find_empty_sector();
 		if (index_sector_ID < max_sector_number)
 		{
-			Sector index_sector{}; //tworzymy pusty sector
+			Sector index_sector; //tworzymy pusty sector
 			index_sector.set_mode(0); // Sektor przechowuje indeksy innych sektorow
+			index_sector.set_free(0);
 			harddrive[index_sector_ID] = index_sector;
 			FCB new_fcb{ filename_, type_, index_sector_ID };
 			Catalog.push_back(new_fcb);
@@ -212,49 +222,66 @@ public:
 			return 2; // brak miejsca na dysku
 		}
 	}
-	bool load_file_from_Windows_and_save_on_harddrive(array <char, 8> filename_, array <char, 3> type_) // 1 - operacja zakonczona powodzeniem
+	bool load_file_from_Windows_and_save_on_harddrive(array <char, fn> filename_, array <char, tn> type_) // 1 - operacja zakonczona powodzeniem
 	{
 		//zamiana array filename_ i type_ na string
-		string filename_string = array_type_as_string(filename_, type_);
+		string myfile = filename_and_type_as_string(filename_, type_);
 
 		//wczytujemy plik z systemu windows
-		char character;//string line;
+		
 		string good;
-		std::ifstream infile; infile.open(filename_string);
-		while (infile.good())
+		std::ifstream infile; infile.open(myfile);
+		if (infile.is_open())
 		{
-			character = infile.get();//getline(infile, line);//jak to zamienic na get?
-			good.push_back(character);//good.append(line);
-		}
-		infile.close();
-
-		create_empty_file(filename_, type_);
-
-		while (!(good.empty()))
-		{
-			//zamiana string na sektory
-			array <bool, n> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
-			array <char, n> data = create_empty_data_array();
-			for (int i = 0; i < n && !(good.empty()); i++)
+			while (infile.good())
 			{
-				bitvector[i] = 0; // oznaczamy char jako uzywany
-				data[i] = *(good.begin()); // wyluskanie wartosci begin
-				good.erase(good.begin()); // usuwa pierwszy element
+				char character;//string line;
+				character = infile.get();//getline(infile, line);//jak to zamienic na get?
+				//cout << "\nWczytalem znak " << character;
+				good.push_back(character);//good.append(line);
 			}
-			Sector sector;
-			sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
-			if (add_data_sector_to_file(filename_, type_, sector))//dodajmy sektor do pliku
+			infile.close();
+			//cout << "\nCaly plik:\n"; cout << good;
+
+			create_empty_file(filename_, type_);
+			bool is_ok = true;
+			while (!(good.empty()))
 			{
+				cout << "\nzamiana string na sektory";//zamiana string na sektory
+				array <bool, n> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
+				array <char, n> data = create_empty_data_array();
+				for (int i = 0; i < n && !(good.empty()); i++)
+				{
+					bitvector[i] = 0; // oznaczamy char jako uzywany
+					data[i] = *(good.begin()); // wyluskanie wartosci begin
+					good.erase(good.begin()); // usuwa pierwszy element
+				}
+				Sector sector;
+				sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
+				if (add_data_sector_to_file(filename_, type_, sector))//dodajmy sektor do pliku
+				{
+					cout << "\nUdalo sie poprawnie dopisac sektor";
+				}
+				else
+				{
+					cout << "\nNie udalo sie dopisac sektoru";
+					is_ok = false;
+					delete_file(filename_, type_);
+					break; // wyjsc z petli for
+				}
 			}
+			if (is_ok)
+				return 1;
 			else
-			{
-				cout << "\nBrak miejsca na dysku";
-				delete_file(filename_, type_);
-				break; // wyjsc z petli for
-			}
+				return 0;
+		}
+		else
+		{
+			cout << "\nPlik nie zostal otwarty";
+			return 0;
 		}
 	}
-	string read_file(array <char, 8> filename_, array <char, 3> type_)//zwraca caly plik jako string
+	string read_file(array <char, fn> filename_, array <char, tn> type_)//zwraca caly plik jako string
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -280,34 +307,32 @@ public:
 			return message;
 		}
 	}
-	bool delete_file(array <char, 8> filename_, array <char, 3> type_) // 1 zakonczone powodzeniem
+	bool delete_file(array <char, fn> filename_, array <char, tn> type_) // 1 zakonczone powodzeniem
 	{
 		if (file_exist(filename_, type_))
 		{
+			//cout << "\nTaki plik istnieje";
 			for (auto it = Catalog.begin(); it != Catalog.end(); it++)
 			{
 				if (it->get_filename() == filename_ && it->get_type() == type_)
 				{
+					//cout << "\nNa pewno taki plik istnieje, bo jestesmy az tu";
 					delete_deep_index_sector_ID(it->get_firstSectorID());
 					Catalog.erase(it);//trzeba usunac wpis katalogowy od tego pliku
 					return 1;
-				}
-				else
-				{
-					cout << "Niby plik istnieje ale jednak nie ma zgodnosci???";
-					return 0;
-				}
+				}//else nie robilby nic
 			}
+			return 0;
 		}
 		else
 		{
-			cout << "No such file.";
 			return 0;
 		}
 	}
-	bool create_file_with_string(array <char, 8> filename_, array <char, 3> type_, string good)
+	/*
+	bool append_string_to_file(array <char, fn> filename_, array <char, tn> type_, string good)
 	{
-		create_empty_file(filename_, type_);
+		//create_empty_file(filename_, type_);
 		while (!(good.empty()))
 		{
 			//zamiana string na sektory
@@ -327,12 +352,17 @@ public:
 			else
 			{
 				cout << "\nBrak miejsca na dysku";
-				delete_file(filename_, type_);
+				//delete_file(filename_, type_);
 				break; // wyjsc z petli for
 			}
 		}
+		if (good.empty())
+			return 1;
+		else
+			return 0;
 	}
 	//metoda dopisywania danych do pliku tylko jak bedzie czas
+	*/
 	std::list <FCB> get_file_list()
 	{
 		return Catalog;

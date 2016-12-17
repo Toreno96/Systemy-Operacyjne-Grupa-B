@@ -103,6 +103,7 @@ public:
 		else
 		{
 			cout << "\nBieznany blad. Tryb pliku nierozpoznany";
+			return 0;
 		}
 	}
 	bool add_last_data(char one_data) // 1 operacja zakonczona pomyslnie

@@ -11,6 +11,8 @@ int main()
 			<< "\n2 - display_harddrive"
 			<< "\n3 - display_harddrive_2"
 			<< "\n4 - create_empty_file"
+			<< "\n5 - delete_file"
+			<< "\n6 - load_file_from_Windows_and_save_on_harddrive"
 			<< "\nWybierz: ";
 		cin >> choice;
 
@@ -38,6 +40,16 @@ int main()
 		case 4:
 		{
 			create_empty_file(harddrive);
+			break;
+		}
+		case 5:
+		{
+			delete_file(harddrive);
+			break;
+		}
+		case 6:
+		{
+			load_file_from_Windows_and_save_on_harddrive(harddrive);
 			break;
 		}
 		default:

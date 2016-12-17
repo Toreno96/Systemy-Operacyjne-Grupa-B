@@ -1,0 +1,5 @@
+Zdanie pierwsze.
+Zdanie numer 2;
+A to zdanie numer 3?
+Tak :)
+Koniec!
