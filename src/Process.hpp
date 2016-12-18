@@ -24,6 +24,7 @@ class Process {
     // W przypadku podania etykiety, której adres nie jest zapisany w bloku
     // PCB, rzucony zostaje wyj¹tek std::out_of_range
     int getLabelAddress( const std::string& label ) const;
+    std::string getLastReceivedMessage() const;
     void restoreOriginalPriority();
     void increasePriority();
     void decreasePriority();
@@ -35,6 +36,7 @@ class Process {
     void setInstructionCounter( int instructionCounter );
     void increaseCurrentPriorityDuration();
     void saveLabelAddress( const std::string& label, int address );
+    void setLastReceivedMessage( const std::string& message );
   private:
     void setPriority( unsigned int priority );
     void resetCurrentPriorityDuration();
@@ -49,6 +51,5 @@ class Process {
     int instructionCounter_,
         currentPriorityDuration_;
     std::map< std::string, int > labelsAddresses;
-    // Poza tym - sk³adowe potrzebne do komunikacji, ale wygl¹du tych ju¿
-    // kompletnie nie znam. Potrzebujê info od Jakuba.
+    std::string lastReceivedMessage_;
 };
