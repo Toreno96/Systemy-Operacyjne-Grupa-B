@@ -11,7 +11,7 @@ protected:
 public:
 	int GetValue(); // ilosc procesow pod zamkiem
 	std::string GetProcessName(); //wypisuje id procesu pierwszego do zwolnienia
-	void show_list_of_processes(); // wyswietlenie calej listy procesow pod zamkiem
+	void Show_List_of_Processes(); // wyswietlenie calej listy procesow pod zamkiem
 	void lock(Process &process);   // metoda ryglujaca
 	void unlock(Process &process); // metoda otwierajaca zamek, otworzy jesli ID procesu zgadza sie z ID procesu, ktory zamknal zamek
 };
