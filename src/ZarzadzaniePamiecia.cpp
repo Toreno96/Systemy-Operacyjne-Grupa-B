@@ -393,7 +393,7 @@ void fu(typ_tablicy_stron*TABLICA_STRON)
 void WYPISZ_PLIK_WYMIANY()
 {
 	int hehe = 0;
-	cout << "                     PLIK_WYMIANY" << endl;
+	cout << "       PLIK_WYMIANY" << endl;
 	for (int i = 0; i <2048; i++)       /// tutaj tylko 1200 poniewaz 2048 nie wypisuje ....
 	{
 		if (i%1200==1184)
@@ -409,16 +409,23 @@ void WYPISZ_PLIK_WYMIANY()
 			cout << endl;
 			cout << endl;
 			cout << endl;
-			cout << "                     STRONICA '" << hehe<< "'" << endl;
+			cout << "      STRONICA '" << hehe<< "'" << endl;
 			hehe++;
 		}
-		cout << "  " << PLIK_WYMIANY[i];
+
+		if (PLIK_WYMIANY[i] == '\n')
+			cout << "\\n";
+		else
+			cout << PLIK_WYMIANY[i];
+
+
+		//cout << "  " << PLIK_WYMIANY[i];
 	}
 }
 void WYPISZ_RAM()
 {
 	int yyy = 0;
-	cout << "                      RAM" << endl;
+	cout << "        RAM" << endl;
 	//cout << "                     RAMKA '0'";
 	for (int i = 0; i < 256; i++)
 	{
@@ -429,10 +436,15 @@ void WYPISZ_RAM()
 			cout << endl;
 			cout << endl;
 			cout << endl;
-			cout << "                     RAMKA '"<<yyy<<"'"<< endl;
+			cout << "     RAMKA '"<<yyy<<"'"<< endl;
 			yyy++;
 		}
-		
-		cout << "  " << RAM[i];
+		if (RAM[i] == '\n')
+			cout << "\\n";
+		else
+			cout << RAM[i];
+
+
+		//cout << "  " << RAM[i];
 	}
 }
