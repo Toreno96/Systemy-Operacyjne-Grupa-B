@@ -36,7 +36,6 @@ void inicjalizacja_PLIKU_WYMIANY()
 void zapewnij_wolne_miejsce_w_ramie()     //wywo³uj to zawsze przed przeniesieniem stronicy do ramki
 {
 	int czyjestmiejsce = 1;
-	int przerwij = 0;
 
 	for (int i = 0; i < 17; i++)  //bo tyle ramek w ramie + ramka 0 czyli 16
 	{
@@ -68,9 +67,9 @@ typ_tablicy_stron& Porcjuj_i_wloz(string kodprogramu)
 		TABLICA_STRON.push_back(vector< int >(liczbaKolumn));
 
 	//////////////////INICJALIZACJA TABLIC STRON
-	for (int i = 0; i < TABLICA_STRON.size(); ++i)
+	for (std::size_t i = 0; i < TABLICA_STRON.size(); ++i)
 	{
-		for (int j = 0; j < TABLICA_STRON[i].size(); ++j)
+		for (std::size_t j = 0; j < TABLICA_STRON[i].size(); ++j)
 			TABLICA_STRON[i][j] = 0;
 	}
 	//////DLA_MOJEGO_MASTERA_DLA_NIEGO_WEKTOR///////
@@ -97,7 +96,7 @@ typ_tablicy_stron& Porcjuj_i_wloz(string kodprogramu)
 		int przerwij = 0;
 		if (PLIK_WYMIANY[16 * i] == '#')
 		{
-			for (int j = 0; j < kodprogramu.size(); j++)
+			for (std::size_t j = 0; j < kodprogramu.size(); j++)
 				PLIK_WYMIANY[16 * i + j] = kodprogramu[j];
 			przerwij = 1;
 		}
