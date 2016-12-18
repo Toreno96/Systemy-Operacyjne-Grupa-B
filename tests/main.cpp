@@ -1,4 +1,4 @@
-﻿#include "../src/ZarzadzaniePamiecia.h"
+#include "../src/ZarzadzaniePamiecia.h"
 #include<iostream>
 #include<string>
 #include<vector>

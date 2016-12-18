@@ -1,4 +1,4 @@
-ï»¿#include"ZarzadzaniePamiecia.h"
+#include"ZarzadzaniePamiecia.h"
 #include<iostream>
 #include<string>
 #include<vector>
@@ -33,7 +33,7 @@ void inicjalizacja_PLIKU_WYMIANY()
 	for (int i = 0; i < 2048; i++)
 		PLIK_WYMIANY[i] = '#';
 }
-void zapewnij_wolne_miejsce_w_ramie()     //wywoÅ‚uj to zawsze przed przeniesieniem stronicy do ramki
+void zapewnij_wolne_miejsce_w_ramie()     //wywo³uj to zawsze przed przeniesieniem stronicy do ramki
 {
 	int czyjestmiejsce = 1;
 	int przerwij = 0;
@@ -76,7 +76,7 @@ typ_tablicy_stron& Porcjuj_i_wloz(string kodprogramu)
 	//////DLA_MOJEGO_MASTERA_DLA_NIEGO_WEKTOR///////
 
 	int length_of_program_size = kodprogramu.length();//fajnie byloby wiedziec ile on stron/ramek zajmie
-	ilosc_stronic_danego_procesu = ceil((static_cast<float>(length_of_program_size)) / 16);  
+	ilosc_stronic_danego_procesu = ceil((static_cast<float>(length_of_program_size)) / 16);
 	////rzutowanie + zaaaokraglenie w gore
 	
 
@@ -278,7 +278,7 @@ char daj_mi_litere(int adres_logiczny, typ_tablicy_stron &TABLICA_STRON)
 
 
 	//SPRAWDZAM CZY DANA STRONA JEST W RAMIE   ///TU  JEJ NIE MA
-	if (TABLICA_STRON[numer_strony][1] == 0)  //nie ma jej, a wiec nalezaï¿½oby ja przniesc do ramu
+	if (TABLICA_STRON[numer_strony][1] == 0)  //nie ma jej, a wiec naleza˜oby ja przniesc do ramu
 	{
 		zapewnij_wolne_miejsce_w_ramie();
 		przeniesStroniceDoRamu(numer_strony, TABLICA_STRON);
