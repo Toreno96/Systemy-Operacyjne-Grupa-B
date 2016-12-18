@@ -4,7 +4,7 @@
 #include"Process.hpp"
 #include"Undefined.hpp"
 #include"Locks.hpp"
-void Lock::show_list_of_processes()
+void Lock::Show_List_of_Processes()
 {
 	std::cout << "Names of processes under lock: " << std::endl;
 	int i = 1;
@@ -33,7 +33,7 @@ void Lock::lock(Process& process)
 	{
 		waiting_process_list.push_back(std::ref(process));
 		blocking_IDs_list.push_back(process.getName());
-		process.setState(Process::State::Waiting); 
+		process.wait();//oczekuje
 	}
 }
 void Lock::unlock(Process &process)
@@ -48,7 +48,7 @@ void Lock::unlock(Process &process)
 			{
 				waiting_process_list.pop_front();
 				blocking_IDs_list.pop_front();
-				process.setState(Process::State::Ready); 
+				process.ready();//gotowosc
 			}
 		}
 		else
@@ -56,3 +56,4 @@ void Lock::unlock(Process &process)
 			std::cout << "Error" << std::endl;
 		}
 }
+
