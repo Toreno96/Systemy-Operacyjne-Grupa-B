@@ -1,54 +1,55 @@
-ï»¿#pragma once
+#pragma once
 
 #include <functional>
 #include <map>
 #include <string>
 #include "Registers.h"
-#include "Undefined.hpp"
+#include "ZarzadzaniePamiecia.h"
 
 class Process {
-public:
-	static const unsigned int minPriority;
-	static const unsigned int maxPriority;
-	enum class State { New, Ready, Running, Waiting, Terminated };
-	Process(const std::string& name, unsigned int priority,
-		Undefined& pageTable);
-	std::string getName() const;
-	unsigned int getOriginalPriority() const;
-	unsigned int getCurrentPriority() const;
-	State getState() const;
-	Undefined& pageTable();
-	Registers getRegistersBackup() const;
-	int getInstructionCounter() const;
-	int getCurrentPriorityDuration() const;
-	// W przypadku podania etykiety, ktÃ³rej adres nie jest zapisany w bloku
-	// PCB, rzucony zostaje wyjÂ¹tek std::out_of_range
-	int getLabelAddress(const std::string& label) const;
-	void restoreOriginalPriority();
-	void increasePriority();
-	void decreasePriority();
-	void ready();
-	void run();
-	void wait();
-	void terminate();
-	void setRegistersBackup(const Registers& registers);
-	void setInstructionCounter(int instructionCounter);
-	void increaseCurrentPriorityDuration();
-	void saveLabelAddress(const std::string& label, int address);
-private:
-	void setPriority(unsigned int priority);
-	void resetCurrentPriorityDuration();
-	// Nazwa procesu jest jednoczeÅ“nie jego identyfikatorem, gdyÂ¿ jest ona
-	// unikatowa, ze wzglÃªdu na istnienie tylko jednej grupy procesÃ³w w naszym
-	// systemie
-	std::string name_;
-	unsigned int originalPriority_, currentPriority_;
-	State state_;
-	std::reference_wrapper< Undefined > pageTable_;
-	Registers registersBackup_;
-	int instructionCounter_,
-		currentPriorityDuration_;
-	std::map< std::string, int > labelsAddresses;
-	// Poza tym - skÂ³adowe potrzebne do komunikacji, ale wyglÂ¹du tych juÂ¿
-	// kompletnie nie znam. PotrzebujÃª info od Jakuba.
+  public:
+    static const unsigned int minPriority;
+    static const unsigned int maxPriority;
+    enum class State { New, Ready, Running, Waiting, Terminated };
+    Process( const std::string& name, unsigned int priority,
+        typ_tablicy_stron& pageTable );
+    std::string getName() const;
+    unsigned int getOriginalPriority() const;
+    unsigned int getCurrentPriority() const;
+    State getState() const;
+    typ_tablicy_stron& pageTable();
+    Registers getRegistersBackup() const;
+    int getInstructionCounter() const;
+    int getCurrentPriorityDuration() const;
+    // W przypadku podania etykiety, której adres nie jest zapisany w bloku
+    // PCB, rzucony zostaje wyj¹tek std::out_of_range
+    int getLabelAddress( const std::string& label ) const;
+    std::string getLastReceivedMessage() const;
+    void restoreOriginalPriority();
+    void increasePriority();
+    void decreasePriority();
+    void ready();
+    void run();
+    void wait();
+    void terminate();
+    void setRegistersBackup( const Registers& registers );
+    void setInstructionCounter( int instructionCounter );
+    void increaseCurrentPriorityDuration();
+    void saveLabelAddress( const std::string& label, int address );
+    void setLastReceivedMessage( const std::string& message );
+  private:
+    void setPriority( unsigned int priority );
+    void resetCurrentPriorityDuration();
+    // Nazwa procesu jest jednoczeœnie jego identyfikatorem, gdy¿ jest ona
+    // unikatowa, ze wzglêdu na istnienie tylko jednej grupy procesów w naszym
+    // systemie
+    std::string name_;
+    unsigned int originalPriority_, currentPriority_;
+    State state_;
+    std::reference_wrapper< typ_tablicy_stron > pageTable_;
+    Registers registersBackup_;
+    int instructionCounter_,
+        currentPriorityDuration_;
+    std::map< std::string, int > labelsAddresses_;
+    std::string lastReceivedMessage_;
 };

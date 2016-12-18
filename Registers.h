@@ -9,11 +9,14 @@ private:
 
 	int& getRegister(Register reg);
 
+
 public:
-	
+	friend class Interpreter;
+
 	Registers();
 	Registers(int A, int B, int C, int D);
 	
+
 
 	void moveToRegister(Register target, Register from);
 	void moveToRegister(Register target, int value);
@@ -30,5 +33,7 @@ public:
 	friend std::ostream& operator << (std::ostream& o, Registers a);
 
 	bool jumpCounterIsEmpty() const;
+
+	
 
 };
