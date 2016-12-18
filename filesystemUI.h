@@ -132,7 +132,7 @@ void display_file_list(std::list <FCB> &file_list)
 		cout << "\nLista plikow:";
 		for (auto it = file_list.begin(); it != file_list.end(); it++)
 		{
-			cout << "\n" << it->get_filename_as_string() << "." << it->get_type_as_string();
+			cout << "\n" << it->get_filename_as_string() << "." << it->get_type_as_string() << "\t" << (int)(it->get_firstSectorID());
 		}
 	}
 }
@@ -276,7 +276,7 @@ void load_file_from_Windows_and_save_on_harddrive(HardDrive &harddrive)
 		cout << "\nTo long filename";
 }
 
-void append_string_to_file(HardDrive &harddrive)
+void create_this_string_file_system(HardDrive &harddrive, string filename_as_string, string type_as_string, string good)
 {
 	string filename_as_string;
 	cout << "\nType a filename: "; //tylko filename

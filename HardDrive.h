@@ -253,37 +253,7 @@ public:
 			return 2; // brak miejsca na dysku
 		}
 	}
-	//
-	//char load_file_from_Windows_and_save_on_harddrive(array <char, fn> filename_, array <char, tn> type_) // 1 - operacja zakonczona powodzeniem
-	//{
-	//	//zamiana array filename_ i type_ na string
-	//	string myfile = filename_and_type_as_string(filename_, type_);
-
-	//	//wczytujemy plik z systemu windows
-	//	string good;
-	//	std::ifstream infile; infile.open(myfile);
-	//	if (infile.is_open())
-	//	{
-	//		while (infile.good())
-	//		{
-	//			char character;//string line;
-	//			character = infile.get();//getline(infile, line);//jak to zamienic na get?
-	//			//cout << "\nWczytalem znak " << character;
-	//			good.push_back(character);//good.append(line);
-	//		}
-	//		infile.close();
-	//		//cout << "\nCaly plik:\n"; cout << good;
-
-	//		create_empty_file(filename_, type_);
-	//		auto result = append_string_to_file(filename_, type_, good);
-	//		return result;
-	//	}
-	//	else
-	//	{
-	//		return 0;
-	//	}
-	//}
-	//
+	//poprawic na poprawna koncepcje
 	bool read_file(array <char, fn> filename_, array <char, tn> type_, string &result)//zwraca caly plik jako string
 	{
 		if (file_exist(filename_, type_))
@@ -327,7 +297,7 @@ public:
 			return 0;
 		}
 	}
-	bool append_string_to_file(array <char, fn> filename_, array <char, tn> type_, string good)
+	char append_string_to_file(array <char, fn> filename_, array <char, tn> type_, string good)
 	{
 		while (!(good.empty()))
 		{

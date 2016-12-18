@@ -13,6 +13,8 @@ int main()
 			<< "\n4 - create_empty_file"
 			<< "\n5 - delete_file"
 			<< "\n6 - load_file_from_Windows_and_save_on_harddrive"
+			<< "\n7 - create_this_string_file_system"
+			<< "\n8 - tu ma byc odczytywanie pliku"
 			<< "\nWybierz: ";
 		cin >> choice;
 
@@ -50,6 +52,11 @@ int main()
 		case 6:
 		{
 			load_file_from_Windows_and_save_on_harddrive(harddrive);
+			break;
+		}
+		case 7:
+		{
+			create_this_string_file_system(harddrive, "Pliczek", "txt", "Wynik silnia 5 = 120");
 			break;
 		}
 		default:
