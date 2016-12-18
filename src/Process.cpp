@@ -4,7 +4,7 @@ const unsigned int Process::minPriority = 0;
 const unsigned int Process::maxPriority = 7;
 
 Process::Process( const std::string& name, unsigned int priority,
-    Undefined& pageTable ) :
+    typ_tablicy_stron& pageTable ) :
         name_( name ), originalPriority_( priority ),
         currentPriority_( priority ), state_( Process::State::New ),
         pageTable_( std::ref( pageTable ) ), instructionCounter_( 0 ),
@@ -21,7 +21,7 @@ unsigned int Process::getCurrentPriority() const {
 Process::State Process::getState() const {
   return state_;
 }
-Undefined& Process::pageTable() {
+typ_tablicy_stron& Process::pageTable() {
   return pageTable_.get();
 }
 Registers Process::getRegistersBackup() const {

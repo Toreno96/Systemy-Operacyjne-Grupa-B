@@ -1,13 +1,16 @@
 // Compile with:
-// clang++ -std=c++14 -Wall -Wextra -Wshadow -Wpedantic src/Registers.cpp src/Process.cpp tests/helpers.cpp tests/process.cpp -o tests/process.exe
+// clang++ -std=c++14 -Wall -Wextra -Wshadow -Wpedantic src/Registers.cpp src/ZarzadzaniePamiecia.cpp src/Process.cpp tests/helpers.cpp tests/process.cpp -o tests/process.exe
 
 #include <iostream>
 #include "../src/Process.hpp"
-#include "../src/Undefined.hpp"
+#include "../src/ZarzadzaniePamiecia.h"
 #include "helpers.hpp"
 
 int main() {
-  Undefined p1PageTable;
+  inicjalizacja_PLIKU_WYMIANY();
+  
+  typ_tablicy_stron& p1PageTable = Porcjuj_i_wloz(
+      "A long time ago in a galaxy far, far away...." );
 
   Process p1( "p1", Process::minPriority, p1PageTable );
   printProcessData( p1 );
@@ -31,4 +34,6 @@ int main() {
   p1.restoreOriginalPriority();
   p1.terminate();
   printProcessData( p1 );
+
+  WYPISZ_PLIK_WYMIANY();
 }

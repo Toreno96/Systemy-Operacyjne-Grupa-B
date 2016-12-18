@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 #include "Registers.h"
-#include "Undefined.hpp"
+#include "ZarzadzaniePamiecia.h"
 
 class Process {
   public:
@@ -12,12 +12,12 @@ class Process {
     static const unsigned int maxPriority;
     enum class State { New, Ready, Running, Waiting, Terminated };
     Process( const std::string& name, unsigned int priority,
-        Undefined& pageTable );
+        typ_tablicy_stron& pageTable );
     std::string getName() const;
     unsigned int getOriginalPriority() const;
     unsigned int getCurrentPriority() const;
     State getState() const;
-    Undefined& pageTable();
+    typ_tablicy_stron& pageTable();
     Registers getRegistersBackup() const;
     int getInstructionCounter() const;
     int getCurrentPriorityDuration() const;
@@ -46,7 +46,7 @@ class Process {
     std::string name_;
     unsigned int originalPriority_, currentPriority_;
     State state_;
-    std::reference_wrapper< Undefined > pageTable_;
+    std::reference_wrapper< typ_tablicy_stron > pageTable_;
     Registers registersBackup_;
     int instructionCounter_,
         currentPriorityDuration_;

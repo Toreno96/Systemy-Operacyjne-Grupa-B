@@ -1,21 +1,20 @@
 // Compile with:
-// clang++ -std=c++14 -Wall -Wextra -Wshadow -Wpedantic src/Registers.cpp src/Process.cpp src/ProcessManager.cpp tests/helpers.cpp tests/pointerToProcess.cpp -o tests/pointerToProcess.exe
+// clang++ -std=c++14 -Wall -Wextra -Wshadow -Wpedantic src/Registers.cpp src/ZarzadzaniePamiecia.cpp src/Process.cpp src/ProcessManager.cpp tests/helpers.cpp tests/pointerToProcess.cpp -o tests/pointerToProcess.exe
 
 #include <algorithm>
 #include <iostream>
 #include <list>
-#include "../src/Process.hpp"
 #include "../src/ProcessManager.hpp"
-#include "../src/Undefined.hpp"
 #include "helpers.hpp"
 
 int main() {
+  inicjalizacja_PLIKU_WYMIANY();
   ProcessManager processManager;
   
-  processManager.createProcess( "p1", Undefined() );
-  processManager.createProcess( "p2", Undefined(), 1 );
-  processManager.createProcess( "p3", Undefined(), 4 );
-  processManager.createProcess( "p4", Undefined() );
+  processManager.createProcess( "p1", std::string() );
+  processManager.createProcess( "p2", std::string(), 1 );
+  processManager.createProcess( "p3", std::string(), 4 );
+  processManager.createProcess( "p4", std::string() );
   std::cout << "List of processes after adding four processes:\n\n";
   std::list< Process >& processes = processManager.processes();
   std::for_each( processes.begin(), processes.end(), printProcessData );
