@@ -64,6 +64,9 @@ private:
 				else // jesli zagniezdzony indeks jest sektorem danych
 				{
 					result.append(harddrive[*it2].get_data_as_string());
+					//cout << "\nAktualny result:\n";
+					//cout << result;
+					//cout << "\nKoniec";
 				}
 			}
 		}
@@ -112,7 +115,6 @@ private:
 			return errorchar;
 		}
 	}
-	//w trakcie
 	void delete_deep_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
 	{
 		cout << "\nMamy usunac sektor " << (int)ID;
@@ -143,8 +145,10 @@ private:
 		if (file_exist(filename_, type_))
 		{
 			auto it = Catalog.begin();
-			for (; it != Catalog.end() && it->get_filename() != filename_ && it->get_type() != type_; it++) // szukamy danego pliku
+			for (; it != Catalog.end(); it++) // szukamy danego pliku
 			{
+				if (it->get_filename() == filename_ && it->get_type() == type_)
+					break;
 			}
 
 			if (it->get_filename() == filename_ && it->get_type() == type_)
@@ -215,8 +219,6 @@ private:
 			return 0; // plik nie istnieje
 		}
 	}
-
-public:
 	bool file_exist(array <char, fn> filename_, array <char, tn> type_) // 1 - plik istnieje, 0 - plik nieistnieje
 	{
 		for (auto it = Catalog.begin(); it != Catalog.end(); it++)
@@ -229,6 +231,8 @@ public:
 		}
 		return 0;
 	}
+	
+public:
 	char create_empty_file(array <char, fn> filename_, array <char, tn> type_) // 2 - brak miejsca, 1 - ok, 0 - plik juz istnieje
 	{
 		if (file_exist(filename_, type_))
@@ -254,24 +258,27 @@ public:
 		}
 	}
 	//poprawic na poprawna koncepcje
-	bool read_file(array <char, fn> filename_, array <char, tn> type_, string &result)//zwraca caly plik jako string
+	bool read_file(array <char, fn> filename_, array <char, tn> type_, string &result)//1 - przypisanie sie powiodlo, 0 - przypisano komunikat bledu
 	{
 		if (file_exist(filename_, type_))
 		{
-			string result;
+			result;
 			for (auto it = Catalog.begin(); it != Catalog.end(); it++)
 			{
 				if (it->get_filename() == filename_ && it->get_type() == type_)
 				{
 					char firstSectorID = it->get_firstSectorID(); // SectorID odczytane z katalogu
 					append_to_string_from_deep_index(firstSectorID, result);
+					//cout << "\nOstateczny result:\n";
+					//cout << result;
+					//cout << "\nKoniec resultu";
 				}
 			}
 			return 1;
 		}
 		else
 		{
-			string result = "No such file.";
+			result = "No such file.";
 			return 0;
 		}
 	}

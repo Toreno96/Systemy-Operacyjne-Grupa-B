@@ -61,18 +61,18 @@ public:
 	{
 		if (mode == 0)//jesli sektor przechowuje indeksy plikow
 		{//podzial wynika z tego ze na koncu sektora indeksowego musi byc indeks kolejnego sektora indeksowego
-			cout << "\nMetoda add_one_data dla sektora indeksowego";
+			//cout << "\nMetoda add_one_data dla sektora indeksowego";
 			auto it = bitvector.begin();//iterator bitvectora
 			int i = 0;
 			for (; (it + 1) != bitvector.end() && (*it != 1); it++, i++) // szukamy wolnego bool czyli char w array data
 			{
 			}
-			cout << "\nWolny char to " << i;
+			//cout << "\nWolny char to " << i;
 			if ((it + 1) != bitvector.end() && *it == 1) // jesli znalezlismy wolny element i nie jest on ostatni
 			{
 				*it = 0; // oznaczamy char jako zajety
 				data[i] = one_data;
-				cout << "\nPrzypisalismy " << (int)one_data << " do chara " << i;
+				//cout << "\nPrzypisalismy " << (int)one_data << " do chara " << i;
 				return 1;
 			}
 			else if ((it + 1) == bitvector.end()) // jesli wszystko az do przedostatniego jest zajete
@@ -147,7 +147,7 @@ public:
 				result.push_back(*it2);
 			}
 		}
-		cout << "\nZaraz zwroce result";
+		//cout << "\nZaraz zwroce result";
 		return result;
 	}
 	bool get_mode() { return mode; }

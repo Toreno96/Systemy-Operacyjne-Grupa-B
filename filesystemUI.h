@@ -51,7 +51,6 @@ array <char, fn> convert_filename_to_array(string filename_as_string)
 
 array <char, tn> convert_type_to_array(string type_as_string)
 {
-
 	//cout << "\nDlugosc rozszerzenia to " << type_as_string.size();
 	array <char, tn> type;
 	if (type_as_string.size() <= tn)
@@ -125,29 +124,29 @@ void display_file_list(std::list <FCB> &file_list)
 {
 	if (file_list.begin() == file_list.end())
 	{
-		cout << "\nLista plikow jest pusta";
+		cout << "\nList of files is empty!";
 	}
 	else
 	{
-		cout << "\nLista plikow:";
+		cout << "\nList of files:\t1st index sector";
 		for (auto it = file_list.begin(); it != file_list.end(); it++)
 		{
-			cout << "\n" << it->get_filename_as_string() << "." << it->get_type_as_string() << "\t" << (int)(it->get_firstSectorID());
+			cout << "\n" << it->get_filename_as_string() << "." << it->get_type_as_string() << "\t\t" << (int)(it->get_firstSectorID());
 		}
 	}
 }
-
+//ta metoda nie bedzie dostepna dla usera w ostatecznej wersji
 void create_empty_file(HardDrive &harddrive)
 {
 	string filename_as_string;
-	cout << "\nPodaj nazwe pliku: "; //tylko filename
+	cout << "\nType a filename: "; //tylko filename
 	cin >> filename_as_string;
 	auto filename = convert_filename_to_array(filename_as_string); // auto to array <char, fn>
 	
 	if (*filename.begin() != 0)
 	{
 		string type_as_string;
-		cout << "\nPodaj rozszerzenie pliku: "; //tylko rozszerzenei
+		cout << "\nType an extension: "; //tylko rozszerzenei
 		cin >> type_as_string;
 		auto type = convert_type_to_array(type_as_string);
 
@@ -159,7 +158,7 @@ void create_empty_file(HardDrive &harddrive)
 			else if (result == 2)
 				cout << "\nBrak miejsca na dysku by utworzyc nowy plik.";
 			else if (result == 0)
-				cout << "\nTaki plik juz istnieje";
+				cout << "\nFile already exists.";
 		}
 		else
 			cout << "\nRozszerzenie pliku jest za dlugie";
@@ -171,14 +170,14 @@ void create_empty_file(HardDrive &harddrive)
 void append_string_to_file(HardDrive &harddrive)
 {
 	string filename_as_string;
-	cout << "\nPodaj nazwe pliku: "; //tylko filename
+	cout << "\nType a filename: "; //tylko filename
 	cin >> filename_as_string;
 	auto filename = convert_filename_to_array(filename_as_string); // auto to array <char, fn>
 
 	if (*filename.begin() != 0)
 	{
 		string type_as_string;
-		cout << "\nPodaj rozszerzenie pliku: "; //tylko rozszerzenie
+		cout << "\nType an extension: "; //tylko rozszerzenie
 		cin >> type_as_string;
 		auto type = convert_type_to_array(type_as_string);
 
@@ -196,7 +195,7 @@ void append_string_to_file(HardDrive &harddrive)
 				cout << "No such file";
 		}
 		else
-			cout << "\nTo long type";
+			cout << "\nTo long extension.";
 	}
 	else
 		cout << "\nTo long filename";
@@ -206,12 +205,12 @@ void append_string_to_file(HardDrive &harddrive)
 void delete_file(HardDrive &harddrive)
 {
 	string filename_as_string;
-	cout << "\nPodaj nazwe pliku: "; //tylko filename
+	cout << "\nType a filename: "; //tylko filename
 	cin >> filename_as_string;
 	auto filename = convert_filename_to_array(filename_as_string); // auto to array <char, fn>
 
 	string type_as_string;
-	cout << "\nPodaj rozszerzenie pliku: "; //tylko rozszerzenei
+	cout << "\nType an extension: "; //tylko rozszerzenei
 	cin >> type_as_string;
 	auto type = convert_type_to_array(type_as_string);
 	
@@ -256,7 +255,48 @@ void load_file_from_Windows_and_save_on_harddrive(HardDrive &harddrive)
 				infile.close();
 				//cout << "\nCaly plik:\n"; cout << good;
 
-				harddrive.create_empty_file(filename, type);
+				auto result_create = harddrive.create_empty_file(filename, type);
+				if (result_create == 1)
+				{
+					auto result = harddrive.append_string_to_file(filename, type, good);
+
+					if (result == 1)
+						cout << "\nFile saved properly";
+					else if (result == 0)
+						cout << "\nNo such file.";
+					else if (result == 2)
+						cout << "\nNot enough space.";
+				}
+				else if (result_create == 0)
+				{
+					cout << "\nFile already exists.";
+				}
+				else if (result_create == 2)
+					cout << "\nNot enough space.";
+			}
+			else
+				cout << "\nNo such file.";
+		}
+		else
+			cout << "\nTo long extension.";
+	}
+	else
+		cout << "\nTo long filename";
+}
+
+void create_this_string_file_system(HardDrive &harddrive, string filename_as_string, string type_as_string, string good)
+{
+	auto filename = convert_filename_to_array(filename_as_string); // auto to array <char, fn>
+
+	if (*filename.begin() != 0)
+	{
+		auto type = convert_type_to_array(type_as_string);
+
+		if (*type.begin() != 0)
+		{
+			auto result_create = harddrive.create_empty_file(filename, type);
+			if (result_create == 1)
+			{
 				auto result = harddrive.append_string_to_file(filename, type, good);
 
 				if (result == 1)
@@ -266,17 +306,21 @@ void load_file_from_Windows_and_save_on_harddrive(HardDrive &harddrive)
 				else if (result == 2)
 					cout << "\nNot enough space.";
 			}
-			else
-				cout << "\nNo such file.";
+			else if (result_create == 0)
+			{
+				cout << "\nFile already exists.";
+			}
+			else if (result_create == 2)
+				cout << "\nNot enough space.";
 		}
 		else
-			cout << "\nTo long type";
+			cout << "\nTo long extension.";
 	}
 	else
 		cout << "\nTo long filename";
 }
 
-void create_this_string_file_system(HardDrive &harddrive, string filename_as_string, string type_as_string, string good)
+void read_file(HardDrive &harddrive)
 {
 	string filename_as_string;
 	cout << "\nType a filename: "; //tylko filename
@@ -292,39 +336,15 @@ void create_this_string_file_system(HardDrive &harddrive, string filename_as_str
 
 		if (*type.begin() != 0)
 		{
-			//zamiana array filename_ i type_ na string
-			string myfile = filename_and_type_as_string(filename, type);
-
-			//wczytujemy plik z systemu windows
-			string good;
-			std::ifstream infile; infile.open(myfile);
-			if (infile.is_open())
-			{
-				while (infile.good())
-				{
-					char character;//string line;
-					character = infile.get();//getline(infile, line);//jak to zamienic na get?
-											 //cout << "\nWczytalem znak " << character;
-					good.push_back(character);//good.append(line);
-				}
-				infile.close();
-				//cout << "\nCaly plik:\n"; cout << good;
-
-				harddrive.create_empty_file(filename, type);
-				auto result = harddrive.append_string_to_file(filename, type, good);
-
-				if (result == 1)
-					cout << "\nFile saved properly";
-				else if (result == 0)
-					cout << "\nNo such file.";
-				else if (result == 2)
-					cout << "\nNot enough space.";
-			}
-			else
-				cout << "\nNo such file.";
+			string result;
+			if (harddrive.read_file(filename, type, result) == true)
+			{}//tak wiem ze i tak i tak sie wyswietli
+			cout << "\nPoczatek pliku\n";
+			cout << result;
+			cout << "\nKoniec pliku";
 		}
 		else
-			cout << "\nTo long type";
+			cout << "\nTo long extension.";
 	}
 	else
 		cout << "\nTo long filename";

@@ -14,7 +14,7 @@ int main()
 			<< "\n5 - delete_file"
 			<< "\n6 - load_file_from_Windows_and_save_on_harddrive"
 			<< "\n7 - create_this_string_file_system"
-			<< "\n8 - tu ma byc odczytywanie pliku"
+			<< "\n8 - read_file"
 			<< "\nWybierz: ";
 		cin >> choice;
 
@@ -56,7 +56,15 @@ int main()
 		}
 		case 7:
 		{
-			create_this_string_file_system(harddrive, "Pliczek", "txt", "Wynik silnia 5 = 120");
+			string filename = "Pliczek";
+			string type = "txt";
+			string mystring = "Wynik silnia 5 = 120";
+			create_this_string_file_system(harddrive, filename, type, mystring);
+			break;
+		}
+		case 8:
+		{
+			read_file(harddrive);
 			break;
 		}
 		default:
