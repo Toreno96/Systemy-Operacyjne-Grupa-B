@@ -12,11 +12,11 @@ int main() {
   ProcessManager processManager;
 
   processManager.createProcess( "p1",
-      "A long time ago in a galaxy far, far away...." );
-  processManager.createProcess( "p2", "Say hello to my little friend!", 1 );
+      "A long time ago in a galaxy far, far away....\n" );
+  processManager.createProcess( "p2", "Say hello to my little friend!\n", 1 );
   // Powoduje rzucenie wyj¹tku
   //processManager.createProcess( "p2", pPageTable, 2 );
-  processManager.createProcess( "p3", "Hasta la vista, baby!", 2 );
+  processManager.createProcess( "p3", "Hasta la vista, baby!\n", 2 );
   std::cout << "List of processes after adding three processes:\n\n";
   std::list< Process >& processes = processManager.processes();
   std::for_each( processes.begin(), processes.end(), printProcessData );

@@ -10,7 +10,7 @@ int main() {
   inicjalizacja_PLIKU_WYMIANY();
   
   typ_tablicy_stron& p1PageTable = Porcjuj_i_wloz(
-      "A long time ago in a galaxy far, far away...." );
+      "A long time ago in a galaxy far, far away....\n" );
 
   Process p1( "p1", Process::minPriority, p1PageTable );
   printProcessData( p1 );
