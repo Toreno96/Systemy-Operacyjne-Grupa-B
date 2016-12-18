@@ -64,9 +64,6 @@ private:
 				else // jesli zagniezdzony indeks jest sektorem danych
 				{
 					result.append(harddrive[*it2].get_data_as_string());
-					//cout << "\nAktualny result:\n";
-					//cout << result;
-					//cout << "\nKoniec";
 				}
 			}
 		}
@@ -76,25 +73,23 @@ private:
 			cout << message;
 		}
 	}
-	//
-	//string filename_and_type_as_string(array <char, fn> filename_, array <char, tn> type_)
-	//{
-	//	string file_type_as_string;
-	//	for (auto it = filename_.begin(); it != filename_.end(); it++)
-	//	{
-	//		if(*it != 0)
-	//			file_type_as_string.push_back(*it);
-	//	}
-	//	file_type_as_string.push_back('.');
-	//	for (auto it = type_.begin(); it != type_.end(); it++)
-	//	{
-	//		if (*it != 0)
-	//			file_type_as_string.push_back(*it);
-	//	}
-	//	//cout << "\nfile_type_as_string: " << file_type_as_string;
-	//	return file_type_as_string;
-	//}
-	//
+	string filename_and_type_as_string(array <char, fn> filename_, array <char, tn> type_)
+	{
+		string file_type_as_string;
+		for (auto it = filename_.begin(); it != filename_.end(); it++)
+		{
+			if(*it != 0)
+				file_type_as_string.push_back(*it);
+		}
+		file_type_as_string.push_back('.');
+		for (auto it = type_.begin(); it != type_.end(); it++)
+		{
+			if (*it != 0)
+				file_type_as_string.push_back(*it);
+		}
+		//cout << "\nfile_type_as_string: " << file_type_as_string;
+		return file_type_as_string;
+	}
 	char find_deep_index_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
 	{
 		if (harddrive[ID].get_mode() == 0) // jesli jest to sektor indeksowy
@@ -105,7 +100,6 @@ private:
 			}
 			else
 			{
-				//cout << "\nNajglebszy sektor indeksowy to " << (int)ID;
 				return ID; // jestli nie ma kolejnych sektorow indeksowych zwracamy nasze id jako ze jestesmy ostatni
 			}
 		}
@@ -115,40 +109,25 @@ private:
 			return errorchar;
 		}
 	}
-	void delete_deep_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
+	void delete_deep_index_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
 	{
-		cout << "\nMamy usunac sektor " << (int)ID;
-		Sector clear_sector;
 		if (harddrive[ID].get_mode() == 0) // jesli jest to sektor indeksowy
-		{//trzeba zwolnic wszystkie sektory z danymi
-			auto bitvector = harddrive[ID].get_bitvector();
-			auto data = harddrive[ID].get_data();
-			for (char i = 0; i < (n - 1); i++)//iterujemy po wszystkich elementach bitvectora
+		{
+			harddrive[ID].set_free(1);
+			if (!(harddrive[ID].get_last_bitvector())) // jestli element jest zajety
 			{
-				if (bitvector[i] == 0)//jesli element jest zajety
-				{
-					harddrive[data[i]] = clear_sector;
-					bitvector[i] = 1;
-					data[i] = 0;
-				}
-			}
-
-			if (harddrive[ID].get_last_bitvector() == 0) // jestli element jest zajety
-			{
-				delete_deep_sector_ID(harddrive[ID].get_last_data());//wywolujemy metode szukajaca glebiej - sama siebie
+				delete_deep_index_sector_ID(harddrive[ID].get_last_data());//wywolujemy metode szukajaca glebiej - sama siebie
 			}
 		}
-			harddrive[ID] = clear_sector; // tworzymy pusty sektor i nadpisujemy ten stary
 	}
-	char add_data_sector_to_file(array <char, fn> filename_, array <char, tn> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
+	bool add_data_sector_to_file(array <char, fn> filename_, array <char, tn> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
 	{
+		cout << "\n\nWeszlismy do add_data_sector_to_file";
 		if (file_exist(filename_, type_))
 		{
 			auto it = Catalog.begin();
-			for (; it != Catalog.end(); it++) // szukamy danego pliku
+			for (; it != Catalog.end() && it->get_filename() != filename_ && it->get_type() != type_; it++) // szukamy danego pliku
 			{
-				if (it->get_filename() == filename_ && it->get_type() == type_)
-					break;
 			}
 
 			if (it->get_filename() == filename_ && it->get_type() == type_)
@@ -158,54 +137,45 @@ private:
 				//cout << "\nWolny jest sektor " << (int)free_sector_id;
 				if (free_sector_id < max_sector_number)
 				{
-					harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor z danymi
-					//cout << "\nNadpisalismy sektor " << (int)free_sector_id;
+					harddrive[free_sector_id] = sector;//nadpisujemy wolny sektor przez nasz sektor
+					cout << "\nNadpisalismy sektor " << (int)free_sector_id;
 					index_sector_ID = find_deep_index_sector_ID(index_sector_ID); // znajdujemy najglebszy sektor indeksowy
-					//cout << "\n\nAktualny index_sector_ID: " << (int)index_sector_ID;
 					if (harddrive[index_sector_ID].add_one_data(free_sector_id))//dodajemy indeks do sektora indeksowego
 					{
-						//cout << "\ndodajemy indeks do sektora indeksowego " << index_sector_ID;
+						cout << "\ndodajemy indeks do sektora indeksowego";
 						return 1; // udalo sie
 					}
 					else // jesli mozemy dodac juz tylko ostatni element
 					{//sektor indeksowy sie skonczyl. rezerwujemy nowy i bedziemy przypisywac kolejne indeksy do nowego
-						//cout << "\nSektor indeksowy sie skonczyl";
-						auto next_index_sector_ID = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
-						//cout << "\nKolejny wolny sektor indeksowy to " << (int)next_index_sector_ID;
-						if (next_index_sector_ID < max_sector_number)
+						cout << "\nSektor indeksowy sie skonczyl";
+						auto free_sector_id = find_empty_sector();//znajdujemy wolny sektor i zapamietujemy jego indeks
+						if (free_sector_id < max_sector_number)
 						{
-							"\nWeszlismy tu";
-							harddrive[next_index_sector_ID].set_mode(0); // 0 - przechowuje indeksy
-							harddrive[next_index_sector_ID].set_free(0);// ustawiamy na zajety
-							auto cos = harddrive[next_index_sector_ID].add_one_data(free_sector_id);//dodajemy sektor z danymi do nowego sektora indeksowego 
-
-							//Sector next_index_sector;
-							//next_index_sector.set_mode(0); // 0 - przechowuje indeksy
-							//next_index_sector.set_free(0); // ustawiamy na zajety
-							if (harddrive[index_sector_ID].add_last_data(next_index_sector_ID))//dodajemy ostatni indeks do wczesniejszego sektora indeksowego
+							Sector new_index_sector;
+							new_index_sector.set_mode(0); // 0 - przechowuje indeksy
+							new_index_sector.set_free(0); // ustawiamy na zajety
+							if (harddrive[index_sector_ID].add_last_data(free_sector_id))//dodajemy ostatni indeks do sektora indeksowego
 							{
+								index_sector_ID = free_sector_id; // nadpisujemy firstSectorID by juz sie do niego nie odnosic bo jest zajety
 								return 1;
 							}
 							else
 							{
-								cout << "\nBlad nieznany\nten sektor jest zajety a nie powinen byc";//to sie nei zdarzy
+								cout << "\nBlad nieznany\nten sektor jest zajety a nie powinen byc";
 								return 0;
 							}
 						}
 						else
 						{
-							cout << "\nNot enough space.";
-							//zeby nie bylo "wycieku pamieci" czyscimy ten ostatni sektor z danymi
-							Sector clear_sector;
-							harddrive[free_sector_id] = clear_sector;
-							return 2;
+							cout << "\nBrak miejsca na dysku. Skonczyly sie sektory";
+							return 0;
 						}
 					}
 				}
 				else
 				{
-					cout << "\nNot enough space.";
-					return 2;
+					cout << "\nBrak miejsca na dysku. Skonczyly sie wolne sektory";
+					return 0;
 				}
 			}
 			else
@@ -219,6 +189,8 @@ private:
 			return 0; // plik nie istnieje
 		}
 	}
+
+public:
 	bool file_exist(array <char, fn> filename_, array <char, tn> type_) // 1 - plik istnieje, 0 - plik nieistnieje
 	{
 		for (auto it = Catalog.begin(); it != Catalog.end(); it++)
@@ -231,8 +203,6 @@ private:
 		}
 		return 0;
 	}
-	
-public:
 	char create_empty_file(array <char, fn> filename_, array <char, tn> type_) // 2 - brak miejsca, 1 - ok, 0 - plik juz istnieje
 	{
 		if (file_exist(filename_, type_))
@@ -257,29 +227,93 @@ public:
 			return 2; // brak miejsca na dysku
 		}
 	}
-	//poprawic na poprawna koncepcje
-	bool read_file(array <char, fn> filename_, array <char, tn> type_, string &result)//1 - przypisanie sie powiodlo, 0 - przypisano komunikat bledu
+	bool load_file_from_Windows_and_save_on_harddrive(array <char, fn> filename_, array <char, tn> type_) // 1 - operacja zakonczona powodzeniem
+	{
+		//zamiana array filename_ i type_ na string
+		string myfile = filename_and_type_as_string(filename_, type_);
+
+		//wczytujemy plik z systemu windows
+		string good;
+		std::ifstream infile; infile.open(myfile);
+		if (infile.is_open())
+		{
+			while (infile.good())
+			{
+				char character;//string line;
+				character = infile.get();//getline(infile, line);//jak to zamienic na get?
+				//cout << "\nWczytalem znak " << character;
+				good.push_back(character);//good.append(line);
+			}
+			infile.close();
+			//cout << "\nCaly plik:\n"; cout << good;
+
+			create_empty_file(filename_, type_);
+			bool is_ok = true;
+			while (!(good.empty()))
+			{
+				//cout << "\nzamiana string na sektory";//zamiana string na sektory
+				array <bool, n> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
+				array <char, n> data = create_empty_data_array();
+				for (int i = 0; i < n && !(good.empty()); i++)
+				{
+					bitvector[i] = 0; // oznaczamy char jako uzywany
+					data[i] = *(good.begin()); // wyluskanie wartosci begin
+					//cout << "\ndata " << i << ": " << data[i];
+					good.erase(good.begin()); // usuwa pierwszy element
+				}
+				Sector sector;
+				sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
+				//
+				//auto temp = sector.get_data_as_string();
+				//cout << "\ntemp: " << temp;
+				//
+				if (add_data_sector_to_file(filename_, type_, sector))//dodajmy sektor do pliku
+				{
+					cout << "\nUdalo sie poprawnie dopisac sektor";
+				}
+				else
+				{
+					cout << "\nNie udalo sie dopisac sektoru";
+					is_ok = false;
+					delete_file(filename_, type_);
+					break; // wyjsc z petli for
+				}
+			}
+			if (is_ok)
+				return 1;
+			else
+				return 0;
+		}
+		else
+		{
+			cout << "\nPlik nie zostal otwarty";
+			return 0;
+		}
+	}
+	string read_file(array <char, fn> filename_, array <char, tn> type_)//zwraca caly plik jako string
 	{
 		if (file_exist(filename_, type_))
 		{
-			result;
+			string file;
 			for (auto it = Catalog.begin(); it != Catalog.end(); it++)
 			{
 				if (it->get_filename() == filename_ && it->get_type() == type_)
 				{
 					char firstSectorID = it->get_firstSectorID(); // SectorID odczytane z katalogu
-					append_to_string_from_deep_index(firstSectorID, result);
-					//cout << "\nOstateczny result:\n";
-					//cout << result;
-					//cout << "\nKoniec resultu";
+					append_to_string_from_deep_index(firstSectorID, file);
+				}
+				else
+				{
+					string message = "Niby plik istnieje ale jednak nie ma zgodnosci???";
+					return message;
 				}
 			}
-			return 1;
+			return file;
 		}
 		else
 		{
-			result = "No such file.";
-			return 0;
+			string message = "No such file.";
+			return message;
 		}
 	}
 	bool delete_file(array <char, fn> filename_, array <char, tn> type_) // 1 zakonczone powodzeniem
@@ -292,7 +326,7 @@ public:
 				if (it->get_filename() == filename_ && it->get_type() == type_)
 				{
 					//cout << "\nNa pewno taki plik istnieje, bo jestesmy az tu";
-					delete_deep_sector_ID(it->get_firstSectorID());
+					delete_deep_index_sector_ID(it->get_firstSectorID());
 					Catalog.erase(it);//trzeba usunac wpis katalogowy od tego pliku
 					return 1;
 				}//else nie robilby nic
@@ -304,43 +338,40 @@ public:
 			return 0;
 		}
 	}
-	char append_string_to_file(array <char, fn> filename_, array <char, tn> type_, string good)
+	/*
+	bool append_string_to_file(array <char, fn> filename_, array <char, tn> type_, string good)
 	{
+		//create_empty_file(filename_, type_);
 		while (!(good.empty()))
 		{
-			//cout << "\nzamiana string na sektory";//zamiana string na sektory
+			//zamiana string na sektory
 			array <bool, n> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
 			array <char, n> data = create_empty_data_array();
 			for (int i = 0; i < n && !(good.empty()); i++)
 			{
 				bitvector[i] = 0; // oznaczamy char jako uzywany
 				data[i] = *(good.begin()); // wyluskanie wartosci begin
-										   //cout << "\ndata " << i << ": " << data[i];
 				good.erase(good.begin()); // usuwa pierwszy element
 			}
 			Sector sector;
 			sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
-												  //
-												  //auto temp = sector.get_data_as_string();
-												  //cout << "\ntemp: " << temp;
-			auto result = add_data_sector_to_file(filename_, type_, sector);
-			if ( result == 1)//dodajmy sektor do pliku
+			if (add_data_sector_to_file(filename_, type_, sector))//dodajmy sektor do pliku
 			{
-				//cout << "\nUdalo sie poprawnie dopisac sektor";
 			}
-			else if(result == 0)
+			else
 			{
-				//cout << "\nNo such file.";
-				return result;
-			}
-			else if (result == 2)
-			{
-				//cout << "\nNot enough space.";
-				return result;
+				cout << "\nBrak miejsca na dysku";
+				//delete_file(filename_, type_);
+				break; // wyjsc z petli for
 			}
 		}
-		return 1;
+		if (good.empty())
+			return 1;
+		else
+			return 0;
 	}
+	//metoda dopisywania danych do pliku tylko jak bedzie czas
+	*/
 	std::list <FCB> get_file_list()
 	{
 		return Catalog;

@@ -7,8 +7,7 @@
 #include "CPU.h"
 #include <locale>
 #include "HardDrive.h"
-#include "ZarzadzaniePamiecia.h"
-//+ stumyki
+//+ stumyki i pamiêæ
 
 class Interpreter
 {
@@ -16,7 +15,7 @@ private:
 	ProcessManager* processManager_;
 	CPU* cpu_;
 	HardDrive* hardDrive_;
-	// NamedPipes* namedPipes_;
+	//analogicznie pliki i komunikacja
 	std::map<std::string, std::function<void(std::vector<std::string>)>> instruction;
 	void initInstructions();
 	bool is_number(const std::string& s);
