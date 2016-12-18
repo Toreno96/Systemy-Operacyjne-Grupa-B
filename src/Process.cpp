@@ -34,7 +34,7 @@ int Process::getCurrentPriorityDuration() const {
   return currentPriorityDuration_;
 }
 int Process::getLabelAddress( const std::string& label ) const {
-  return labelsAddresses.at( label );
+  return labelsAddresses_.at( label );
 }
 std::string Process::getLastReceivedMessage() const {
   return lastReceivedMessage_;
@@ -94,7 +94,7 @@ void Process::resetCurrentPriorityDuration() {
   currentPriorityDuration_ = 0;
 }
 void Process::saveLabelAddress( const std::string& label, int address ) {
-  labelsAddresses[ label ] = address;
+  labelsAddresses_[ label ] = address;
 }
 void Process::setLastReceivedMessage( const std::string& message ) {
   lastReceivedMessage_ = message;

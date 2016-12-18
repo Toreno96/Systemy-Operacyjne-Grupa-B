@@ -50,6 +50,6 @@ class Process {
     Registers registersBackup_;
     int instructionCounter_,
         currentPriorityDuration_;
-    std::map< std::string, int > labelsAddresses;
+    std::map< std::string, int > labelsAddresses_;
     std::string lastReceivedMessage_;
 };
