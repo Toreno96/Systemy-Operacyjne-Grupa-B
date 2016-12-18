@@ -37,8 +37,8 @@ void Interpreter::initInstructions()
 	
 	instruction["XC"] = [this](std::vector<std::string> arguments) {
 		std::string programCode;
-	//	if(hardDrive_->read_file(convertToFileName(arguments[1]),ext,programCode))
-	//	processManager_->createProcess(arguments[0],programCode); //****
+		if(hardDrive_->read_file(convertToFileName(arguments[1]),ext,programCode))
+		processManager_->createProcess(arguments[0],programCode);
 	};
 
 	instruction["XD"] = [this](std::vector<std::string> arguments) {
@@ -46,11 +46,11 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["XR"] = [this](std::vector<std::string> arguments) {
-		//potoki
+		//namedPipes_.receiveMessage(processManager->getRunningProcess());
 	};
 
 	instruction["XS"] = [this](std::vector<std::string> arguments) {
-		//potoki
+	//	namedPipes_.sendMessage(arguments[0], arguments[1]);
 	};
 
 	instruction["XN"] = [this](std::vector<std::string> arguments) {
@@ -87,24 +87,18 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["MF"] = [this](std::vector<std::string> arguments) {
-		
-
-		
-
 		hardDrive_->create_empty_file(convertToFileName(arguments[0]), ext);
 	};
 
 	instruction["WF"] = [this](std::vector<std::string> arguments) {
-		//jeszcze nie gotowe hardDrive_->
+		hardDrive_->append_string_to_file(convertToFileName(arguments[0]), ext, arguments[1]);
 	};
 
 	instruction["WR"] = [this](std::vector<std::string> arguments) {
-	//^^
+		hardDrive_->append_string_to_file(convertToFileName(arguments[0]), ext, std::to_string(cpu_->getRegisters()->getRegister(interpreteRegister(arguments[1]))));
 	};
 
 	instruction["DF"] = [this](std::vector<std::string> arguments) {
-		
-
 		hardDrive_->delete_file(convertToFileName(arguments[0]), ext);
 	};
 
@@ -150,16 +144,16 @@ std::vector<std::string> Interpreter::loadInstruction()
 	char ch = '0';
 	int adress;
 	int adress_iterator;
-	//typ_tablicy_stron pageTable;
+	typ_tablicy_stron pageTable;
 	
 			adress = adress_iterator = processManager_->getRunningProcess().getInstructionCounter();
-			//pageTable = processManager_->getRunningProcess().pageTable();
+			pageTable = processManager_->getRunningProcess().pageTable();
 		
 	
 
 	while (ch != '\n')
 	{
-	//ch = zarzadzaniePamiecia_->daj_mi_litere(adress_iterator, pageTable);
+	ch = daj_mi_litere(adress_iterator, pageTable);
 	adress_iterator++;
 		if (ch == '\n')
 		{
@@ -192,6 +186,8 @@ std::array<char, 8U> Interpreter::convertToFileName(std::string fileName)
 	{
 		fileName_converted[i] = fileName[i];
 	}
+
+	return fileName_converted;
 }
 
 void Interpreter::doInstruction(std::string name, std::vector<std::string>arguments)

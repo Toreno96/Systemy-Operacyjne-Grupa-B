@@ -9,9 +9,9 @@ int main()
 	ProcessManager pm;
 	HardDrive hd;
 	Interpreter interpreter(&pm, &cpus, &hd);
-	pm.createProcess("kapec", Undefined(), 3);
-	pm.createProcess("szlafrok", Undefined(), 4);
-	pm.createProcess("hultaj", Undefined(), 4);
+	pm.createProcess("kapec", "1", 3);
+	pm.createProcess("szlafrok", "2", 4);
+	pm.createProcess("hultaj", "3", 4);
 	
 	for (auto& a : pm.processes())
 
