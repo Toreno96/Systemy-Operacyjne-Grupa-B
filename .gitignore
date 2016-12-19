@@ -264,7 +264,6 @@ paket-files/
 __pycache__/
 *.pyc
 
-<<<<<<< HEAD
 # Compiled Dynamic libraries
 *.so
 *.dylib
@@ -285,7 +284,6 @@ __pycache__/
 *.out
 *.app
 /SOproject/SOproject.VC.VC.opendb
-=======
+
 # Cake - Uncomment if you are using it
 # tools/
->>>>>>> master
