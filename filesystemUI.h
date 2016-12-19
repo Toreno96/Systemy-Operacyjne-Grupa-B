@@ -245,13 +245,15 @@ void load_file_from_Windows_and_save_on_harddrive(HardDrive &harddrive)
 			std::ifstream infile; infile.open(myfile);
 			if (infile.is_open())
 			{
-				while (infile.good())
-				{
-					char character;//string line;
-					character = infile.get();//getline(infile, line);//jak to zamienic na get?
-											 //cout << "\nWczytalem znak " << character;
-					good.push_back(character);//good.append(line);
-				}
+				//while (infile.good())
+				//{
+				//	char character;//string line;
+				//	character = infile.get();//getline(infile, line);//jak to zamienic na get?
+				//							 //cout << "\nWczytalem znak " << character;
+				//	good.push_back(character);//good.append(line);
+				//}
+				good = std::string((std::istreambuf_iterator<char>(infile)),
+						std::istreambuf_iterator<char>()); // wczytanie calego pliku bez eof();
 				infile.close();
 				//cout << "\nCaly plik:\n"; cout << good;
 

@@ -6,7 +6,8 @@ int main()
 	int choice = 0;
 	do
 	{
-		cout << "\n\n0 - exit"
+		cout << "\n\nPlik nie moze miec spacji"
+			<< "\n0 - exit"
 			<< "\n1 - display_file_list"
 			<< "\n2 - display_harddrive"
 			<< "\n3 - display_harddrive_2"
