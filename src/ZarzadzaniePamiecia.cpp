@@ -414,7 +414,7 @@ void WYPISZ_PLIK_WYMIANY()
 		}
 
 		if (PLIK_WYMIANY[i] == '\n')
-			cout << "\\n";
+			cout << '^';
 		else
 			cout << PLIK_WYMIANY[i];
 
@@ -440,7 +440,7 @@ void WYPISZ_RAM()
 			yyy++;
 		}
 		if (RAM[i] == '\n')
-			cout << "\\n";
+			cout << '^';
 		else
 			cout << RAM[i];
 
