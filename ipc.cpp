@@ -42,7 +42,7 @@ void Pipes::sendMessage(Process &process, std::string message) {
 	fifo_.open(path, std::ios::app);
 	if (fifo_.eof()) {
 		fifo_ << message;
-		lock_.lock(process);
+		lock_.unlock(process);
 	}
 	else {
 		fifo_ << std::endl << message;
