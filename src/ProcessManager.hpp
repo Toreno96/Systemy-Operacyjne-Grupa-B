@@ -4,6 +4,9 @@
 #include <random>
 #include "Process.hpp"
 
+// TO-DO Zmieniæ nazwê klasy na ProcessesManager? Jeœli tak, to dopiero przy
+// sk³adaniu systemu, korzystaj¹c z dobrodziejstw globalnego (tzn. operuj¹cego
+// na ca³ym projekcie, a nie tylko pojedynczym pliku) find-and-replace
 class ProcessManager {
   public:
     ProcessManager();
