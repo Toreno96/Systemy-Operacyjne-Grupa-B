@@ -39,6 +39,12 @@ int Process::getLabelAddress( const std::string& label ) const {
 std::string Process::getLastReceivedMessage() const {
   return lastReceivedMessage_;
 }
+std::string Process::getProcessInfo() const {
+  throw std::logic_error( "Not implemented yet" );
+}
+std::string Process::getPageTableContent() const {
+  throw std::logic_error( "Not implemented yet" );
+}
 void Process::restoreOriginalPriority() {
   setPriority( originalPriority_ );
 }

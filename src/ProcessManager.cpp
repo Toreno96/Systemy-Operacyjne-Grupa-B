@@ -52,3 +52,6 @@ Process& ProcessManager::getProcess(
   return *( std::find_if( processes_.begin(), processes_.end(),
       unaryPredicate ) );
 }
+std::string ProcessManager::getFormattedProcessesList() const {
+  throw std::logic_error( "Not implemented yet" );
+}

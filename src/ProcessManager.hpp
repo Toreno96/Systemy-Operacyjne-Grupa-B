@@ -14,6 +14,7 @@ class ProcessManager {
         const std::string& programCode, unsigned int priority );
     Process& getProcess( const std::string& name );
     Process& getRunningProcess();
+    std::string getFormattedProcessesList() const;
     void removeTerminatedProcesses();
   private:
     Process& getProcess(
