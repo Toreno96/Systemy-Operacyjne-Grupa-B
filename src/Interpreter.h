@@ -8,7 +8,7 @@
 #include <locale>
 #include "HardDrive.h"
 #include "ZarzadzaniePamiecia.h"
-//+ stumyki
+#include "ipc.hpp"
 
 class Interpreter
 {
@@ -16,7 +16,7 @@ private:
 	ProcessManager* processManager_;
 	CPU* cpu_;
 	HardDrive* hardDrive_;
-	// NamedPipes* namedPipes_;
+	Pipes* pipes_;
 	std::map<std::string, std::function<void(std::vector<std::string>)>> instruction;
 	void initInstructions();
 	bool is_number(const std::string& s);
@@ -25,7 +25,7 @@ private:
 	std::array <char, 8U> convertToFileName(std::string fileName);
 
 public:
-	Interpreter(ProcessManager* pm, CPU* cpu_, HardDrive* hd);	
+	Interpreter(ProcessManager* pm, CPU* cpu_, HardDrive* hd, Pipes* pp);	
 	void doInstruction(std::string name, std::vector<std::string>);
 	void work();
 };

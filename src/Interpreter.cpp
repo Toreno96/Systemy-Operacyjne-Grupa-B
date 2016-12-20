@@ -46,11 +46,11 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["XR"] = [this](std::vector<std::string> arguments) {
-		//namedPipes_.receiveMessage(processManager->getRunningProcess());
+		pipes_.receiveMessage(processManager_->getRunningProcess());
 	};
 
 	instruction["XS"] = [this](std::vector<std::string> arguments) {
-	//	namedPipes_.sendMessage(arguments[0], arguments[1]);
+		pipes_.sendMessage(arguments[0], arguments[1]);
 	};
 
 	instruction["XN"] = [this](std::vector<std::string> arguments) {
@@ -109,8 +109,8 @@ void Interpreter::initInstructions()
 }
 
 
-Interpreter::Interpreter(ProcessManager * pm, CPU * cpu_, HardDrive* hd)
-	:processManager_(pm),cpu_(cpu_),hardDrive_(hd)
+Interpreter::Interpreter(ProcessManager * pm, CPU * cpu_, HardDrive* hd, Pipes* pp)
+	:processManager_(pm),cpu_(cpu_),hardDrive_(hd),pipes_(pp)
 	{
 		initInstructions();
 	}
@@ -143,18 +143,17 @@ std::vector<std::string> Interpreter::loadInstruction()
 	std::string last;
 	char ch = '0';
 	int adress;
-	int adress_iterator;
 	typ_tablicy_stron pageTable;
 	
-			adress = adress_iterator = processManager_->getRunningProcess().getInstructionCounter();
+			adress = processManager_->getRunningProcess().getInstructionCounter();
 			pageTable = processManager_->getRunningProcess().pageTable();
 		
 	
 
 	while (ch != '\n')
 	{
-	ch = daj_mi_litere(adress_iterator, pageTable);
-	adress_iterator++;
+	ch = daj_mi_litere(adress, pageTable);
+	adress++;
 		if (ch == '\n')
 		{
 
@@ -165,7 +164,8 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 		else if (ch == ':')
 		{
-					processManager_->getRunningProcess().saveLabelAddress(last,adress);
+			processManager_->getRunningProcess().saveLabelAddress(last,adress+1);
+			return std::vector <std::string> {};
 		}
 		else
 		{
@@ -173,7 +173,7 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 	}
 
-	processManager_->getRunningProcess().setInstructionCounter(adress_iterator);
+	processManager_->getRunningProcess().setInstructionCounter(adress);
 
 	return ins;
 
