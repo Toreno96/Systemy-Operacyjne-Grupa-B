@@ -1,4 +1,4 @@
-#include "Pipes.hpp"
+ï»¿#include "Pipes.hpp"
 
 Pipes::Pipes() {
 }
@@ -10,37 +10,37 @@ Pipes::~Pipes() {
 }
 
 void Pipes::newPipe(std::string path) {
-	//Utwórz nowy plik fifo
-	std::ofstream fifo_;
-	fifo_.open(path, std::ios::trunc);
-	fifo_.close();
+	//UtwÃ³rz nowy plik fifo
+	std::ofstream fifo;
+	fifo.open(path, std::ios::trunc);
+	fifo.close();
 	pipesPaths_.push_back(path);
 }
 
 std::string Pipes::getFirstMessage(std::string path) {
-	//Pobierz pierwsz¹ wiadomoœæ
-	std::fstream fifo_;
-	fifo_.open(path, std::ios::in | std::ios::out | std::ios::app);
+	//Pobierz pierwszÄ… wiadomoÅ›Ä‡
+	std::fstream fifo;
+	fifo.open(path, std::ios::in | std::ios::out | std::ios::app);
 	std::string message;
-	std::getline(fifo_, message);
+	std::getline(fifo, message);
 
-	//Pobierz resztê wiadomoœci do vectora
+	//Pobierz resztÄ™ wiadomoÅ›ci do vectora
 	std::vector<std::string>lines;
 	std::string line;
-	while (std::getline(fifo_, line)) {
+	while (std::getline(fifo, line)) {
 		lines.push_back(line);
 	}
-	fifo_.close();
+	fifo.close();
 
-	//Wyczyœæ plik i wpisz wszystkie wiadomoœci oprócz pierwszej
-	fifo_.open(path, std::ios::in | std::ios::out | std::ios::trunc);
+	//WyczyÅ›Ä‡ plik i wpisz wszystkie wiadomoÅ›ci oprÃ³cz pierwszej
+	fifo.open(path, std::ios::in | std::ios::out | std::ios::trunc);
 	bool begin = true;
 	for (auto it : lines) {
 		if (!begin) {
-			fifo_ << std::endl << it;
+			fifo << std::endl << it;
 		}
 		else {
-			fifo_ << it;
+			fifo << it;
 			begin = false;
 		}
 	}
@@ -49,7 +49,7 @@ std::string Pipes::getFirstMessage(std::string path) {
 }
 
 void Pipes::closePipe(std::string path) {
-	//Usuñ plik
+	//UsuÅ„ path z prywatnego vectora
 	int i = 0;
 	for (auto it : pipesPaths_) {
 		if (it == path) {
@@ -59,15 +59,17 @@ void Pipes::closePipe(std::string path) {
 		}
 		i++;
 	}
+
+	//UsuÅ„ plik
 	remove(path.c_str());
 }
 
 bool Pipes::isEmpty(std::string path) {
-	//SprawdŸ czy potok jest pusty
-	std::ifstream fifo_;
-	fifo_.open(path);
-	if (fifo_.peek() == std::ifstream::traits_type::eof()) {
-		fifo_.close();
+	//SprawdÅº czy plik jest pusty
+	std::ifstream fifo;
+	fifo.open(path);
+	if (fifo.peek() == std::ifstream::traits_type::eof()) {
+		fifo.close();
 		return true;
 	}
 	else {
@@ -76,8 +78,8 @@ bool Pipes::isEmpty(std::string path) {
 }
 
 void Pipes::sendMessage(Process &process, std::string message) {
-	//Je¿eli istnieje potok o podanej œcie¿ce to wyœlij wiadomoœæ,
-	//jeœli nie to utwórz nowy potok i wyœlij wiadomoœæ
+	//JeÅ¼eli istnieje potok o podanej Å›cieÅ¼ce to wyÅ›lij wiadomoÅ›Ä‡,
+	//jeÅ›li nie to utwÃ³rz nowy potok i wyÅ›lij wiadomoÅ›Ä‡
 	std::string path = process.getName().append(".pipe");
 
 	if (isEmpty(path)) {
@@ -96,8 +98,8 @@ void Pipes::sendMessage(Process &process, std::string message) {
 }
 
 void Pipes::receiveMessage(Process &runningProcess) {
-	//Je¿eli istnieje potok o podanej œcie¿ce to wywo³aj czytanie,
-	//jeœli nie to utwórz nowy potok i wywyo³aj czytanie
+	//JeÅ¼eli istnieje potok o podanej Å›cieÅ¼ce to wywoÅ‚aj czytanie,
+	//jeÅ›li nie to utwÃ³rz nowy potok i wywyoÅ‚aj czytanie
 	std::string path = runningProcess.getName().append(".pipe");
 	std::string buffer;
 
@@ -109,13 +111,14 @@ void Pipes::receiveMessage(Process &runningProcess) {
 	buffer = getFirstMessage(path);
 	runningProcess.setLastReceivedMessage(buffer);
 
-	//Zamknij potok je¿eli zosta³ opró¿niony
+	//Zamknij potok jeÅ¼eli zostaÅ‚ oprÃ³Å¼niony
 	if (isEmpty(path)) {
 		closePipe(path);
 	}
 }
 
 void Pipes::displayExistingPipes() {
+	//WyÅ›wietl istniejÄ…ce potoki
 	std::cout << "Existing pipes:\n";
 	for (auto it : pipesPaths_) {
 		std::cout << "\t" << it << "\n";
@@ -123,6 +126,7 @@ void Pipes::displayExistingPipes() {
 }
 
 void Pipes::displayPipeContent(Process &process) {
+	//WyÅ›wietl zawartoÅ›Ä‡ potoku dla danego procesu
 	std::string processName = process.getName();
 	std::string path = processName;
 	path.append(".pipe");
@@ -137,6 +141,7 @@ void Pipes::displayPipeContent(Process &process) {
 				std::cout << "\t" << line << "\n";
 			}
 			fifo_.close();
+			break;
 		}
 	}
 }
