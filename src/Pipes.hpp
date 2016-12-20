@@ -18,6 +18,7 @@ private:
 
 public:
 	Pipes();
+	~Pipes();
 	void sendMessage(Process &process, std::string message);
 	void receiveMessage(Process &runningProcess);
 	void displayExistingPipes();

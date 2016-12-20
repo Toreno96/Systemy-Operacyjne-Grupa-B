@@ -3,6 +3,12 @@
 Pipes::Pipes() {
 }
 
+Pipes::~Pipes() {
+	for (auto it : pipesPaths_) {
+		remove(it.c_str());
+	}
+}
+
 void Pipes::newPipe(std::string path) {
 	//Utwórz nowy plik fifo
 	std::ofstream fifo_;
@@ -28,8 +34,15 @@ std::string Pipes::getFirstMessage(std::string path) {
 
 	//Wyczyœæ plik i wpisz wszystkie wiadomoœci oprócz pierwszej
 	fifo_.open(path, std::ios::in | std::ios::out | std::ios::trunc);
+	bool begin = true;
 	for (auto it : lines) {
-		fifo_ << it;
+		if (!begin) {
+			fifo_ << std::endl << it;
+		}
+		else {
+			fifo_ << it;
+			begin = false;
+		}
 	}
 
 	return message;
@@ -72,7 +85,7 @@ void Pipes::sendMessage(Process &process, std::string message) {
 		std::ofstream fifo_;
 		fifo_.open(path, std::ios::app);
 		fifo_ << message;
-		lock_.unlock(process);
+		//lock_.unlock(process);
 		fifo_.close();
 	}else {
 		std::ofstream fifo_;
@@ -90,7 +103,7 @@ void Pipes::receiveMessage(Process &runningProcess) {
 
 	if (isEmpty(path)) {
 		newPipe(path);
-		lock_.lock(runningProcess);
+		//lock_.lock(runningProcess);
 	}
 
 	buffer = getFirstMessage(path);
@@ -111,7 +124,8 @@ void Pipes::displayExistingPipes() {
 
 void Pipes::displayPipeContent(Process &process) {
 	std::string processName = process.getName();
-	std::string path = processName.append(".pipe");
+	std::string path = processName;
+	path.append(".pipe");
 
 	std::cout << processName << " pipe content:\n";
 	for (auto it : pipesPaths_) {
