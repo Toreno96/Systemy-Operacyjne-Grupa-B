@@ -13,24 +13,23 @@ void Pipes::newPipe(std::string path) {
 
 std::string Pipes::getFirstMessage(std::string path) {
 	//Pobierz pierwsz¹ wiadomoœæ
-	std::string message;
 	std::fstream fifo_;
 	fifo_.open(path, std::ios::in | std::ios::out | std::ios::app);
-	fifo_ >> message;
+	std::string message;
+	std::getline(fifo_, message);
 
 	//Pobierz resztê wiadomoœci do vectora
 	std::vector<std::string>lines;
 	std::string line;
-	while (!fifo_.eof()) {
-		fifo_ >> line;
+	while (std::getline(fifo_, line)) {
 		lines.push_back(line);
 	}
 	fifo_.close();
 
 	//Wyczyœæ plik i wpisz wszystkie wiadomoœci oprócz pierwszej
 	fifo_.open(path, std::ios::in | std::ios::out | std::ios::trunc);
-	for (auto it = lines.begin(); it != lines.end(); it++) {
-		fifo_ << *it;
+	for (auto it : lines) {
+		fifo_ << it;
 	}
 
 	return message;
@@ -39,12 +38,13 @@ std::string Pipes::getFirstMessage(std::string path) {
 void Pipes::closePipe(std::string path) {
 	//Usuñ plik
 	int i = 0;
-	for (auto it = pipesPaths_.begin(); it != pipesPaths_.end(); it++, i++) {
-		if (*it == path) {
+	for (auto it : pipesPaths_) {
+		if (it == path) {
 			pipesPaths_.erase(pipesPaths_.begin() + i);
 			pipesPaths_.shrink_to_fit();
 			break;
 		}
+		i++;
 	}
 	remove(path.c_str());
 }
@@ -69,16 +69,14 @@ void Pipes::sendMessage(Process &process, std::string message) {
 
 	if (isEmpty(path)) {
 		newPipe(path);
-	}
-
-	//Wpisz message do pliku
-	std::ofstream fifo_;
-	fifo_.open(path, std::ios::app);
-	if (fifo_.eof()) {
+		std::ofstream fifo_;
+		fifo_.open(path, std::ios::app);
 		fifo_ << message;
 		lock_.unlock(process);
-	}
-	else {
+		fifo_.close();
+	}else {
+		std::ofstream fifo_;
+		fifo_.open(path, std::ios::app);
 		fifo_ << std::endl << message;
 		fifo_.close();
 	}
@@ -92,15 +90,9 @@ void Pipes::receiveMessage(Process &runningProcess) {
 
 	if (isEmpty(path)) {
 		newPipe(path);
-	}
-
-	//Wczytaj wiadomoœæ z pliku
-	std::fstream fifo_;
-	fifo_.open(path, std::ios::in | std::ios::out | std::ios::app);
-	if (fifo_.eof()) {
 		lock_.lock(runningProcess);
 	}
-	fifo_.close();
+
 	buffer = getFirstMessage(path);
 	runningProcess.setLastReceivedMessage(buffer);
 
@@ -112,8 +104,8 @@ void Pipes::receiveMessage(Process &runningProcess) {
 
 void Pipes::displayExistingPipes() {
 	std::cout << "Existing pipes:\n";
-	for (auto it = pipesPaths_.begin(); it != pipesPaths_.end(); it++) {
-		std::cout << "\t" << *it << "\n";
+	for (auto it : pipesPaths_) {
+		std::cout << "\t" << it << "\n";
 	}
 }
 
@@ -122,13 +114,12 @@ void Pipes::displayPipeContent(Process &process) {
 	std::string path = processName.append(".pipe");
 
 	std::cout << processName << " pipe content:\n";
-	for (auto it = pipesPaths_.begin(); it != pipesPaths_.end(); it++) {
-		if (*it == path) {
+	for (auto it : pipesPaths_) {
+		if (it == path) {
 			std::ifstream fifo_;
 			fifo_.open(path, std::ios::app);
 			std::string line;
-			while (!fifo_.eof()) {
-				fifo_ >> line;
+			while (std::getline(fifo_, line)) {
 				std::cout << "\t" << line << "\n";
 			}
 			fifo_.close();
