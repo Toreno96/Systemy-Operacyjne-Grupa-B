@@ -1,5 +1,5 @@
 #pragma once
-#ifndef  ipc
+#ifndef  Pipes
 
 #include <iostream>
 #include <string>
@@ -11,6 +11,7 @@ class Pipes {
 private:
 	Lock lock_;
 	void newPipe(std::string path);
+	std::string getFirstMessage(std::string path);
 	void closePipe(std::string path);
 	bool isEmpty(std::string path);
 

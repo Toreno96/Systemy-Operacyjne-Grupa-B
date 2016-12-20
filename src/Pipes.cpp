@@ -1,4 +1,4 @@
-#include "ipc.hpp"
+#include "Pipes.hpp"
 
 Pipes::Pipes() {
 }
@@ -8,6 +8,31 @@ void Pipes::newPipe(std::string path) {
 	std::ofstream fifo_;
 	fifo_.open(path, std::ios::trunc);
 	fifo_.close();
+}
+
+std::string Pipes::getFirstMessage(std::string path) {
+	//Pobierz pierwsz¹ wiadomoœæ
+	std::string message;
+	std::fstream fifo_;
+	fifo_.open(path, std::ios::in | std::ios::out | std::ios::app);
+	fifo_ >> message;
+
+	//Pobierz resztê wiadomoœci do vectora
+	std::vector<std::string>lines;
+	std::string line;
+	while (!fifo_.eof()) {
+		fifo_ >> line;
+		lines.push_back(line);
+	}
+	fifo_.close();
+
+	//Wyczyœæ plik i wpisz wszystkie wiadomoœci oprócz pierwszej
+	fifo_.open(path, std::ios::in | std::ios::out | std::ios::trunc);
+	for (auto it = lines.begin(); it != lines.end(); it++) {
+		fifo_ << *it;
+	}
+
+	return message;
 }
 
 void Pipes::closePipe(std::string path) {
@@ -60,31 +85,17 @@ void Pipes::receiveMessage(Process &runningProcess) {
 		newPipe(path);
 	}
 
-	//Wczytaj wiadomoœæ z pliku do buffera
+	//Wczytaj wiadomoœæ z pliku
 	std::fstream fifo_;
 	fifo_.open(path, std::ios::in | std::ios::out | std::ios::app);
 	if (fifo_.eof()) {
 		lock_.lock(runningProcess);
 	}
-	fifo_ >> buffer;
-
-	//Pobierz wszystkie wiadomoœci
-	std::vector<std::string>lines;
-	std::string line;
-	while (!fifo_.eof()) {
-		fifo_ >> line;
-		lines.push_back(line);
-	}
 	fifo_.close();
-
-	//Wyczyœæ plik i wpisz wszystkie wiadomoœci oprócz pierwszej
-	fifo_.open(path, std::ios::in | std::ios::out | std::ios::trunc);
-	for (auto it = lines.begin(); it != lines.end(); it++) {
-		fifo_ << *it;
-	}
-
+	buffer = getFirstMessage(path);
 	runningProcess.setLastReceivedMessage(buffer);
 
+	//Zamknij potok je¿eli zosta³ opró¿niony
 	if (isEmpty(path)) {
 		closePipe(path);
 	}
