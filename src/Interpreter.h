@@ -9,6 +9,7 @@
 #include "HardDrive.h"
 #include "ZarzadzaniePamiecia.h"
 #include "ipc.hpp"
+#include <stdexcept>
 
 class Interpreter
 {
