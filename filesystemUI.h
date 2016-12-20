@@ -78,13 +78,13 @@ array <char, tn> convert_type_to_array(string type_as_string)
 
 void display_harddrive(HardDrive &harddrive, bool mode) // 1 czyli z bitvectorem, 0 bez bitvectora
 {
-	cout << "\nLp.\tDane\t\t\tTryb\tstan";
+	cout << "\nLp.\tTryb\tstan\tDane";
 	for (int i = 0; i < max_sector_number; i++)
 	{
 		Sector sector = harddrive.get_sector(i);
 		array<bool, n> bitvector = sector.get_bitvector();
 		array<char, n> data = sector.get_data();
-		cout << "\n" << i << "\t";
+		cout << "\n" << i << "\t" << sector.get_mode() << "\t" << sector.is_free() << "\t";//wypisywanie liczby porzadkowej, trybu, stanu
 		int counter = 0;
 		if (mode)
 		{
@@ -94,7 +94,7 @@ void display_harddrive(HardDrive &harddrive, bool mode) // 1 czyli z bitvectorem
 					cout << " ";
 				cout << *it;
 			}
-			cout << "\n\t";
+			cout << "\n\t\t\t";
 		}
 
 		counter = 0;
@@ -111,12 +111,12 @@ void display_harddrive(HardDrive &harddrive, bool mode) // 1 czyli z bitvectorem
 				if (counter == (n / 2))
 					cout << " ";
 				if (*it == '\n')
-					cout << ";";
+					cout << "^";
 				else
 					cout << *it;
 			}
 		}
-		cout << "\t" << sector.get_mode() << "\t" << sector.is_free();
+		cout << "\n";
 	}
 }
 
@@ -128,10 +128,10 @@ void display_file_list(std::list <FCB> &file_list)
 	}
 	else
 	{
-		cout << "\nList of files:\t1st index sector";
+		cout << "\n1st index sector List of files:";
 		for (auto it = file_list.begin(); it != file_list.end(); it++)
 		{
-			cout << "\n" << it->get_filename_as_string() << "." << it->get_type_as_string() << "\t\t" << (int)(it->get_firstSectorID());
+			cout << "\n" << (int)(it->get_firstSectorID()) << "\t\t" << it->get_filename_as_string() << "." << it->get_type_as_string();
 		}
 	}
 }
