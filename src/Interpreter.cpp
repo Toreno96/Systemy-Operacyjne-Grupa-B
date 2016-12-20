@@ -5,7 +5,14 @@ const std::array<char, 3U> ext{ 't','x','t' };
 void Interpreter::initInstructions()
 {
 	instruction["HLT"] = [this](std::vector<std::string> arguments) {
-		processManager_->getRunningProcess().terminate();
+		try{processManager_->getRunningProcess().terminate(); }
+		catch (std::logic_error& e)
+		{
+			throw std::logic_error("Niepowodzenie w trakcie wykonywanie rozkazu HLT");
+		}
+		
+
+		
 	};
 
 	instruction["AD"] = [this](std::vector<std::string> arguments) {
@@ -42,7 +49,11 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["XD"] = [this](std::vector<std::string> arguments) {
-		processManager_->getProcess(arguments[0]).terminate();
+	try{processManager_->getProcess(arguments[0]).terminate(); }
+	catch (std::logic_error& e)
+	{
+		throw std::logic_error("Niepowodzenie w trakcie wykonywanie rozkazu XD");
+	}
 	};
 
 	instruction["XR"] = [this](std::vector<std::string> arguments) {
@@ -66,11 +77,19 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["XY"] = [this](std::vector<std::string> arguments) {
-		processManager_->getProcess(arguments[0]).ready();
+		try { processManager_->getProcess(arguments[0]).ready(); }
+		catch (std::logic_error& e)
+		{
+			throw std::logic_error("Niepowodzenie w trakcie wykonywanie rozkazu XY");
+		}
 	};
 
 	instruction["XZ"] = [this](std::vector<std::string> arguments) {
-		processManager_->getProcess(arguments[0]).wait();
+		try { processManager_->getProcess(arguments[0]).wait(); }
+		catch (std::logic_error& e)
+		{
+			throw std::logic_error("Niepowodzenie w trakcie wykonywanie rozkazu XZ");
+		}
 	};
 
 	instruction["JM"] = [this](std::vector<std::string> arguments) {
@@ -145,8 +164,8 @@ std::vector<std::string> Interpreter::loadInstruction()
 	int adress;
 	typ_tablicy_stron pageTable;
 	
-			adress = processManager_->getRunningProcess().getInstructionCounter();
-			pageTable = processManager_->getRunningProcess().pageTable();
+	adress = processManager_->getRunningProcess().getInstructionCounter();
+	pageTable = processManager_->getRunningProcess().pageTable();
 		
 	
 
@@ -175,6 +194,8 @@ std::vector<std::string> Interpreter::loadInstruction()
 
 	processManager_->getRunningProcess().setInstructionCounter(adress);
 
+	lastInstruction = ins;
+
 	return ins;
 
 }
@@ -193,6 +214,19 @@ std::array<char, 8U> Interpreter::convertToFileName(std::string fileName)
 void Interpreter::doInstruction(std::string name, std::vector<std::string>arguments)
 {
 	instruction.at(name)(arguments);
+}
+
+std::string Interpreter::getLastInstruction()
+{
+	std::string temp;
+
+	for (auto a : lastInstruction)
+	{
+		temp += a;
+		if (a != *lastInstruction.end())
+			temp += " ";
+	}
+	return temp;
 }
 
 void Interpreter::work()

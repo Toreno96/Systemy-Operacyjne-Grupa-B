@@ -18,14 +18,18 @@ private:
 	HardDrive* hardDrive_;
 	Pipes* pipes_;
 	std::map<std::string, std::function<void(std::vector<std::string>)>> instruction;
+	std::vector <std::string> lastInstruction;
+
 	void initInstructions();
 	bool is_number(const std::string& s);
 	Register interpreteRegister(std::string reg);
 	std::vector<std::string> loadInstruction();
 	std::array <char, 8U> convertToFileName(std::string fileName);
+	void doInstruction(std::string name, std::vector<std::string>);
 
 public:
 	Interpreter(ProcessManager* pm, CPU* cpu_, HardDrive* hd, Pipes* pp);	
-	void doInstruction(std::string name, std::vector<std::string>);
+	
+	std::string getLastInstruction();
 	void work();
 };
