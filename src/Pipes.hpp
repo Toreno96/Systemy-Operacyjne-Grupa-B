@@ -9,6 +9,7 @@
 
 class Pipes {
 private:
+	std::vector<string>pipesPaths_;
 	Lock lock_;
 	void newPipe(std::string path);
 	std::string getFirstMessage(std::string path);
@@ -19,6 +20,8 @@ public:
 	Pipes();
 	void sendMessage(Process &process, std::string message);
 	void receiveMessage(Process &runningProcess);
+	void displayExistingPipes();
+	void displayPipeContent(Process &process);
 };
 
-#endif // ! ipc
+#endif

@@ -8,6 +8,7 @@ void Pipes::newPipe(std::string path) {
 	std::ofstream fifo_;
 	fifo_.open(path, std::ios::trunc);
 	fifo_.close();
+	pipesPaths_.push_back(path);
 }
 
 std::string Pipes::getFirstMessage(std::string path) {
@@ -37,6 +38,14 @@ std::string Pipes::getFirstMessage(std::string path) {
 
 void Pipes::closePipe(std::string path) {
 	//Usuñ plik
+	int i = 0;
+	for (auto it = pipesPaths_.begin(); it != pipesPaths_.end(); it++, i++) {
+		if (*it == path) {
+			pipesPaths_.erase(pipesPaths_.begin() + i);
+			pipesPaths_.shrink_to_fit();
+			break;
+		}
+	}
 	remove(path.c_str());
 }
 
@@ -98,5 +107,31 @@ void Pipes::receiveMessage(Process &runningProcess) {
 	//Zamknij potok je¿eli zosta³ opró¿niony
 	if (isEmpty(path)) {
 		closePipe(path);
+	}
+}
+
+void Pipes::displayExistingPipes() {
+	std::cout << "Existing pipes:\n";
+	for (auto it = pipesPaths_.begin(); it != pipesPaths_.end(); it++) {
+		std::cout << "\t" << *it << "\n";
+	}
+}
+
+void Pipes::displayPipeContent(Process &process) {
+	std::string processName = process.getName();
+	std::string path = processName.append(".pipe");
+
+	std::cout << processName << " pipe content:\n";
+	for (auto it = pipesPaths_.begin(); it != pipesPaths_.end(); it++) {
+		if (*it == path) {
+			std::ifstream fifo_;
+			fifo_.open(path, std::ios::app);
+			std::string line;
+			while (!fifo_.eof()) {
+				fifo_ >> line;
+				std::cout << "\t" << line << "\n";
+			}
+			fifo_.close();
+		}
 	}
 }
