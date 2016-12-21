@@ -264,6 +264,27 @@ paket-files/
 __pycache__/
 *.pyc
 
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+/SOproject/SOproject.VC.VC.opendb
+
 # Cake - Uncomment if you are using it
 # tools/
 
