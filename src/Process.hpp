@@ -17,6 +17,7 @@ class Process {
     unsigned int getOriginalPriority() const;
     unsigned int getCurrentPriority() const;
     State getState() const;
+    std::string convertStateToString() const;
     typ_tablicy_stron& pageTable();
     Registers getRegistersBackup() const;
     int getInstructionCounter() const;

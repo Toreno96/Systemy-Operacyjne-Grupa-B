@@ -21,6 +21,20 @@ unsigned int Process::getCurrentPriority() const {
 Process::State Process::getState() const {
   return state_;
 }
+std::string Process::convertStateToString() const {
+  switch( state_ ) {
+    case Process::State::New:
+      return "New";
+    case Process::State::Ready:
+      return "Ready";
+    case Process::State::Running:
+      return "Running";
+    case Process::State::Waiting:
+      return "Waiting";
+    case Process::State::Terminated:
+      return "Terminated";
+  }
+}
 typ_tablicy_stron& Process::pageTable() {
   return pageTable_.get();
 }
@@ -40,10 +54,22 @@ std::string Process::getLastReceivedMessage() const {
   return lastReceivedMessage_;
 }
 std::string Process::getProcessInfo() const {
-  throw std::logic_error( "Not implemented yet" );
+  return std::string(
+      "Name/ID: " + name_ + '\n' +
+      "State: " + convertStateToString() + '\n' +
+      "Original priority: " + std::to_string( originalPriority_ ) + '\n' +
+      "Current priority: " + std::to_string( currentPriority_ ) + '\n' +
+      "Current priority duration: " + std::to_string( currentPriorityDuration_ ) + '\n' +
+      "Instruction counter: " + std::to_string( instructionCounter_ ) ) + '\n';
 }
 std::string Process::getPageTableContent() const {
-  throw std::logic_error( "Not implemented yet" );
+  std::string pageTableContent;
+  for( auto& integers : pageTable_.get() ) {
+    for( auto integer : integers )
+      pageTableContent += std::to_string( integer ) + ' ';
+    pageTableContent += '\n';
+  }
+  return pageTableContent;
 }
 void Process::restoreOriginalPriority() {
   setPriority( originalPriority_ );

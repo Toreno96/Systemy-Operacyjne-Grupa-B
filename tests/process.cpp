@@ -35,5 +35,8 @@ int main() {
   p1.terminate();
   printProcessData( p1 );
 
-  WYPISZ_PLIK_WYMIANY();
+  std::cout << "p1' page table content:\n\n" << p1.getPageTableContent()
+      << '\n';
+
+  //WYPISZ_PLIK_WYMIANY();
 }
