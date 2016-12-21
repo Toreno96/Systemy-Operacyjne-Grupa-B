@@ -126,6 +126,7 @@ void Pipes::sendMessage(Process &runningProcess, Process &process, std::string m
 		if (isWaiting(path)) {
 			messageReady(path);
 			process.ready();
+			process.run();
 			receiveMessage(process);
 		}
 	}
@@ -156,7 +157,7 @@ void Pipes::receiveMessage(Process &runningProcess) {
 			waitingForMessage_.push_back(path);
 			runningProcess.wait();
 		}
-		//lock_.unlock(runningProcess);
+		lock_.unlock(runningProcess);
 	}
 	else {
 		lock_.unlock(runningProcess);
