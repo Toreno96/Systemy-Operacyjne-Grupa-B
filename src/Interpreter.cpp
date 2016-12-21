@@ -57,7 +57,11 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["XR"] = [this](std::vector<std::string> arguments) {
-		pipes_.receiveMessage(processManager_->getRunningProcess());
+		try { pipes_.receiveMessage(processManager_->getRunningProcess()); }
+		catch (std::logic_error& e)
+		{
+			throw std::logic_error("Niepowodzenie w trakcie wykonania rozkazu XR");
+		}
 	};
 
 	instruction["XS"] = [this](std::vector<std::string> arguments) {
@@ -94,7 +98,11 @@ void Interpreter::initInstructions()
 
 	instruction["JM"] = [this](std::vector<std::string> arguments) {
 		
-		processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0]));
+		try { processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0])); }
+		catch (std::logic_error& e)
+		{
+			throw std::logic_error("Niepowodzenie w trakcie wykonywania rozkazu JM");
+		}
 	};
 
 	instruction["MV"] = [this](std::vector<std::string> arguments) {
@@ -164,8 +172,14 @@ std::vector<std::string> Interpreter::loadInstruction()
 	int adress;
 	typ_tablicy_stron pageTable;
 	
-	adress = processManager_->getRunningProcess().getInstructionCounter();
-	pageTable = processManager_->getRunningProcess().pageTable();
+	try {
+		adress = processManager_->getRunningProcess().getInstructionCounter();
+		pageTable = processManager_->getRunningProcess().pageTable();
+	}
+	catch (std::logic_error& e)
+	{
+		throw std::logic_error("Niepowodzenie podczas pobierania adresu i tablicy stron z procesu running");
+	}
 		
 	
 
@@ -183,7 +197,11 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 		else if (ch == ':')
 		{
-			processManager_->getRunningProcess().saveLabelAddress(last,adress+1);
+			try { processManager_->getRunningProcess().saveLabelAddress(last, adress + 1); }
+			catch (std::logic_error& e)
+			{
+				throw std::logic_error("Niepowodzenie podczas zapisywania adresu etykiety");
+			}
 			return std::vector <std::string> {};
 		}
 		else
@@ -192,7 +210,11 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 	}
 
-	processManager_->getRunningProcess().setInstructionCounter(adress);
+	try { processManager_->getRunningProcess().setInstructionCounter(adress); }
+	catch (std::logic_error& e)
+	{
+		throw std::logic_error("Niepowodzenie podczas zapisywania eksalibura wybuchowych pomys³ów");
+	}
 
 	lastInstruction = ins;
 
