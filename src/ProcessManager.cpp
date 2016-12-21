@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <iomanip>
+#include <sstream>
 #include <stdexcept>
 #include "ProcessManager.hpp"
 
@@ -53,5 +55,16 @@ Process& ProcessManager::getProcess(
       unaryPredicate ) );
 }
 std::string ProcessManager::getFormattedProcessesList() const {
-  throw std::logic_error( "Not implemented yet" );
+  std::ostringstream formattedProcessesList;
+  const int width = 14;
+  formattedProcessesList << std::left << std::setw( width ) << "Name/ID"
+      << std::setw( width ) << "Priority"
+      << std::setw( width ) << "State"
+      << "\n======================================\n";
+  for( const auto& process : processes_ ) {
+    formattedProcessesList << std::left << std::setw( width ) << process.getName()
+        << std::setw( width ) << std::to_string( process.getCurrentPriority() )
+        << std::setw( width ) << process.convertStateToString() << '\n';
+  }
+  return formattedProcessesList.str();
 }
