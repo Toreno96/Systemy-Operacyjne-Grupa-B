@@ -4,6 +4,7 @@ Pipes::Pipes() {
 }
 
 Pipes::~Pipes() {
+	//Destruktor usuwający wszystkie pliki komunikacyjne
 	for (auto it : pipesPaths_) {
 		remove(it.c_str());
 	}
@@ -77,43 +78,88 @@ bool Pipes::isEmpty(std::string path) {
 	}
 }
 
-void Pipes::sendMessage(Process &process, std::string message) {
-	//Jeżeli istnieje potok o podanej ścieżce to wyślij wiadomość,
-	//jeśli nie to utwórz nowy potok i wyślij wiadomość
-	std::string path = process.getName().append(".pipe");
+bool Pipes::isWaiting(std::string path) {
+	for (auto it : waitingForMessage_) {
+		if (it == path) {
+			return true;
+		}
+	}
 
-	if (isEmpty(path)) {
-		newPipe(path);
-		std::ofstream fifo_;
-		fifo_.open(path, std::ios::app);
-		fifo_ << message;
-		//lock_.unlock(process);
-		fifo_.close();
-	}else {
-		std::ofstream fifo_;
-		fifo_.open(path, std::ios::app);
-		fifo_ << std::endl << message;
-		fifo_.close();
+	return false;
+}
+
+void Pipes::messageReady(std::string path) {
+	int i = 0;
+	for (auto it : waitingForMessage_) {
+		if (it == path) {
+			waitingForMessage_.erase(waitingForMessage_.begin() + i);
+			waitingForMessage_.shrink_to_fit();
+			break;
+		}
+		i++;
+	}
+}
+
+void Pipes::sendMessage(Process &runningProcess, Process &process, std::string message) {
+	lock_.lock(runningProcess);
+	if (runningProcess.getState() == Process::State::Running) {
+		std::string path = process.getName().append(".pipe");
+
+		//Jeżeli potok pusty, to utwórz nowy
+		if (isEmpty(path)) {
+			newPipe(path);
+			std::ofstream fifo;
+			fifo.open(path, std::ios::app);
+			fifo << message;
+			fifo.close();
+			//Jeżeli potok nie jest pusty, to pisz kolejną wiadomość
+		}
+		else {
+			std::ofstream fifo;
+			fifo.open(path, std::ios::app);
+			fifo << std::endl << message;
+			fifo.close();
+		}
+		lock_.unlock(runningProcess);
+
+		//Jeżeli jakiś proces czeka na tą wiadomość to wywołać u niego czytanie wiadomości
+		if (isWaiting(path)) {
+			messageReady(path);
+			process.ready();
+			receiveMessage(process);
+		}
+	}
+	else {
+		lock_.unlock(runningProcess);
 	}
 }
 
 void Pipes::receiveMessage(Process &runningProcess) {
-	//Jeżeli istnieje potok o podanej ścieżce to wywołaj czytanie,
-	//jeśli nie to utwórz nowy potok i wywyołaj czytanie
-	std::string path = runningProcess.getName().append(".pipe");
-	std::string buffer;
+	lock_.lock(runningProcess);
+	if (runningProcess.getState() == Process::State::Running) {
+		std::string path = runningProcess.getName().append(".pipe");
 
-	if (isEmpty(path)) {
-		newPipe(path);
-		//lock_.lock(runningProcess);
+		//Jeżeli potok nie jest pusty to czytaj
+		if (!isEmpty(path)) {
+			std::string buffer;
+			buffer = getFirstMessage(path);
+			runningProcess.setLastReceivedMessage(buffer);
+
+			//Jeżeli potok został opróżniony to zamknji potok
+			if (isEmpty(path)) {
+				closePipe(path);
+			}
+			//Jeżeli potok jest pusty to utwórz nowy
+		}
+		else if (isEmpty(path)) {
+			newPipe(path);
+			waitingForMessage_.push_back(path);
+			runningProcess.wait();
+		}
+		//lock_.unlock(runningProcess);
 	}
-
-	buffer = getFirstMessage(path);
-	runningProcess.setLastReceivedMessage(buffer);
-
-	//Zamknij potok jeżeli został opróżniony
-	if (isEmpty(path)) {
-		closePipe(path);
+	else {
+		lock_.unlock(runningProcess);
 	}
 }
 
