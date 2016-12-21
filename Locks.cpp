@@ -16,17 +16,21 @@ void Lock::showListOfProcesses()
 }
 std::string Lock::getProcessName()
 {
-		std::cout << "Name of first process under lock: " << blocking_IDs_list.front() << std::endl;
 		return blocking_IDs_list.front();
+}
+void Lock::displayProcessName()
+{
+		std::cout << "Name of first process under lock: " << blocking_IDs_list.front() << std::endl;
 }
 int Lock::getValue()
 {
 		return abs(value);
 }
-void Lock::displayProcessName()
+void Lock::displayValue()
 {
-		std::cout << "Number of processes in queue: " << abs(value) << std::endl;
+	std::cout << "Number of processes in queue: " << abs(value) << std::endl;
 }
+
 void Lock::lock(Process& process)
 {
 
@@ -39,8 +43,15 @@ void Lock::lock(Process& process)
 		process.wait();//oczekuje
 	}
 }
-void Lock::unlock(Process &process)
+bool Lock::unlock(Process &process)
 {
+	if (blocking_IDs_list.empty())
+	{
+		value++;
+		return 0;
+	}
+	else 
+	{
 		if (blocking_IDs_list[0] == process.getName())
 		{
 			if (value < 1)
@@ -53,9 +64,12 @@ void Lock::unlock(Process &process)
 				blocking_IDs_list.pop_front();
 				process.ready();//gotowosc
 			}
+			return 1;
 		}
 		else
 		{
-			std::cout << "The Lock can not be unlocked." << std::endl;
+			return 0;
 		}
+	}	
 }
+
