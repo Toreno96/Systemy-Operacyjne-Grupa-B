@@ -15,7 +15,7 @@ int main()
 			<< "\n5 - delete_file"
 			<< "\n6 - load_file_from_Windows_and_save_on_harddrive"
 			<< "\n7 - create_this_string_file_system"
-			<< "\n8 - read_file"
+			<< "\n8 - display_file"
 			<< "\nWybierz: ";
 		cin >> choice;
 
@@ -65,12 +65,12 @@ int main()
 		}
 		case 8:
 		{
-			read_file(harddrive);
+			display_file(harddrive);
 			break;
 		}
 		default:
 			break;
 		}
-	} while (choice != 0);
+	} while (choice > 0 && choice <7);
 	return 0;
 }

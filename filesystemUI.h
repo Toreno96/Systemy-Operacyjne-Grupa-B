@@ -135,7 +135,7 @@ void display_file_list(std::list <FCB> &file_list)
 		}
 	}
 }
-//ta metoda nie bedzie dostepna dla usera w ostatecznej wersji
+//ta metoda nie bedzie dostepna dla usera w ostatecznej wersji bo i tak nie bedzie mogl nic dopisywac do pliku
 void create_empty_file(HardDrive &harddrive)
 {
 	string filename_as_string;
@@ -195,10 +195,10 @@ void append_string_to_file(HardDrive &harddrive)
 				cout << "No such file";
 		}
 		else
-			cout << "\nTo long extension.";
+			cout << "\nToo long extension.";
 	}
 	else
-		cout << "\nTo long filename";
+		cout << "\nToo long filename";
 	
 }
 */
@@ -280,10 +280,10 @@ void load_file_from_Windows_and_save_on_harddrive(HardDrive &harddrive)
 				cout << "\nNo such file.";
 		}
 		else
-			cout << "\nTo long extension.";
+			cout << "\nToo long extension.";
 	}
 	else
-		cout << "\nTo long filename";
+		cout << "\nToo long filename";
 }
 
 void create_this_string_file_system(HardDrive &harddrive, string filename_as_string, string type_as_string, string good)
@@ -316,13 +316,13 @@ void create_this_string_file_system(HardDrive &harddrive, string filename_as_str
 				cout << "\nNot enough space.";
 		}
 		else
-			cout << "\nTo long extension.";
+			cout << "\nToo long extension.";
 	}
 	else
-		cout << "\nTo long filename";
+		cout << "\nToo long filename";
 }
 
-void read_file(HardDrive &harddrive)
+void display_file(HardDrive &harddrive)
 {
 	string filename_as_string;
 	cout << "\nType a filename: "; //tylko filename
@@ -341,13 +341,13 @@ void read_file(HardDrive &harddrive)
 			string result;
 			if (harddrive.read_file(filename, type, result) == true)
 			{}//tak wiem ze i tak i tak sie wyswietli
-			cout << "\nPoczatek pliku\n";
+			cout << "\n#\n";
 			cout << result;
-			cout << "\nKoniec pliku";
+			cout << "\n#";
 		}
 		else
-			cout << "\nTo long extension.";
+			cout << "\nToo long extension.";
 	}
 	else
-		cout << "\nTo long filename";
+		cout << "\nToo long filename.";
 }
