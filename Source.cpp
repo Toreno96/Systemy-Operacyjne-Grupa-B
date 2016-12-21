@@ -1,5 +1,6 @@
 #include "filesystemUI.h"
 using std::cin;
+using namespace filesystemUI;
 int main()
 {
 	HardDrive harddrive;
@@ -14,7 +15,7 @@ int main()
 			<< "\n4 - create_empty_file"
 			<< "\n5 - delete_file"
 			<< "\n6 - load_file_from_Windows_and_save_on_harddrive"
-			<< "\n7 - create_this_string_file_system"
+			<< "\n7 - create_file_based_on_string_system"
 			<< "\n8 - display_file"
 			<< "\nWybierz: ";
 		cin >> choice;
@@ -30,7 +31,7 @@ int main()
 			display_file_list(harddrive.get_file_list());
 			break;
 		}
-	case 2:
+		case 2:
 		{
 			display_harddrive(harddrive, 0);
 			break;
@@ -60,7 +61,7 @@ int main()
 			string filename = "Pliczek";
 			string type = "txt";
 			string mystring = "Wynik silnia 5 = 120";
-			create_this_string_file_system(harddrive, filename, type, mystring);
+			system_create_file_based_on_string(harddrive, filename, type, mystring);
 			break;
 		}
 		case 8:
@@ -71,6 +72,6 @@ int main()
 		default:
 			break;
 		}
-	} while (choice > 0 && choice <7);
+	} while (choice > 0 && choice <9);
 	return 0;
 }

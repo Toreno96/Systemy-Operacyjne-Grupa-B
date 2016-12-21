@@ -140,7 +140,7 @@ private:
 		}
 			harddrive[ID] = clear_sector; // tworzymy pusty sektor i nadpisujemy ten stary
 	}
-	char add_data_sector_to_file(array <char, fn> filename_, array <char, tn> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania
+	int add_data_sector_to_file(array <char, fn> filename_, array <char, tn> type_, Sector sector) // nazwa, rozszerzenie i sektor danych do dopisania, zwraca kod bledu
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -233,7 +233,7 @@ private:
 	}
 	
 public:
-	char create_empty_file(array <char, fn> filename_, array <char, tn> type_) // 2 - brak miejsca, 1 - ok, 0 - plik juz istnieje
+	int create_empty_file(array <char, fn> filename_, array <char, tn> type_) // 2 - brak miejsca, 1 - ok, 0 - plik juz istnieje
 	{
 		if (file_exist(filename_, type_))
 		{
@@ -304,19 +304,19 @@ public:
 			return 0;
 		}
 	}
-	char append_string_to_file(array <char, fn> filename_, array <char, tn> type_, string good)
+	int append_string_to_file(array <char, fn> filename_, array <char, tn> type_, string file_content)
 	{
-		while (!(good.empty()))
+		while (!(file_content.empty()))
 		{
 			//cout << "\nzamiana string na sektory";//zamiana string na sektory
 			array <bool, n> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
 			array <char, n> data = create_empty_data_array();
-			for (int i = 0; i < n && !(good.empty()); i++)
+			for (int i = 0; i < n && !(file_content.empty()); i++)
 			{
 				bitvector[i] = 0; // oznaczamy char jako uzywany
-				data[i] = *(good.begin()); // wyluskanie wartosci begin
+				data[i] = *(file_content.begin()); // wyluskanie wartosci begin
 										   //cout << "\ndata " << i << ": " << data[i];
-				good.erase(good.begin()); // usuwa pierwszy element
+				file_content.erase(file_content.begin()); // usuwa pierwszy element
 			}
 			Sector sector;
 			sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
