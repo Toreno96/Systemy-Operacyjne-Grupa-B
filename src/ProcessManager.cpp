@@ -51,8 +51,12 @@ Process& ProcessManager::getRunningProcess() {
 }
 Process& ProcessManager::getProcess(
     std::function< bool( const Process& process ) > unaryPredicate ) {
-  return *( std::find_if( processes_.begin(), processes_.end(),
-      unaryPredicate ) );
+  auto it = std::find_if( processes_.begin(), processes_.end(),
+      unaryPredicate );
+  if( it != processes_.end() )
+    return *it;
+  else
+    throw std::logic_error( "Such process doesn't exist" );
 }
 std::string ProcessManager::getFormattedProcessesList() const {
   std::ostringstream formattedProcessesList;

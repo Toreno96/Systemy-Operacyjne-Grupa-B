@@ -29,6 +29,12 @@ int main() {
   std::cout << "List of processes after terminating process \"p2\":\n\n";
   std::cout << processManager.getFormattedProcessesList() << '\n';
 
-  // Powoduje wykrzaczenie; ProcessManager::getRunningProcess do poprawienia
-  std::cout << "Running process' name: " << processManager.getRunningProcess().getName() << '\n';
+  // Klauzul try-catch powinno byæ oczywiœcie wiêcej, powy¿ej, ale to tylko kod
+  // testowy
+  try {
+    std::cout << "Running process' name: " << processManager.getRunningProcess().getName() << '\n';
+  }
+  catch( std::logic_error& e ) {
+    std::cout << "There's no running process in the system\n";
+  }
 }
