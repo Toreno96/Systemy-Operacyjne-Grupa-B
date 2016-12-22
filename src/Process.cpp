@@ -3,6 +3,16 @@
 const unsigned int Process::minPriority = 0;
 const unsigned int Process::maxPriority = 7;
 
+Process::changeOfStateImpossible::changeOfStateImpossible(
+    const std::string& processName, const std::string& targetState ) :
+        std::logic_error( "Change of \"" + processName +
+            "\" process' state to \"" + targetState + "\" impossible" ) {}
+Process::addressOfLabelOutOfRange::addressOfLabelOutOfRange(
+    const std::string& processName, const std::string& label ) :
+        std::out_of_range( "Address of label \"" + label +
+            "\" isn't saved in control block of \"" + processName +
+            "\" process" ) {}
+
 Process::Process( const std::string& name, unsigned int priority,
     typ_tablicy_stron& pageTable ) :
         name_( name ), originalPriority_( priority ),
@@ -48,7 +58,12 @@ int Process::getCurrentPriorityDuration() const {
   return currentPriorityDuration_;
 }
 int Process::getLabelAddress( const std::string& label ) const {
-  return labelsAddresses_.at( label );
+  try {
+    return labelsAddresses_.at( label );
+  }
+  catch( std::out_of_range& e ) {
+    throw addressOfLabelOutOfRange( label, name_ );
+  }
 }
 std::string Process::getLastReceivedMessage() const {
   return lastReceivedMessage_;
@@ -82,32 +97,30 @@ void Process::decreasePriority() {
   if( currentPriority_ > minPriority )
     setPriority( currentPriority_ - 1 );
 }
-// Zmiana pojawiajacego siê ni¿ej wyj¹tku na w³asny, dziedzicz¹cy po
-// standardowym?
 void Process::ready() {
   if( state_ == State::New || state_ == State::Running ||
       state_ == State::Waiting )
     state_ = State::Ready;
   else
-    throw std::logic_error( "State change impossible" );
+    throw changeOfStateImpossible( name_, "Ready" );
 }
 void Process::run() {
   if( state_ == State::Ready )
     state_ = State::Running;
   else
-    throw std::logic_error( "State change impossible" );
+    throw changeOfStateImpossible( name_, "Running" );
 }
 void Process::wait() {
   if( state_ == State::Running )
     state_ = State::Waiting;
   else
-    throw std::logic_error( "State change impossible" );
+    throw changeOfStateImpossible( name_, "Waiting" );
 }
 void Process::terminate() {
   if( state_ == State::Running )
     state_ = State::Terminated;
   else
-    throw std::logic_error( "State change impossible" );
+    throw changeOfStateImpossible( name_, "Terminated" );
 }
 void Process::setRegistersBackup( const Registers& registers ) {
   registersBackup_ = registers;

@@ -11,6 +11,18 @@ class Process {
     static const unsigned int minPriority;
     static const unsigned int maxPriority;
     enum class State { New, Ready, Running, Waiting, Terminated };
+
+    class changeOfStateImpossible : public std::logic_error {
+      public:
+        changeOfStateImpossible( const std::string& processName,
+            const std::string& targetState );
+    };
+    class addressOfLabelOutOfRange : public std::out_of_range {
+      public:
+        addressOfLabelOutOfRange( const std::string& processName,
+            const std::string& label );
+    };
+    
     Process( const std::string& name, unsigned int priority,
         typ_tablicy_stron& pageTable );
     std::string getName() const;

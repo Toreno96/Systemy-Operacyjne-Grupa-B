@@ -4,6 +4,15 @@
 #include <stdexcept>
 #include "ProcessManager.hpp"
 
+ProcessManager::ProcessAlreadyExist::ProcessAlreadyExist(
+    const std::string& processName ) :
+        std::logic_error( "Process with name \"" + processName +
+            "\" already exist" ) {}
+ProcessManager::ProcessDoesntExist::ProcessDoesntExist(
+    const std::string& what_arg ) : std::out_of_range( what_arg ) {}
+ProcessManager::ProcessDoesntExist::ProcessDoesntExist(
+    const char* what_arg ) : std::out_of_range( what_arg ) {}
+
 ProcessManager::ProcessManager() :
     randomNumberGenerator_( std::mt19937( generateSeed() ) ) {}
 std::list< Process >& ProcessManager::processes() {
@@ -19,7 +28,7 @@ void ProcessManager::createProcess( const std::string& name,
 void ProcessManager::createProcess( const std::string& name,
     const std::string& programCode, unsigned int priority ) {
   if( isNameUsed( name ) )
-    throw std::invalid_argument( "Process' name has to be unique" );
+    throw ProcessAlreadyExist( name );
   typ_tablicy_stron& pageTable = Porcjuj_i_wloz( programCode );
   processes_.push_back( Process( name, priority, pageTable ) );
 }
@@ -40,23 +49,27 @@ std::random_device::result_type ProcessManager::generateSeed() {
   return randomDevice();
 }
 Process& ProcessManager::getProcess( const std::string& name ) {
-  return getProcess( [ &name ]( const Process& process ) {
+  auto itProcess = findProcess( [ &name ]( const Process& process ) {
     return process.getName() == name;
   } );
+  if( itProcess != processes_.end() )
+    return *itProcess;
+  else
+    throw ProcessDoesntExist( "There's no process with name \"" + name + '\"' );
 }
 Process& ProcessManager::getRunningProcess() {
-  return getProcess( []( const Process& process ) {
+  auto itProcess = findProcess( []( const Process& process ) {
     return process.getState() == Process::State::Running;
   } );
-}
-Process& ProcessManager::getProcess(
-    std::function< bool( const Process& process ) > unaryPredicate ) {
-  auto it = std::find_if( processes_.begin(), processes_.end(),
-      unaryPredicate );
-  if( it != processes_.end() )
-    return *it;
+  if( itProcess != processes_.end() )
+    return *itProcess;
   else
-    throw std::logic_error( "Such process doesn't exist" );
+    throw ProcessDoesntExist( "There's no running process" );
+}
+std::list< Process >::iterator ProcessManager::findProcess(
+    std::function< bool( const Process& process ) > unaryPredicate ) {
+  return std::find_if( processes_.begin(), processes_.end(),
+      unaryPredicate );
 }
 std::string ProcessManager::getFormattedProcessesList() const {
   std::ostringstream formattedProcessesList;

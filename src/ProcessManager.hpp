@@ -9,6 +9,16 @@
 // na ca³ym projekcie, a nie tylko pojedynczym pliku) find-and-replace
 class ProcessManager {
   public:
+    class ProcessAlreadyExist : public std::logic_error {
+      public:
+        ProcessAlreadyExist( const std::string& processName );
+    };
+    class ProcessDoesntExist : public std::out_of_range {
+      public:
+        ProcessDoesntExist( const std::string& what_arg );
+        ProcessDoesntExist( const char* what_arg );
+    };
+
     ProcessManager();
     std::list< Process >& processes();
     void createProcess( const std::string& name,
@@ -20,7 +30,7 @@ class ProcessManager {
     std::string getFormattedProcessesList() const;
     void removeTerminatedProcesses();
   private:
-    Process& getProcess(
+    std::list< Process >::iterator findProcess(
         std::function< bool( const Process& process ) > unaryPredicate );
     bool isNameUsed( const std::string& name );
     std::random_device::result_type generateSeed();
