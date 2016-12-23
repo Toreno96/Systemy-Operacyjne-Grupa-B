@@ -6,9 +6,9 @@ void Interpreter::initInstructions()
 {
 	instruction["HLT"] = [this](std::vector<std::string> arguments) {
 		try{processManager_->getRunningProcess().terminate(); }
-		catch (std::logic_error& e)
+		catch (std::exception& e)
 		{
-			throw std::logic_error("Niepowodzenie w trakcie wykonywanie rozkazu HLT");
+			throw std::runtime_error("Error during executing HLT in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
 		}
 		
 
@@ -45,27 +45,35 @@ void Interpreter::initInstructions()
 	instruction["XC"] = [this](std::vector<std::string> arguments) {
 		std::string programCode;
 		if(hardDrive_->read_file(convertToFileName(arguments[1]),ext,programCode))
-		processManager_->createProcess(arguments[0],programCode);
+			try { processManager_->createProcess(arguments[0], programCode); }
+		catch (std::exception& e)
+		{
+			throw std::runtime_error("Error during executing XC in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
+		}
 	};
 
 	instruction["XD"] = [this](std::vector<std::string> arguments) {
 	try{processManager_->getProcess(arguments[0]).terminate(); }
-	catch (std::logic_error& e)
+	catch (std::exception& e)
 	{
-		throw std::logic_error("Niepowodzenie w trakcie wykonywanie rozkazu XD");
+		throw std::runtime_error("Error during executing XD in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
 	}
 	};
 
 	instruction["XR"] = [this](std::vector<std::string> arguments) {
 		try { pipes_.receiveMessage(processManager_->getRunningProcess()); }
-		catch (std::logic_error& e)
+		catch (std::exception& e)
 		{
-			throw std::logic_error("Niepowodzenie w trakcie wykonania rozkazu XR");
+			throw std::runtime_error("Error during executing XR in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
 		}
 	};
 
 	instruction["XS"] = [this](std::vector<std::string> arguments) {
-		pipes_.sendMessage(arguments[0], arguments[1]);
+		try { pipes_.sendMessage(arguments[0], arguments[1]); }
+		catch (std::exception& e)
+		{
+			throw std::runtime_error("Error during executing XS in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
+		}
 	};
 
 	instruction["XN"] = [this](std::vector<std::string> arguments) {
@@ -82,26 +90,26 @@ void Interpreter::initInstructions()
 
 	instruction["XY"] = [this](std::vector<std::string> arguments) {
 		try { processManager_->getProcess(arguments[0]).ready(); }
-		catch (std::logic_error& e)
+		catch (std::exception& e)
 		{
-			throw std::logic_error("Niepowodzenie w trakcie wykonywanie rozkazu XY");
+			throw std::runtime_error("Error during executing XY in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
 		}
 	};
 
 	instruction["XZ"] = [this](std::vector<std::string> arguments) {
 		try { processManager_->getProcess(arguments[0]).wait(); }
-		catch (std::logic_error& e)
+		catch (std::exception& e)
 		{
-			throw std::logic_error("Niepowodzenie w trakcie wykonywanie rozkazu XZ");
+			throw std::runtime_error("Error during executing XZ in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
 		}
 	};
 
 	instruction["JM"] = [this](std::vector<std::string> arguments) {
 		
 		try { processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0])); }
-		catch (std::logic_error& e)
+		catch (std::exception& e)
 		{
-			throw std::logic_error("Niepowodzenie w trakcie wykonywania rozkazu JM");
+			throw std::runtime_error("Error during executing JM in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
 		}
 	};
 
@@ -176,9 +184,9 @@ std::vector<std::string> Interpreter::loadInstruction()
 		adress = processManager_->getRunningProcess().getInstructionCounter();
 		pageTable = processManager_->getRunningProcess().pageTable();
 	}
-	catch (std::logic_error& e)
+	catch (std::exception& e)
 	{
-		throw std::logic_error("Niepowodzenie podczas pobierania adresu i tablicy stron z procesu running");
+		throw std::runtime_error("Error during executing loadInstruction. Reason: " + e.what());
 	}
 		
 	
@@ -198,9 +206,9 @@ std::vector<std::string> Interpreter::loadInstruction()
 		else if (ch == ':')
 		{
 			try { processManager_->getRunningProcess().saveLabelAddress(last, adress + 1); }
-			catch (std::logic_error& e)
+			catch (std::exception& e)
 			{
-				throw std::logic_error("Niepowodzenie podczas zapisywania adresu etykiety");
+				throw std::runtime_error("Error during executing loadInstruction. Reason: " + e.what());
 			}
 			return std::vector <std::string> {};
 		}
@@ -211,9 +219,9 @@ std::vector<std::string> Interpreter::loadInstruction()
 	}
 
 	try { processManager_->getRunningProcess().setInstructionCounter(adress); }
-	catch (std::logic_error& e)
+	catch (std::exception& e)
 	{
-		throw std::logic_error("Niepowodzenie podczas zapisywania eksalibura wybuchowych pomys³ów");
+		throw std::runtime_error("Error during setting instruction counter. Reason: " + e.what());
 	}
 
 	lastInstruction = ins;
