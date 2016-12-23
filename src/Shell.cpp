@@ -15,6 +15,7 @@ Command Shell::promptUserForCommand() const {
     return Command( input );
   }
   else
+    // Zamieniæ na Command( "next" )?
     return Command{};
 }
 void Shell::runCommand( const Command& command ) {
@@ -31,12 +32,13 @@ void Shell::initializeCommandsFunctions() {
       };
   commandsFunctions[ "next" ] =
       [ this ]( const Command::tArguments& arguments ) {
-        // Dodaæ obs³ugê wyj¹tków? TO-DO
-        std::string count = arguments.at( 0 );
-        if( std::all_of( count.begin(), count.end(), ::isdigit ) )
-          delay_ = std::stoi( count );
-        else
-          // Stworzyæ w³asny wyj¹tek i rzucaæ w ka¿dej takiej sytuacji?
-          std::cout << "Invalid argument\n";
+        if( arguments.size() > 0 ) {
+          std::string count = arguments[ 0 ];
+          if( std::all_of( count.begin(), count.end(), ::isdigit ) )
+            delay_ = std::stoi( count );
+          else
+            // Stworzyæ w³asny wyj¹tek i rzucaæ w ka¿dej takiej sytuacji?
+            std::cout << "Invalid argument\n";
+        }
       };
 }
