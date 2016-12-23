@@ -1,7 +1,12 @@
 #pragma once
 
 #include <string>
-// Za³¹czenie wszystkich modu³ów TO-DO
+#include "CPU.h"
+#include "HardDrive.h"
+#include "Interpreter.h"
+#include "Pipes.hpp"
+#include "ProcessManager.hpp"
+#include "ZarzadzaniePamiecia.h"
 
 class System {
   public:
@@ -13,6 +18,10 @@ class System {
     void displayIntro();
     // Do usuniêcia w ostatecznej wersji
     void testRunLoop();
+    CPU cpu_;
+    HardDrive hardDrive_;
+    ProcessManager processManager_;
+    Pipes pipes_;
+    Interpreter interpreter_;
     bool running_;
-    // Wszystkie modu³y TO-DO
 };
