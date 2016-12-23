@@ -14,6 +14,7 @@ class Shell {
     Shell() = delete;
     Shell( System& system );
     Command promptUserForCommand();
+    bool commandExist( const std::string& commandName );
     void runCommand( const Command& command );
   private:
     typedef std::function< void( const Command::tArguments& ) >

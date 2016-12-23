@@ -19,9 +19,11 @@ Command Shell::promptUserForCommand() {
     return Command( "next" );
   }
 }
+bool Shell::commandExist( const std::string& commandName ) {
+  return commandsFunctions.find( commandName ) != commandsFunctions.end();
+}
 void Shell::runCommand( const Command& command ) {
-    // Dodaæ obs³ugê wyj¹tku std::out_of_range? TO-DO
-    commandsFunctions.at( command.name() )( command.arguments() );
+  commandsFunctions[ command.name() ]( command.arguments() );
 }
 void Shell::initializeCommandsFunctions() {
   commandsFunctions[ "shutdown" ] =
