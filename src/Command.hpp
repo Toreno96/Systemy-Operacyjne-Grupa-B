@@ -5,11 +5,12 @@
 
 class Command {
   public:
+    typedef std::vector< std::string > tArguments;
     Command( const std::string& rawCommand );
     const std::string& name();
-    const std::vector< std::string > arguments();
+    const tArguments arguments();
   private:
     void parseRawCommand( const std::string& rawCommand );
     std::string name_;
-    std::vector< std::string > arguments_;
+    tArguments arguments_;
 };

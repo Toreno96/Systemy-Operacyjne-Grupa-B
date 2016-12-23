@@ -7,7 +7,7 @@ Command::Command( const std::string& rawCommand ) {
 const std::string& Command::name() {
   return name_;
 }
-const std::vector< std::string > Command::arguments() {
+const Command::tArguments Command::arguments() {
   return arguments_;
 }
 void Command::parseRawCommand( const std::string& rawCommand ) {
