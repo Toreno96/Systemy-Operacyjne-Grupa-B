@@ -13,7 +13,7 @@ class Shell {
   public:
     Shell() = delete;
     Shell( System& system );
-    Command promptUserForCommand() const;
+    Command promptUserForCommand();
     void runCommand( const Command& command );
   private:
     typedef std::function< void( const Command::tArguments& ) >
@@ -21,5 +21,5 @@ class Shell {
     void initializeCommandsFunctions();
     std::map< std::string, tCommandFunction > commandsFunctions;
     std::reference_wrapper< System > system_;
-    unsigned int delay_;
+    unsigned int promptDelay_;
 };
