@@ -1,0 +1,35 @@
+> processInfo <process name>
+
+Original priority: int
+Current priority: int
+Current priority duration: int
+State: Process::State
+Instruction counter: int
+
+-----------------------
+>  processesList
+
+Name/ID      Priority      State
+=====================================
+p1           4             Running
+p2           2             Ready
+p3           0             Ready
+p4           6             Waiting
+p5           4             Terminated
+
+-----------------------
+> pageTable <process name>
+
+0 0
+1 0
+2 0
+3 0
+0 0
+0 0
+...
+0 0
+
+-----------------------
+> registersBackup <process name>
+
+Wywo³anie funkcji Registers::operator<<
