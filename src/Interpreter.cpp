@@ -69,7 +69,7 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["XS"] = [this](std::vector<std::string> arguments) {
-		try { pipes_->sendMessage(processManager_->getRunningProcess(),arguments[0], arguments[1]); }
+		try { pipes_->sendMessage(processManager_->getRunningProcess(),processManager_->getProcess(arguments[0]), arguments[1]); }
 		catch (std::exception& e)
 		{
 			throw std::runtime_error("Error during executing XS in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
