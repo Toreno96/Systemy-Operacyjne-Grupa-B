@@ -6,6 +6,7 @@
 class Command {
   public:
     typedef std::vector< std::string > tArguments;
+    Command();
     Command( const std::string& rawCommand );
     const std::string& name() const;
     const tArguments arguments() const;

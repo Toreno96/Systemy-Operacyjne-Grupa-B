@@ -1,6 +1,7 @@
 #include <sstream>
 #include "Command.hpp"
 
+Command::Command() : Command( std::string() ) {}
 Command::Command( const std::string& rawCommand ) {
   parseRawCommand( rawCommand );
 }
