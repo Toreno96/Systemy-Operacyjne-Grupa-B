@@ -263,8 +263,8 @@ namespace filesystemUI
 
 			if (*type.begin() != 0)
 			{
-				auto result_create = harddrive.create_empty_file(filename, type);
-				if (result_create == 1)
+				auto result_of_creating = harddrive.create_empty_file(filename, type);
+				if (result_of_creating == 1)
 				{
 					auto result = harddrive.append_string_to_file(filename, type, file_content);
 
@@ -275,11 +275,11 @@ namespace filesystemUI
 					else if (result == 2)
 						cout << "\nNot enough space.";
 				}
-				else if (result_create == 0)
+				else if (result_of_creating == 0)
 				{
 					cout << "\nFile already exists.";
 				}
-				else if (result_create == 2)
+				else if (result_of_creating == 2)
 					cout << "\nNot enough space.";
 			}
 			else
@@ -289,9 +289,9 @@ namespace filesystemUI
 			cout << "\nToo long filename";
 	}
 
-	string system_read_file(HardDrive &harddrive, string filename_as_string, string type_as_string)
+	int system_read_file(HardDrive &harddrive, string filename_as_string, string type_as_string, string &file_content)//1 - ok, 0 - nie ma takiego pliku, 2 za dlugie rozszerzenie, 3 za dluga nazwa
 	{
-		auto filename = convert_filename_to_array(filename_as_string); // auto to array <char, fn>
+		auto filename = convert_filename_to_array(filename_as_string); // auto = array <char, fn>
 
 		if (*filename.begin() != 0)
 		{
@@ -299,16 +299,26 @@ namespace filesystemUI
 
 			if (*type.begin() != 0)
 			{
-				string file_content;
 				if (harddrive.read_file(filename, type, file_content) == true)
-				{}
-				return file_content;
+				{
+					return 1;
+				}
+				else
+				{
+					return 0;
+				}
 			}
 			else
-				return ("Too long extension.");
+			{
+				file_content = "Too long extension.";
+				return 2;
+			}
 		}
 		else
-			return ("Too long filename.");
+		{
+			file_content = "Too long filename.";
+			return 3;
+		}
 	}
 
 	void display_file(HardDrive &harddrive)
@@ -322,6 +332,15 @@ namespace filesystemUI
 		cin >> type_as_string;
 		auto type = convert_type_to_array(type_as_string);
 
-		cout << "\n#\n" << (system_read_file(harddrive, filename_as_string, type_as_string)) << "\n#\n";
+		string file_content;
+		auto result = system_read_file(harddrive, filename_as_string, type_as_string, file_content);
+		if (result == 1)
+		{
+			cout << "\n#\n" << file_content << "\n#\n";
+		}
+		else
+		{
+			cout << "\n!!!\n" << file_content << "\n!!!\n";
+		}
 	}
 }
