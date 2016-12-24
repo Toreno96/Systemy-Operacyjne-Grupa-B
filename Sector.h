@@ -9,23 +9,23 @@ using std::cout;
 class Sector
 {
 private:
-	array <bool, n> bitvector; //1 - blok wolny, 0 - blok zajety
-	array <char, n> data; // nie wiem czy trzymac sie tej zasady //liczba 0 oznacza, ¿e mimo wszystko to nie jest ¿adna informacja. znak ma sens <=> znak>0
+	array <bool, sn> bitvector; //1 - blok wolny, 0 - blok zajety
+	array <char, sn> data; // nie wiem czy trzymac sie tej zasady //liczba 0 oznacza, ¿e mimo wszystko to nie jest ¿adna informacja. znak ma sens <=> znak>0
 	bool mode; // 0 - przechowuje indeksy innych sektorow, 1 - przechowuje dane
 	bool free; // 1 wolny, 0 - zajety
 			   //metody pomocnicze
-	array<bool, n> create_empty_bitvector()//metoda pomocnicza
+	array<bool, sn> create_empty_bitvector()//metoda pomocnicza
 	{
-		array<bool, n> bitvector;
+		array<bool, sn> bitvector;
 		for (auto it = bitvector.begin(); it != bitvector.end(); it++)
 		{
 			*it = 1;
 		}
 		return bitvector;
 	}
-	array<char, n> create_empty_data_array()//metoda pomocnicza
+	array<char, sn> create_empty_data_array()//metoda pomocnicza
 	{
-		array<char, n> data_array;
+		array<char, sn> data_array;
 		for (auto it = data_array.begin(); it != data_array.end(); it++)
 		{
 			*it = 0;
@@ -48,15 +48,15 @@ public:
 		mode = 1; // tryb nie ma znaczenia, gdy state i tak jest wolny;
 		free = 1; // oznaczamy sektor jako wolny
 	}
-	void save_data(array <bool, n> bitvector_, array <char, n> data_, bool mode_)
+	void save_data(array <bool, sn> bitvector_, array <char, sn> data_, bool mode_)
 	{
 		bitvector = bitvector_; data = data_; bool mode = mode_; free = 0;
 		//cout << "\nSprawdzmy jak wyglada data: ";
 			//for (auto it = data.begin(); it != data.end(); it++)
 				//cout << *it;
 	}
-	array <bool, n> get_bitvector() { return bitvector; }
-	array <char, n> get_data() { return data; }
+	array <bool, sn> get_bitvector() { return bitvector; }
+	array <char, sn> get_data() { return data; }
 	bool add_one_data(char one_data) // 1 jesli zakonczone pomyslnie
 	{
 		if (mode == 0)//jesli sektor przechowuje indeksy plikow
@@ -81,7 +81,7 @@ public:
 			}
 			else
 			{
-				cout << "\nNieznany blad";
+				cout << "\nNieznany blad w metodzie bool add_one_data(char one_data)"; // To sie nie powinno zdarzyc
 				return 0;
 			}
 		}
@@ -104,21 +104,21 @@ public:
 			else
 			{
 				return 0;
-				cout << "\nNieznany blad";
+				cout << "\nNieznany blad"; // To sie nie ma prawa zdarzyc
 			}
 		}
 		else
 		{
-			cout << "\nBieznany blad. Tryb pliku nierozpoznany";
+			cout << "\nBieznany blad. Tryb pliku nierozpoznany"; // To sie nie ma prawa zdarzyc
 			return 0;
 		}
 	}
 	bool add_last_data(char one_data) // 1 operacja zakonczona pomyslnie
 	{//umozliwia dodanie swiadomie ostatniego elementu w przypadku sektora indeksowego
-		if (bitvector[n - 1] == 1)//jesli ostatni element jest wolny
+		if (bitvector[sn - 1] == 1)//jesli ostatni element jest wolny
 		{
-			bitvector[n - 1] = 0; //ustawiamy char na zajety
-			data[n - 1] = one_data;
+			bitvector[sn - 1] = 0; //ustawiamy char na zajety
+			data[sn - 1] = one_data;
 			return 1;
 		}
 		else
@@ -157,10 +157,10 @@ public:
 	}
 	bool get_last_bitvector()
 	{
-		return bitvector[n - 1];
+		return bitvector[sn - 1];
 	}
 	char get_last_data() // zwraca ostatni element niezaleznie czy jest uzywany czy jest smieciami
 	{
-		return data[n - 1];
+		return data[sn - 1];
 	}
 };

@@ -28,25 +28,25 @@ private:
 		}
 		return sector_ID;
 	}
-	array<bool, n> create_empty_bitvector()//metoda pomocnicza
+	array<bool, sn> create_empty_bitvector()//metoda pomocnicza
 	{
-		array<bool, n> bitvector;
+		array<bool, sn> bitvector;
 		for (auto it = bitvector.begin(); it != bitvector.end(); it++)
 		{
 			*it = 1;
 		}
 		return bitvector;
 	}
-	array<char, n> create_empty_data_array()//metoda pomocnicza
+	array<char, sn> create_empty_data_array()//metoda pomocnicza
 	{
-		array<char, n> data_array;
+		array<char, sn> data_array;
 		for (auto it = data_array.begin(); it != data_array.end(); it++)
 		{
 			*it = 0;
 		}
 		return data_array;
 	}
-	void append_to_string_from_deep_index(char firstSectorID, string &result)
+	void append_to_string_from_deep_index(char firstSectorID, string &file_content)
 	{
 		if (harddrive[firstSectorID].get_mode() == 0) // jesli sektor jest sektorem indeksowym
 		{
@@ -59,42 +59,24 @@ private:
 			{
 				if (harddrive[*it2].get_mode() == 0) // jesli zagniezdzony indeks jest sektorem indeksowym
 				{
-					append_to_string_from_deep_index(*it2, result);
+					append_to_string_from_deep_index(*it2, file_content);
 				}
 				else // jesli zagniezdzony indeks jest sektorem danych
 				{
-					result.append(harddrive[*it2].get_data_as_string());
-					//cout << "\nAktualny result:\n";
-					//cout << result;
+					file_content.append(harddrive[*it2].get_data_as_string());
+					//cout << "\nAktualny file_content:\n";
+					//cout << file_content;
 					//cout << "\nKoniec";
 				}
 			}
 		}
 		else
 		{
-			string message = "Sektor nie jest sektorem indeksowym. Blad nieznany.";
-			cout << message;
+			//string message = "Sektor nie jest sektorem indeksowym. Blad nieznany.";
+			//cout << message;
 		}
 	}
-	//
-	//string filename_and_type_as_string(array <char, fn> filename_, array <char, tn> type_)
-	//{
-	//	string file_type_as_string;
-	//	for (auto it = filename_.begin(); it != filename_.end(); it++)
-	//	{
-	//		if(*it != 0)
-	//			file_type_as_string.push_back(*it);
-	//	}
-	//	file_type_as_string.push_back('.');
-	//	for (auto it = type_.begin(); it != type_.end(); it++)
-	//	{
-	//		if (*it != 0)
-	//			file_type_as_string.push_back(*it);
-	//	}
-	//	//cout << "\nfile_type_as_string: " << file_type_as_string;
-	//	return file_type_as_string;
-	//}
-	//
+
 	char find_deep_index_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
 	{
 		if (harddrive[ID].get_mode() == 0) // jesli jest to sektor indeksowy
@@ -117,13 +99,13 @@ private:
 	}
 	void delete_deep_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
 	{
-		cout << "\nMamy usunac sektor " << (int)ID;
+		//cout << "\nMamy usunac sektor " << (int)ID;
 		Sector clear_sector;
 		if (harddrive[ID].get_mode() == 0) // jesli jest to sektor indeksowy
 		{//trzeba zwolnic wszystkie sektory z danymi
 			auto bitvector = harddrive[ID].get_bitvector();
 			auto data = harddrive[ID].get_data();
-			for (char i = 0; i < (n - 1); i++)//iterujemy po wszystkich elementach bitvectora
+			for (char i = 0; i < (sn - 1); i++)//iterujemy po wszystkich elementach bitvectora
 			{
 				if (bitvector[i] == 0)//jesli element jest zajety
 				{
@@ -174,7 +156,6 @@ private:
 						//cout << "\nKolejny wolny sektor indeksowy to " << (int)next_index_sector_ID;
 						if (next_index_sector_ID < max_sector_number)
 						{
-							"\nWeszlismy tu";
 							harddrive[next_index_sector_ID].set_mode(0); // 0 - przechowuje indeksy
 							harddrive[next_index_sector_ID].set_free(0);// ustawiamy na zajety
 							auto cos = harddrive[next_index_sector_ID].add_one_data(free_sector_id);//dodajemy sektor z danymi do nowego sektora indeksowego 
@@ -188,13 +169,13 @@ private:
 							}
 							else
 							{
-								cout << "\nBlad nieznany\nten sektor jest zajety a nie powinen byc";//to sie nei zdarzy
+								//cout << "\nBlad nieznany\nten sektor jest zajety a nie powinen byc";//to sie nei zdarzy
 								return 0;
 							}
 						}
 						else
 						{
-							cout << "\nNot enough space.";
+							//cout << "\nNot enough space.";
 							//zeby nie bylo "wycieku pamieci" czyscimy ten ostatni sektor z danymi
 							Sector clear_sector;
 							harddrive[free_sector_id] = clear_sector;
@@ -204,13 +185,13 @@ private:
 				}
 				else
 				{
-					cout << "\nNot enough space.";
+					//cout << "\nNot enough space.";
 					return 2;
 				}
 			}
 			else
 			{
-				cout << "\nNieznany blad z plikiem";
+				//cout << "\nNieznany blad z plikiem";
 				return 0;
 			}
 		}
@@ -258,27 +239,27 @@ public:
 		}
 	}
 	//poprawic na poprawna koncepcje
-	bool read_file(array <char, fn> filename_, array <char, tn> type_, string &result)//1 - przypisanie sie powiodlo, 0 - przypisano komunikat bledu
+	bool read_file(array <char, fn> filename_, array <char, tn> type_, string &file_content)//1 - przypisanie sie powiodlo, 0 - przypisano komunikat bledu
 	{
 		if (file_exist(filename_, type_))
 		{
-			result;
+			file_content;
 			for (auto it = Catalog.begin(); it != Catalog.end(); it++)
 			{
 				if (it->get_filename() == filename_ && it->get_type() == type_)
 				{
 					char firstSectorID = it->get_firstSectorID(); // SectorID odczytane z katalogu
-					append_to_string_from_deep_index(firstSectorID, result);
-					//cout << "\nOstateczny result:\n";
-					//cout << result;
-					//cout << "\nKoniec resultu";
+					append_to_string_from_deep_index(firstSectorID, file_content);
+					//cout << "\nOstateczny file_content:\n";
+					//cout << file_content;
+					//cout << "\nKoniec file_content";
 				}
 			}
 			return 1;
 		}
 		else
 		{
-			result = "No such file.";
+			file_content = "No such file.";
 			return 0;
 		}
 	}
@@ -309,9 +290,9 @@ public:
 		while (!(file_content.empty()))
 		{
 			//cout << "\nzamiana string na sektory";//zamiana string na sektory
-			array <bool, n> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
-			array <char, n> data = create_empty_data_array();
-			for (int i = 0; i < n && !(file_content.empty()); i++)
+			array <bool, sn> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
+			array <char, sn> data = create_empty_data_array();
+			for (int i = 0; i < sn && !(file_content.empty()); i++)
 			{
 				bitvector[i] = 0; // oznaczamy char jako uzywany
 				data[i] = *(file_content.begin()); // wyluskanie wartosci begin

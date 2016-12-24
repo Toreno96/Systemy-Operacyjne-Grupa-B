@@ -80,19 +80,19 @@ namespace filesystemUI
 
 	void display_harddrive(HardDrive &harddrive, bool mode) // 1 czyli z bitvectorem, 0 bez bitvectora
 	{
-		cout << "\nLp.\tTryb\tstan\tDane";
+		cout << "\nLp.\tMode\tState\tData";
 		for (int i = 0; i < max_sector_number; i++)
 		{
 			Sector sector = harddrive.get_sector(i);
-			array<bool, n> bitvector = sector.get_bitvector();
-			array<char, n> data = sector.get_data();
+			array<bool, sn> bitvector = sector.get_bitvector();
+			array<char, sn> data = sector.get_data();
 			cout << "\n" << i << "\t" << sector.get_mode() << "\t" << sector.is_free() << "\t";//wypisywanie liczby porzadkowej, trybu, stanu
 			int counter = 0;
 			if (mode)
 			{
 				for (auto it = bitvector.begin(); it != bitvector.end(); it++, counter++)
 				{
-					if (counter == (n / 2))
+					if (counter == (sn / 2))
 						cout << " ";
 					cout << *it;
 				}
@@ -104,13 +104,13 @@ namespace filesystemUI
 			{
 				if (sector.get_mode() == 0) //tryb indeksowy
 				{
-					if (counter == (n / 2))
+					if (counter == (sn / 2))
 						cout << " ";
 					cout << (int)*it;
 				}
 				else //1 - tryb przechowywania danych
 				{
-					if (counter == (n / 2))
+					if (counter == (sn / 2))
 						cout << " ";
 					if (*it == '\n')
 						cout << "^";
@@ -156,17 +156,17 @@ namespace filesystemUI
 			{
 				auto result = harddrive.create_empty_file(filename, type);
 				if (result == 1)
-					cout << "\nPlik utworzony";
+					cout << "\nFile created properly.";
 				else if (result == 2)
-					cout << "\nBrak miejsca na dysku by utworzyc nowy plik.";
+					cout << "\nNot enough space.";
 				else if (result == 0)
 					cout << "\nFile already exists.";
 			}
 			else
-				cout << "\nRozszerzenie pliku jest za dlugie";
+				cout << "\nToo long extension.";
 		}
 		else
-			cout << "\nNazwa pliku jest za dluga ";
+			cout << "\nToo long filename.";
 	}
 
 	void delete_file(HardDrive &harddrive)
@@ -183,7 +183,7 @@ namespace filesystemUI
 
 		auto result = harddrive.delete_file(filename, type);
 		if (result == 1)
-			cout << "\nFile deleted properly";
+			cout << "\nFile deleted properly.";
 		else if (result == 0)
 			cout << "\nNo such file.";
 	}
@@ -230,7 +230,7 @@ namespace filesystemUI
 						auto result = harddrive.append_string_to_file(filename, type, file_content);
 
 						if (result == 1)
-							cout << "\nFile saved properly";
+							cout << "\nFile saved properly.";
 						else if (result == 0)
 							cout << "\nNo such file.";
 						else if (result == 2)
@@ -250,7 +250,7 @@ namespace filesystemUI
 				cout << "\nToo long extension.";
 		}
 		else
-			cout << "\nToo long filename";
+			cout << "\nToo long filename.";
 	}
 
 	void system_create_file_based_on_string(HardDrive &harddrive, string filename_as_string, string type_as_string, string file_content)
@@ -269,7 +269,7 @@ namespace filesystemUI
 					auto result = harddrive.append_string_to_file(filename, type, file_content);
 
 					if (result == 1)
-						cout << "\nFile saved properly";
+						cout << "\nFile saved properly.";
 					else if (result == 0)
 						cout << "\nNo such file.";
 					else if (result == 2)
@@ -286,7 +286,7 @@ namespace filesystemUI
 				cout << "\nToo long extension.";
 		}
 		else
-			cout << "\nToo long filename";
+			cout << "\nToo long filename.";
 	}
 
 	int system_read_file(HardDrive &harddrive, string filename_as_string, string type_as_string, string &file_content)//1 - ok, 0 - nie ma takiego pliku, 2 za dlugie rozszerzenie, 3 za dluga nazwa

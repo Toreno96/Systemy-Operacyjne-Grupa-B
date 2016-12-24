@@ -7,7 +7,7 @@ int main()
 	int choice = 0;
 	do
 	{
-		cout << "\n\nPlik nie moze miec spacji"
+		cout << "\n\nSpaces in filename or extension are not allowed."
 			<< "\n0 - exit"
 			<< "\n1 - display_file_list"
 			<< "\n2 - display_harddrive"
@@ -17,7 +17,7 @@ int main()
 			<< "\n6 - load_file_from_Windows_and_save_on_harddrive"
 			<< "\n7 - create_file_based_on_string_system"
 			<< "\n8 - display_file"
-			<< "\nWybierz: ";
+			<< "\nYour choice: ";
 		cin >> choice;
 
 		switch (choice)
