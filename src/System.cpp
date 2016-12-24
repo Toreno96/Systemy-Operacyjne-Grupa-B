@@ -4,17 +4,16 @@
 // Inicjalizacja wszystkich modu³ów w liœcie inicjalizacyjnej TO-DO
 System::System() :
     interpreter_( &processManager_, &cpu_, &hardDrive_, &pipes_ ),
-    running_( false ) {}
+    shell_( *this ), running_( false ) {}
 void System::run() {
   running_ = true;
   try {
     displayIntro();
     while( running_ ) {
-      testRunLoop();
-      // TO-DO
-      // Praca planisty
-      // Wywo³anie interpretera
-      // Wywo³anie shella (proœba o input od u¿ytkownika oraz obs³u¿enie owego)
+      std::cout << "\nI'm pretending that I'm doing something\n";
+      cpu_.Scheduler( processManager_.processes() );
+      //useInterpreter();
+      useShell();
       // Inne?
     }
   }
@@ -36,6 +35,22 @@ void System::displayIntro() {
   // Wyœwietlenie informacji o systemie (nazwa, ewentualne logo)
   // Wyœwietlenie twórców
   // Wyœwietlenie pomocy
+}
+void System::useInterpreter() {
+  try {
+    interpreter_.work();
+  }
+  catch( /* Do zmiany na wyj¹tki specyficzne dla interpretera TO-DO */ ... ) {}
+}
+void System::useShell() {
+  try {
+    Command inputCommand = shell_.promptUserForCommand();
+    if( shell_.commandExist( inputCommand.name() ) )
+      shell_.runCommand( inputCommand );
+    else
+      std::cout << "Unknown command: " << inputCommand.name() << '\n';
+  }
+  catch( /* Do zmiany na wyj¹tki specyficzne dla shella TO-DO */ ... ) {}
 }
 void System::testRunLoop() {
   std::string command;

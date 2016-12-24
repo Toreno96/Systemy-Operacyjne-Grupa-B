@@ -7,6 +7,7 @@
 #include "Pipes.hpp"
 #include "ProcessManager.hpp"
 #include "ZarzadzaniePamiecia.h"
+#include "Shell.hpp"
 
 class System {
   public:
@@ -16,6 +17,8 @@ class System {
     void crash( const std::string& errorMessage );
   private:
     void displayIntro();
+    void useInterpreter();
+    void useShell();
     // Do usuniêcia w ostatecznej wersji
     void testRunLoop();
     CPU cpu_;
@@ -23,5 +26,6 @@ class System {
     ProcessManager processManager_;
     Pipes pipes_;
     Interpreter interpreter_;
+    Shell shell_;
     bool running_;
 };
