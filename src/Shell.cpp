@@ -3,7 +3,7 @@
 #include "Shell.hpp"
 #include "System.hpp"
 
-Shell::Shell( System& system ) : system_( system ), promptDelay_( 0 ) {
+Shell::Shell( System& system ) : system_( std::ref( system ) ), promptDelay_( 0 ) {
   initializeCommandsFunctions();
 }
 Command Shell::promptUserForCommand() {
@@ -34,11 +34,16 @@ void Shell::initializeCommandsFunctions() {
       [ this ]( const Command::tArguments& arguments ) {
         if( arguments.size() > 0 ) {
           std::string count = arguments[ 0 ];
-          if( std::all_of( count.begin(), count.end(), ::isdigit ) )
-            promptDelay_ = std::stoi( count );
+          if( std::all_of( count.begin(), count.end(), ::isdigit ) &&
+              std::stoi( count ) > 0 )
+            promptDelay_ = std::stoi( count ) - 1;
           else
             // Stworzyæ w³asny wyj¹tek i rzucaæ w ka¿dej takiej sytuacji?
             std::cout << "Invalid argument\n";
         }
+      };
+  commandsFunctions[ "merryChristmas" ] =
+      [ this ]( const Command::tArguments& arguments ) {
+        std::cout << "Merry Christmas and Happy New Year!\n";
       };
 }
