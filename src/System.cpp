@@ -2,7 +2,9 @@
 #include "System.hpp"
 
 // Inicjalizacja wszystkich modu³ów w liœcie inicjalizacyjnej TO-DO
-System::System() : running_( false ) {}
+System::System() :
+    interpreter_( &processManager_, &cpu_, &hardDrive_, &pipes_ ),
+    running_( false ) {}
 void System::run() {
   running_ = true;
   try {

@@ -8,7 +8,7 @@
 #include <locale>
 #include "HardDrive.h"
 #include "ZarzadzaniePamiecia.h"
-#include "ipc.hpp"
+#include "Pipes.hpp"
 #include <stdexcept>
 
 class Interpreter

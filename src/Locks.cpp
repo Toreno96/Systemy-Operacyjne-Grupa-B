@@ -2,7 +2,6 @@
 #include<deque>
 #include<string>
 #include"Process.hpp"
-#include"Undefined.hpp"
 #include"Locks.hpp"
 void Lock::showListOfProcesses()
 {
@@ -50,7 +49,7 @@ bool Lock::unlock(Process &process)
 		value++;
 		return 0;
 	}
-	else 
+	else
 	{
 		if (blocking_IDs_list[0] == process.getName())
 		{
@@ -70,5 +69,5 @@ bool Lock::unlock(Process &process)
 		{
 			return 0;
 		}
-	}	
+	}
 }
