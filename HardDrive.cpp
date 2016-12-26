@@ -11,7 +11,7 @@ using std::array;
 #include "Sector.h"
 #include "HardDrive.h"
 
-	char HardDrive::find_empty_sector() // sektor tn2 oznacza brak wolnego sektoru
+	char HardDrive::find_empty_sector() // sektor 32 oznacza brak wolnego sektoru
 	{
 		char sector_ID = 0;
 		for (auto it = harddrive.begin(); it != harddrive.end(); it++, sector_ID++)
@@ -92,7 +92,7 @@ using std::array;
 			return errorchar;
 		}
 	}
-	void HardDrive::delete_deep_sector_ID(char ID)//zwraca ID najgleszego sektora indeksowego zaczynajac od pewnego ID
+	void HardDrive::delete_deep_sector_ID(char ID)//czysci wszystkie sektory zaczynajac od zadanego
 	{
 		//cout << "\nMamy usunac sektor " << (int)ID;
 		Sector clear_sector;
@@ -195,7 +195,7 @@ using std::array;
 			return 0; // plik nie istnieje
 		}
 	}
-	bool HardDrive::file_exist(array <char, fn> filename_, array <char, tn> type_) // 1 - plik istnieje, 0 - plik nieistnieje
+	bool HardDrive::file_exist(array <char, fn> filename_, array <char, tn> type_) // 1 - plik istnieje, 0 - plik nie istnieje
 	{
 		for (auto it = Catalog.begin(); it != Catalog.end(); it++)
 		{

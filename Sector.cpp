@@ -36,7 +36,7 @@ void Sector::save_data(array <bool, sn> bitvector_, array <char, sn> data_, bool
 	}
 array <bool, sn> Sector::get_bitvector() { return bitvector; }
 array <char, sn> Sector::get_data() { return data; }
-bool Sector::add_one_data(char one_data) // 1 jesli zakonczone pomyslnie
+bool Sector::add_one_data(char one_data) // 1 - zakonczone pomyslnie
 	{
 		if (mode == 0)//jesli sektor przechowuje indeksy plikow
 		{//podzial wynika z tego ze na koncu sektora indeksowego musi byc indeks kolejnego sektora indeksowego
@@ -92,7 +92,7 @@ bool Sector::add_one_data(char one_data) // 1 jesli zakonczone pomyslnie
 			return 0;
 		}
 	}
-bool Sector::add_last_data(char one_data) // 1 operacja zakonczona pomyslnie
+bool Sector::add_last_data(char one_data) // 1 - zakonczone pomyslnie
 	{//umozliwia dodanie swiadomie ostatniego elementu w przypadku sektora indeksowego
 		if (bitvector[sn - 1] == 1)//jesli ostatni element jest wolny
 		{
