@@ -149,7 +149,10 @@
     <ClInclude Include="Sector.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="FCB.cpp" />
+    <ClCompile Include="filesystemUI.cpp" />
+    <ClCompile Include="HardDrive.cpp" />
+    <ClCompile Include="Sector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
