@@ -35,7 +35,7 @@ class Process {
     int getInstructionCounter() const;
     int getCurrentPriorityDuration() const;
     // W przypadku podania etykiety, której adres nie jest zapisany w bloku
-    // PCB, rzucony zostaje wyj¹tek std::out_of_range
+    // PCB, rzucony zostaje wyj¹tek addressOfLabelOutOfRange
     int getLabelAddress( const std::string& label ) const;
     std::string getLastReceivedMessage() const;
     // Inna nazwa?
