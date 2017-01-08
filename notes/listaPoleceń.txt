@@ -5,7 +5,7 @@ credits
 help
 
 TO-DO:
-D createProcess <process name> <filename>
+D createProcess <process name> <filename without extension> <file extension> <priority>
 D readyProcess <process name> // Mo¿na zrobiæ zabezpieczenia, ¿e tylko proces o stanie New u¿ytkownik mo¿e zmieniæ na Ready
 D processInfo <process name>
 D processesList
