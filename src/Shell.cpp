@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cctype>
+#include "filesystemUI.h"
 #include "Shell.hpp"
 #include "System.hpp"
 
@@ -45,5 +46,68 @@ void Shell::initializeCommandsFunctions() {
   commandsFunctions[ "merryChristmas" ] =
       [ this ]( const Command::tArguments& arguments ) {
         std::cout << "Merry Christmas and Happy New Year!\n";
+      };
+  commandsFunctions[ "createProcess" ] =
+      [ this ]( const Command::tArguments& arguments ) {
+        if( arguments.size() < 3 ) {
+          std::cout << "Insufficient number of arguments\n";
+          return;
+        }
+
+        unsigned priority;
+        bool randomPriority;
+        if( arguments.size() >= 4 ) {
+          randomPriority = false;
+          if( std::all_of( arguments[ 3 ].begin(), arguments[ 3 ].end(), ::isdigit ) ) {
+            priority = std::stoi( arguments[ 3 ] );
+            if( !( priority >= Process::minPriority &&
+                priority <= Process::maxPriority ) ) {
+              std::cout << "Invalid argument: Priority\n";
+              return;
+            }
+          }
+          else {
+            std::cout << "Invalid argument: Priority\n";
+            return;
+          }
+        }
+        else
+          randomPriority = true;
+
+        std::string programCode;
+        if( filesystemUI::system_read_file( system_.get().hardDrive_,
+            arguments[ 1 ], arguments[ 2 ], programCode ) != 1 ) {
+          std::cout << "Invalid argument: File\n";
+          return;
+        }
+
+        try {
+          if( randomPriority )
+            system_.get().processManager_.createProcess( arguments[ 0 ], programCode );
+          else
+            system_.get().processManager_.createProcess( arguments[ 0 ], programCode, priority );
+        }
+        catch( const ProcessManager::ProcessAlreadyExist& e ) {
+          std::cout << "Invalid argument: " << e.what() << '\n';
+        }
+      };
+
+  commandsFunctions[ "readyProcess" ] =
+      [ this ]( const Command::tArguments& arguments ) {
+        if( arguments.size() < 1 ) {
+          std::cout << "Insufficient number of arguments\n";
+          return;
+        }
+
+        try {
+          Process& process = system_.get().processManager_.getProcess( arguments[ 0 ] );
+          if( process.getState() == Process::State::New )
+            process.ready();
+          else
+            std::cout << "Process isn't in the \"New\" state\n";
+        }
+        catch( const ProcessManager::ProcessDoesntExist& e ) {
+          std::cout << "Invalid argument: " << e.what() << '\n';
+        }
       };
 }
