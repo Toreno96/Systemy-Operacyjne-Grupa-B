@@ -110,13 +110,83 @@ void Shell::initializeCommandsFunctions() {
           std::cout << "Invalid argument: " << e.what() << '\n';
         }
       };
-	  
-	    commandsFunctions[ "cpuRegisters" ] =
+
+  commandsFunctions[ "processInfo" ] =
+      [ this ]( const Command::tArguments& arguments ) {
+        if( arguments.size() < 1 ) {
+          std::cout << "Insufficient number of arguments\n";
+          return;
+        }
+
+        try {
+          std::cout << system_.get().processManager_.getProcess( arguments[ 0 ] ).getProcessInfo();
+        }
+        catch( const ProcessManager::ProcessDoesntExist& e ) {
+          std::cout << "Invalid argument: " << e.what() << '\n';
+        }
+      };
+
+  commandsFunctions[ "processesList" ] =
+      [ this ]( const Command::tArguments& arguments ) {
+        std::cout << system_.get().processManager_.getFormattedProcessesList();
+      };
+
+  commandsFunctions[ "runningProcess" ] =
+      [ this ]( const Command::tArguments& arguments ) {
+        try {
+          std::cout << system_.get().processManager_.getRunningProcess().getName() << '\n';
+        }
+        catch( const ProcessManager::ProcessDoesntExist& e ) {
+          std::cout << e.what() << '\n';
+        }
+      };
+
+  commandsFunctions[ "pageTable" ] =
+      [ this ]( const Command::tArguments& arguments ) {
+        if( arguments.size() < 1 ) {
+            std::cout << "Insufficient number of arguments\n";
+            return;
+          }
+
+          try {
+            std::cout << system_.get().processManager_.getProcess( arguments[ 0 ] ).getPageTableContent();
+          }
+          catch( const ProcessManager::ProcessDoesntExist& e ) {
+            std::cout << "Invalid argument: " << e.what() << '\n';
+          }
+      };
+
+  commandsFunctions[ "registersBackup" ] =
+    [ this ]( const Command::tArguments& arguments ) {
+        if( arguments.size() < 1 ) {
+            std::cout << "Insufficient number of arguments\n";
+            return;
+          }
+
+          try {
+            std::cout << system_.get().processManager_.getProcess( arguments[ 0 ] ).getRegistersBackup();
+          }
+          catch( const ProcessManager::ProcessDoesntExist& e ) {
+            std::cout << "Invalid argument: " << e.what() << '\n';
+          }
+      };
+
+  commandsFunctions[ "swapContent" ] =
+    [ this ]( const Command::tArguments& arguments ) {
+      WYPISZ_PLIK_WYMIANY();
+    };
+
+  commandsFunctions[ "ramContent" ] =
+    [ this ]( const Command::tArguments& arguments ) {
+      WYPISZ_RAM();
+    };
+
+	commandsFunctions[ "cpuRegisters" ] =
 	  [ this ](const Command::tArguments& arguments) {
-	  std::cout << system_.get().cpu_.getRegisters();
+    std::cout << *( system_.get().cpu_.getRegisters() );
   };
 
-  commandsFunctions [ "loadFile" ] =
+  commandsFunctions [ "loadWindowsFile" ] =
 	  [this] (const Command::tArguments& arguments){
 	  filesystemUI::load_file_from_Windows_and_save_on_harddrive(system_.get().hardDrive_);
   };
