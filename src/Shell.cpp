@@ -111,19 +111,19 @@ void Shell::initializeCommandsFunctions() {
         }
       };
 	  
-	    commandsFunctions[ "cpuRegisters" ] = 
+	    commandsFunctions[ "cpuRegisters" ] =
 	  [ this ](const Command::tArguments& arguments) {
 	  std::cout << system_.get().cpu_.getRegisters();
   };
 
   commandsFunctions [ "loadFile" ] =
 	  [this] (const Command::tArguments& arguments){
-	  load_file_from_Windows_and_save_on_harddrive(system_.get().hardDrive_);
+	  filesystemUI::load_file_from_Windows_and_save_on_harddrive(system_.get().hardDrive_);
   };
 
   commandsFunctions["deleteFile"] =
 	  [this](const Command::tArguments& arguments){
-	  delete_file(system_.get().hardDrive_);
+	  filesystemUI::delete_file(system_.get().hardDrive_);
   };
 
   commandsFunctions["fileContent"] =
@@ -133,18 +133,19 @@ void Shell::initializeCommandsFunctions() {
 
   commandsFunctions["filesList"] =
 	  [this](const Command::tArguments& arguments){
-	  display_file_list(system_.get().hardDrive_.get_file_list());
+    std::list< FCB > filesList = system_.get().hardDrive_.get_file_list();
+	  filesystemUI::display_file_list( filesList );
   };
 
   commandsFunctions["hardDriveContent"] =
 	  [this](const Command::tArguments& arguments){
-	  if (arguments.size > 0)
+    if (arguments.size() > 0)
 	  {
 		  if (arguments[0] == "bitvector")
-			  display_harddrive(system_.get().hardDrive_, 1);
+			  filesystemUI::display_harddrive(system_.get().hardDrive_, 1);
 		  else std::cout << "Invalid argument. Please try again";
 	  }
-	  else display_harddrive(system_.get().hardDrive_, 0)
+	  else filesystemUI::display_harddrive(system_.get().hardDrive_, 0);
 	  
   };
 
