@@ -66,6 +66,12 @@ Process& ProcessManager::getRunningProcess() {
   else
     throw ProcessDoesntExist( "There's no running process" );
 }
+bool ProcessManager::runningProcessExist() const {
+  return std::find_if( processes_.begin(), processes_.end(),
+      []( const Process& process ) {
+        return process.getState() == Process::State::Running;
+      } ) != processes_.end();
+}
 std::list< Process >::iterator ProcessManager::findProcess(
     std::function< bool( const Process& process ) > unaryPredicate ) {
   return std::find_if( processes_.begin(), processes_.end(),
