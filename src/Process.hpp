@@ -38,7 +38,6 @@ class Process {
     // PCB, rzucony zostaje wyj¹tek addressOfLabelOutOfRange
     int getLabelAddress( const std::string& label ) const;
     std::string getLastReceivedMessage() const;
-    // Inna nazwa?
     std::string getProcessInfo() const;
     std::string getPageTableContent() const;
     void restoreOriginalPriority();
