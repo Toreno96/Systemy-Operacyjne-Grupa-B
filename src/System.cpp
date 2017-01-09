@@ -8,13 +8,14 @@ System::System() :
 void System::run() {
   running_ = true;
   try {
+    inicjalizacja_PLIKU_WYMIANY();
+    inicjalizacja_RAMU();
     displayIntro();
     while( running_ ) {
-      std::cout << "\nI'm pretending that I'm doing something\n";
       cpu_.Scheduler( processManager_.processes() );
-      //useInterpreter();
+      if( processManager_.runningProcessExist() )
+        interpreter_.work();
       useShell();
-      // Inne?
     }
   }
   catch( std::exception& e ) {
@@ -36,26 +37,10 @@ void System::displayIntro() {
   // Wyœwietlenie twórców
   // Wyœwietlenie pomocy
 }
-void System::useInterpreter() {
-  try {
-    interpreter_.work();
-  }
-  catch( /* Do zmiany na wyj¹tki specyficzne dla interpretera TO-DO */ ... ) {}
-}
 void System::useShell() {
-  try {
-    Command inputCommand = shell_.promptUserForCommand();
-    if( shell_.commandExist( inputCommand.name() ) )
-      shell_.runCommand( inputCommand );
-    else
-      std::cout << "Unknown command: " << inputCommand.name() << '\n';
-  }
-  catch( /* Do zmiany na wyj¹tki specyficzne dla shella TO-DO */ ... ) {}
-}
-void System::testRunLoop() {
-  std::string command;
-  std::cout << "\n> ";
-  std::cin >> command;
-  if( command == "shutdown" )
-    shutdown();
+  Command inputCommand = shell_.promptUserForCommand();
+  if( shell_.commandExist( inputCommand.name() ) )
+    shell_.runCommand( inputCommand );
+  else
+    std::cout << "Unknown command: " << inputCommand.name() << '\n';
 }

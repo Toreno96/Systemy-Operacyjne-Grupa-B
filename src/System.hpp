@@ -22,10 +22,7 @@ class System {
     Interpreter interpreter_;
   private:
     void displayIntro();
-    void useInterpreter();
     void useShell();
-    // Do usuniêcia w ostatecznej wersji
-    void testRunLoop();
     Shell shell_;
     bool running_;
 };
