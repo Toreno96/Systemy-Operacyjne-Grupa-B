@@ -128,7 +128,7 @@ void Shell::initializeCommandsFunctions() {
 
   commandsFunctions["fileContent"] =
 	  [this](const Command::tArguments& arguments){
-	  read_file(system_.get().hardDrive_);
+	  filesystemUI::display_file(system_.get().hardDrive_);
   };
 
   commandsFunctions["filesList"] =
