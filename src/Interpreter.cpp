@@ -41,7 +41,7 @@ void Interpreter::initInstructions()
 			try { processManager_->createProcess(arguments[0], programCode); }
 		catch (std::exception& e)
 		{
-			std::cout << "Error while creating new process in " + processManager_->getRunningProcess().getName();
+			std::cout << "Error during executing XC in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what();
 			processManager_->getRunningProcess().terminate();
 		}
 	};
@@ -50,7 +50,7 @@ void Interpreter::initInstructions()
 	try{processManager_->getProcess(arguments[0]).terminate(); }
 	catch (std::exception& e)
 	{
-		std::cout << "Error while terminating process " << arguments[0] << "in " + +processManager_->getRunningProcess().getName();
+		std::cout << "Error during executing XD in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what();
 		processManager_->getRunningProcess().terminate();
 	}
 	};
@@ -59,7 +59,7 @@ void Interpreter::initInstructions()
 		try { pipes_->receiveMessage(processManager_->getRunningProcess()); }
 		catch (std::exception& e)
 		{
-			std::cout << "Error XR in" + processManager_->getRunningProcess().getName();
+			std::cout << "Error during executing XR in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what();
 			processManager_->getRunningProcess().terminate();
 		}
 	};
@@ -68,7 +68,7 @@ void Interpreter::initInstructions()
 		try { pipes_->sendMessage(processManager_->getRunningProcess(),processManager_->getProcess(arguments[0]), arguments[1]); }
 		catch (std::exception& e)
 		{
-			std::cout << "Error XS in " + processManager_->getRunningProcess().getName();
+			std::cout << "Error during executing XS in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what();
 			processManager_->getRunningProcess().terminate();
 		}
 	};
@@ -89,7 +89,7 @@ void Interpreter::initInstructions()
 		try { processManager_->getProcess(arguments[0]).ready(); }
 		catch (std::exception& e)
 		{
-			std::cout << "Error XY in " + processManager_->getRunningProcess().getName();
+			std::cout << "Error during executing XY in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what();
 			processManager_->getRunningProcess().terminate();
 		}
 	};
@@ -98,7 +98,7 @@ void Interpreter::initInstructions()
 		try { processManager_->getProcess(arguments[0]).wait(); }
 		catch (std::exception& e)
 		{
-			std::cout << "Error XZ in" + processManager_->getRunningProcess().getName();
+			std::cout << "Error during executing XZ in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what();
 			processManager_->getRunningProcess().terminate();
 		}
 	};
@@ -108,7 +108,7 @@ void Interpreter::initInstructions()
 		try { processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0])); }
 		catch (std::exception& e)
 		{
-			std::cout << "Error JM in" + processManager_->getRunningProcess().getName();
+			std::cout << "Error during executing JM in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what();
 			processManager_->getRunningProcess().terminate();
 		}
 	};
@@ -179,18 +179,10 @@ std::vector<std::string> Interpreter::loadInstruction()
 	char ch = '0';
 	int adress;
 	typ_tablicy_stron pageTable;
-	
-	try {
-		adress = processManager_->getRunningProcess().getInstructionCounter();
-		pageTable = processManager_->getRunningProcess().pageTable();
-	}
-	catch (std::exception& e)
-	{
-		throw std::runtime_error(std::string("Error during executing loadInstruction. Reason: ") + e.what());
-	}
-		
-	
 
+	adress = processManager_->getRunningProcess().getInstructionCounter();
+	pageTable = processManager_->getRunningProcess().pageTable();
+	
 	while (ch != '\n')
 	{
 	ch = daj_mi_litere(adress, pageTable);
@@ -205,11 +197,8 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 		else if (ch == ':')
 		{
-			try { processManager_->getRunningProcess().saveLabelAddress(last, adress + 1); }
-			catch (std::exception& e)
-			{
-				throw std::runtime_error(std::string("Error during executing loadInstruction. Reason: ") + e.what());
-			}
+			 processManager_->getRunningProcess().saveLabelAddress(last, adress + 1); 
+			
 			return std::vector <std::string> {};
 		}
 		else
@@ -218,14 +207,8 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 	}
 
-	try { processManager_->getRunningProcess().setInstructionCounter(adress); }
-	catch (std::exception& e)
-	{
-		throw std::runtime_error(std::string("Error during setting instruction counter. Reason: ") + e.what());
-	}
-
+	processManager_->getRunningProcess().setInstructionCounter(adress); 
 	lastInstruction = ins;
-
 	return ins;
 
 }
