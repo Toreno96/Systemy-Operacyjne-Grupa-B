@@ -11,7 +11,7 @@ class Pipes {
 private:
 	std::vector<std::string>pipesPaths_;
 	std::vector<std::string>waitingForMessage_;
-	Lock lock_;
+
 	void newPipe(std::string path);
 	std::string getFirstMessage(std::string path);
 	void closePipe(std::string path);
@@ -22,6 +22,7 @@ private:
 public:
 	Pipes();
 	~Pipes();
+	Lock lock_;
 	void sendMessage(Process &runningProcess, Process &process, std::string message);
 	void receiveMessage(Process &runningProcess);
 	void displayExistingPipes();
