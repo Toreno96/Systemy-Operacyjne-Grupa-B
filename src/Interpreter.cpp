@@ -5,14 +5,7 @@ const std::array<char, 3U> ext{ 't','x','t' };
 void Interpreter::initInstructions()
 {
 	instruction["HLT"] = [this](std::vector<std::string> arguments) {
-		try{processManager_->getRunningProcess().terminate(); }
-		catch (std::exception& e)
-		{
-			throw std::runtime_error("Error during executing HLT in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
-		}
-		
-
-		
+		processManager_->getRunningProcess().terminate();
 	};
 
 	instruction["AD"] = [this](std::vector<std::string> arguments) {
@@ -48,7 +41,8 @@ void Interpreter::initInstructions()
 			try { processManager_->createProcess(arguments[0], programCode); }
 		catch (std::exception& e)
 		{
-			throw std::runtime_error("Error during executing XC in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
+			std::cout << "Error while creating new process in " + processManager_->getRunningProcess().getName();
+			processManager_->getRunningProcess().terminate();
 		}
 	};
 
@@ -56,7 +50,8 @@ void Interpreter::initInstructions()
 	try{processManager_->getProcess(arguments[0]).terminate(); }
 	catch (std::exception& e)
 	{
-		throw std::runtime_error("Error during executing XD in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
+		std::cout << "Error while terminating process " << arguments[0] << "in " + +processManager_->getRunningProcess().getName();
+		processManager_->getRunningProcess().terminate();
 	}
 	};
 
@@ -64,7 +59,8 @@ void Interpreter::initInstructions()
 		try { pipes_->receiveMessage(processManager_->getRunningProcess()); }
 		catch (std::exception& e)
 		{
-			throw std::runtime_error("Error during executing XR in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
+			std::cout << "Error XR in" + processManager_->getRunningProcess().getName();
+			processManager_->getRunningProcess().terminate();
 		}
 	};
 
@@ -72,7 +68,8 @@ void Interpreter::initInstructions()
 		try { pipes_->sendMessage(processManager_->getRunningProcess(),processManager_->getProcess(arguments[0]), arguments[1]); }
 		catch (std::exception& e)
 		{
-			throw std::runtime_error("Error during executing XS in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
+			std::cout << "Error XS in " + processManager_->getRunningProcess().getName();
+			processManager_->getRunningProcess().terminate();
 		}
 	};
 
@@ -92,7 +89,8 @@ void Interpreter::initInstructions()
 		try { processManager_->getProcess(arguments[0]).ready(); }
 		catch (std::exception& e)
 		{
-			throw std::runtime_error("Error during executing XY in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
+			std::cout << "Error XY in " + processManager_->getRunningProcess().getName();
+			processManager_->getRunningProcess().terminate();
 		}
 	};
 
@@ -100,7 +98,8 @@ void Interpreter::initInstructions()
 		try { processManager_->getProcess(arguments[0]).wait(); }
 		catch (std::exception& e)
 		{
-			throw std::runtime_error("Error during executing XZ in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
+			std::cout << "Error XZ in" + processManager_->getRunningProcess().getName();
+			processManager_->getRunningProcess().terminate();
 		}
 	};
 
@@ -109,7 +108,8 @@ void Interpreter::initInstructions()
 		try { processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0])); }
 		catch (std::exception& e)
 		{
-			throw std::runtime_error("Error during executing JM in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what());
+			std::cout << "Error JM in" + processManager_->getRunningProcess().getName();
+			processManager_->getRunningProcess().terminate();
 		}
 	};
 
