@@ -180,10 +180,9 @@ std::vector<std::string> Interpreter::loadInstruction()
 	std::string last;
 	char ch = '0';
 	int adress;
-	typ_tablicy_stron pageTable;
 
 	adress = processManager_->getRunningProcess().getInstructionCounter();
-	pageTable = processManager_->getRunningProcess().pageTable();
+	typ_tablicy_stron& pageTable = processManager_->getRunningProcess().pageTable();
 	
 	while (ch != '\n')
 	{
