@@ -105,7 +105,9 @@ void Interpreter::initInstructions()
 
 	instruction["JM"] = [this](std::vector<std::string> arguments) {
 		
-		try { processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0])); }
+		try { if(cpu_->getRegisters()->getRegister(Register::C)>0) processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0]));
+		cpu_->getRegisters()->getRegister(Register::C)--;
+		}
 		catch (std::exception& e)
 		{
 			std::cout << "Error during executing JM in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what();
@@ -138,7 +140,7 @@ void Interpreter::initInstructions()
 	};
 
 	instruction["PO"] = [this](std::vector<std::string> arguments) {
-		std::cout << arguments[0] << std::endl; //???
+		std::cout << cpu_->getRegisters()->getRegister(interpreteRegister(arguments[0])) << std::endl; //???
 	};
 
 }
