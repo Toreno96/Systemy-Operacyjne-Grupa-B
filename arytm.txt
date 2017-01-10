@@ -1,0 +1,13 @@
+MF arytm2
+MN A,3
+MN B,6
+AD A,B
+WF arytm2,Wynik3+6=
+WR arytm2,A	
+MU B,A
+WF arytm2,Wynik6*9=
+WR arytm2,B
+SB B,A
+WF arytm2,Wynik54-9=
+WR arytm2,B
+HLT
