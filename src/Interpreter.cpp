@@ -179,15 +179,15 @@ std::vector<std::string> Interpreter::loadInstruction()
 	std::vector <std::string> ins;
 	std::string last;
 	char ch = '0';
-	int adress;
 
-	adress = processManager_->getRunningProcess().getInstructionCounter();
 	typ_tablicy_stron& pageTable = processManager_->getRunningProcess().pageTable();
+	int address = pageTable[ 0 ][ 0 ] * 16 +
+			processManager_->getRunningProcess().getInstructionCounter();
 	
 	while (ch != '\n')
 	{
-	ch = daj_mi_litere(adress, pageTable);
-	adress++;
+	ch = daj_mi_litere(address, pageTable);
+	address++;
 		if (ch == '\n')
 		{
 			ins.push_back(last);
@@ -199,8 +199,8 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 		else if (ch == ':')
 		{
-			 processManager_->getRunningProcess().saveLabelAddress(last, adress+1);
-			 processManager_->getRunningProcess().setInstructionCounter(adress+1);
+			 processManager_->getRunningProcess().saveLabelAddress(last, address+1);
+			 processManager_->getRunningProcess().setInstructionCounter(address+1);
 			 lastInstruction = ins;
 			return std::vector <std::string> {};
 		}
@@ -210,7 +210,7 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 	}
 
-	processManager_->getRunningProcess().setInstructionCounter(adress);
+	processManager_->getRunningProcess().setInstructionCounter(address);
 	lastInstruction = ins;
 	std::cout << "\nProcess: " << processManager_->getRunningProcess().getName() << " Instruction: ";
 	for(int i = 0 ; i<ins.size();i++)
