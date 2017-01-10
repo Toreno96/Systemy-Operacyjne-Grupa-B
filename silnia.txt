@@ -1,13 +1,8 @@
 MF silnia2
-XC procesSilnia,silnia2
-XY procesSilnia
 MN C,5
-MN A,1
 SILNIA:
 MU A,C
 JM SILNIA
-XN proces2
+WF silnia2,RESULT-
 WR silnia2,A
-XZ proces2
-XD proces2
 HLT
