@@ -105,7 +105,7 @@ void Interpreter::initInstructions()
 
 	instruction["JM"] = [this](std::vector<std::string> arguments) {
 		
-		try { if(cpu_->getRegisters()->getRegister(Register::C)>0) processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0]));
+		try { if(cpu_->getRegisters()->getRegister(Register::C)>1) processManager_->getRunningProcess().setInstructionCounter(processManager_->getRunningProcess().getLabelAddress(arguments[0]));
 		cpu_->getRegisters()->getRegister(Register::C)--;
 		}
 		catch (std::exception& e)
@@ -200,8 +200,9 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 		else if (ch == ':')
 		{
-			 processManager_->getRunningProcess().saveLabelAddress(last, adress + 1); 
-			
+			 processManager_->getRunningProcess().saveLabelAddress(last, adress+1); 
+			 processManager_->getRunningProcess().setInstructionCounter(adress+1);
+			 lastInstruction = ins;
 			return std::vector <std::string> {};
 		}
 		else
@@ -212,6 +213,9 @@ std::vector<std::string> Interpreter::loadInstruction()
 
 	processManager_->getRunningProcess().setInstructionCounter(adress); 
 	lastInstruction = ins;
+	std::cout << "Process: " << processManager_->getRunningProcess().getName() << " Instruction: ";
+	for(int i = 0 ; i<ins.size();i++)
+	std::cout<< ins[i] << " ";
 	return ins;
 
 }
