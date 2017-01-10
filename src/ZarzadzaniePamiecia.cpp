@@ -393,7 +393,6 @@ void fu(typ_tablicy_stron*TABLICA_STRON)
 void WYPISZ_PLIK_WYMIANY()
 {
 	int hehe = 0;
-	cout << "       PLIK_WYMIANY" << endl;
 	for (int i = 0; i <2048; i++)       /// tutaj tylko 1200 poniewaz 2048 nie wypisuje ....
 	{
 		if (i%1200==1184)
@@ -402,13 +401,10 @@ void WYPISZ_PLIK_WYMIANY()
 			cout << "Prosze nacisnij enter raz jeszcze..." << endl;
 			std::cin.get();
 		}
-			
 
 		if (i % 16== 0)
 		{
-			cout << endl;
-			cout << endl;
-			cout << endl;
+			cout << "\n\n";
 			cout << "      STRONICA '" << hehe<< "'" << endl;
 			hehe++;
 		}
@@ -417,25 +413,17 @@ void WYPISZ_PLIK_WYMIANY()
 			cout << '^';
 		else
 			cout << PLIK_WYMIANY[i];
-
-
-		//cout << "  " << PLIK_WYMIANY[i];
 	}
+	std::cout << '\n';
 }
 void WYPISZ_RAM()
 {
 	int yyy = 0;
-	cout << "        RAM" << endl;
-	//cout << "                     RAMKA '0'";
 	for (int i = 0; i < 256; i++)
 	{
-		
 		if (i % 16 == 0)
 		{
-			//cout << "                     RAMKA '0'";
-			cout << endl;
-			cout << endl;
-			cout << endl;
+			cout << "\n\n";
 			cout << "     RAMKA '"<<yyy<<"'"<< endl;
 			yyy++;
 		}
@@ -443,8 +431,6 @@ void WYPISZ_RAM()
 			cout << '^';
 		else
 			cout << RAM[i];
-
-
-		//cout << "  " << RAM[i];
 	}
+	std::cout << '\n';
 }
