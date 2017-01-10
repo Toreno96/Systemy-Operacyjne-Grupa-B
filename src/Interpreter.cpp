@@ -37,7 +37,7 @@ void Interpreter::initInstructions()
 	
 	instruction["XC"] = [this](std::vector<std::string> arguments) {
 		std::string programCode;
-		if(hardDrive_->read_file(convertToFileName(arguments[1]),ext,programCode))
+		if (hardDrive_->read_file(convertToFileName(arguments[1]), ext, programCode))
 			try { processManager_->createProcess(arguments[0], programCode); }
 		catch (std::exception& e)
 		{
@@ -191,11 +191,12 @@ std::vector<std::string> Interpreter::loadInstruction()
 	adress++;
 		if (ch == '\n')
 		{
-
+			ins.push_back(last);
 		}
 		else if (ch == ' ' ||ch==',')
 		{
 			ins.push_back(last);
+			last.clear();
 		}
 		else if (ch == ':')
 		{
