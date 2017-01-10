@@ -155,7 +155,7 @@ Interpreter::Interpreter(ProcessManager * pm, CPU * cpu_, HardDrive* hd, Pipes* 
 Register Interpreter::interpreteRegister(std::string reg)
 {
 	if (reg == "A")
-	{ 
+	{
 		return Register::A;
 	}
 	else if (reg == "B")
@@ -200,7 +200,7 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 		else if (ch == ':')
 		{
-			 processManager_->getRunningProcess().saveLabelAddress(last, adress+1); 
+			 processManager_->getRunningProcess().saveLabelAddress(last, adress+1);
 			 processManager_->getRunningProcess().setInstructionCounter(adress+1);
 			 lastInstruction = ins;
 			return std::vector <std::string> {};
@@ -211,11 +211,12 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 	}
 
-	processManager_->getRunningProcess().setInstructionCounter(adress); 
+	processManager_->getRunningProcess().setInstructionCounter(adress);
 	lastInstruction = ins;
-	std::cout << "Process: " << processManager_->getRunningProcess().getName() << " Instruction: ";
+	std::cout << "\nProcess: " << processManager_->getRunningProcess().getName() << " Instruction: ";
 	for(int i = 0 ; i<ins.size();i++)
-	std::cout<< ins[i] << " ";
+		std::cout<< ins[i] << " ";
+	std::cout << '\n';
 	return ins;
 
 }

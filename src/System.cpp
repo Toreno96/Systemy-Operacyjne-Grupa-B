@@ -12,10 +12,11 @@ void System::run() {
     inicjalizacja_RAMU();
     displayIntro();
     while( running_ ) {
+      useShell();
       cpu_.Scheduler( processManager_.processes() );
       if( processManager_.runningProcessExist() )
         interpreter_.work();
-      useShell();
+      processManager_.removeTerminatedProcesses();
     }
   }
   catch( std::exception& e ) {

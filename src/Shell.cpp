@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cctype>
+#include <limits>
 #include "filesystemUI.h"
 #include "Shell.hpp"
 #include "System.hpp"
@@ -11,7 +12,6 @@ Command Shell::promptUserForCommand() {
   if( promptDelay_ == 0 ) {
     std::cout << "\n> ";
     std::string input;
-    // Dla bezpieczeñstwa dodaæ tutaj czyszczenie buforu strumienia? TO-DO
     std::getline( std::cin, input );
     return Command( input );
   }
@@ -110,6 +110,21 @@ void Shell::initializeCommandsFunctions() {
           std::cout << "Invalid argument: " << e.what() << '\n';
         }
       };
+  
+  commandsFunctions[ "terminateProcess" ] =
+      [ this ]( const Command::tArguments& arguments ) {
+        if( arguments.size() < 1 ) {
+          std::cout << "Insufficient number of arguments\n";
+          return;
+        }
+
+        try {
+          system_.get().processManager_.getProcess( arguments[ 0 ] ).terminate();
+        }
+        catch( const Process::changeOfStateImpossible& e ) {
+          std::cout << "Invalid argument: " << e.what() << '\n';
+        }
+      };
 
   commandsFunctions[ "processInfo" ] =
       [ this ]( const Command::tArguments& arguments ) {
@@ -189,22 +204,29 @@ void Shell::initializeCommandsFunctions() {
   commandsFunctions [ "loadWindowsFile" ] =
 	  [this] (const Command::tArguments& arguments){
 	  filesystemUI::load_file_from_Windows_and_save_on_harddrive(system_.get().hardDrive_);
+    std::cin.ignore( std::numeric_limits< std::streamsize >::max(), '\n' );
+    std::cout << '\n';
   };
 
   commandsFunctions["deleteFile"] =
 	  [this](const Command::tArguments& arguments){
 	  filesystemUI::delete_file(system_.get().hardDrive_);
+    std::cin.ignore( std::numeric_limits< std::streamsize >::max(), '\n' );
+    std::cout << '\n';
   };
 
   commandsFunctions["fileContent"] =
 	  [this](const Command::tArguments& arguments){
 	  filesystemUI::display_file(system_.get().hardDrive_);
+    std::cin.ignore( std::numeric_limits< std::streamsize >::max(), '\n' );
+    std::cout << '\n';
   };
 
   commandsFunctions["filesList"] =
 	  [this](const Command::tArguments& arguments){
     std::list< FCB > filesList = system_.get().hardDrive_.get_file_list();
 	  filesystemUI::display_file_list( filesList );
+    std::cout << '\n';
   };
 
   commandsFunctions["hardDriveContent"] =
