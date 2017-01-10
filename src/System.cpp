@@ -27,7 +27,7 @@ void System::shutdown() {
   running_ = false;
 }
 void System::crash( const std::string& errorMessage ) {
-  std::cout << "Unexpected system shutdown\n\nCause: " << errorMessage << '\n';
+  std::cout << "\nUnexpected system shutdown\nCause: " << errorMessage << '\n';
 }
 void System::displayIntro() {
   // TO-DO

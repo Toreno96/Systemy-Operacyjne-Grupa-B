@@ -1,3 +1,4 @@
+#include <algorithm>
 #include"ZarzadzaniePamiecia.h"
 #include<iostream>
 #include<string>
@@ -266,6 +267,19 @@ char daj_mi_litere(int adres_logiczny, typ_tablicy_stron &TABLICA_STRON)
 
 	//////////////////////////////////////////////////////////
 
+	auto& wiersz_tablicy_stron =
+			*( find_if( TABLICA_STRON.begin(), TABLICA_STRON.end(),
+					[ numer_strony ]( const std::vector< int >& wiersz ) {
+						return wiersz[ 0 ] == numer_strony;
+					} ) );
+	if( wiersz_tablicy_stron[ 1 ] == 0 ) {
+		zapewnij_wolne_miejsce_w_ramie();
+		przeniesStroniceDoRamu(numer_strony, TABLICA_STRON);
+	}
+	numer_ramki = wiersz_tablicy_stron[0];
+	odczytany_znak = RAM[numer_ramki * 16 + przesuniecie];
+
+/*
 	//SPRAWDZAM CZY DANA STRONA JEST W RAMIE /// A TU JEST W RAMIE
 	if (TABLICA_STRON[numer_strony][1] == 1)
 	{
@@ -273,8 +287,6 @@ char daj_mi_litere(int adres_logiczny, typ_tablicy_stron &TABLICA_STRON)
 		//jesli mam numer ramki to moge odczytac z ramu!
 		odczytany_znak = RAM[numer_ramki * 16 + przesuniecie];
 	}
-
-
 
 	//SPRAWDZAM CZY DANA STRONA JEST W RAMIE   ///TU  JEJ NIE MA
 	if (TABLICA_STRON[numer_strony][1] == 0)  //nie ma jej, a wiec naleza˜oby ja przniesc do ramu
@@ -285,8 +297,7 @@ char daj_mi_litere(int adres_logiczny, typ_tablicy_stron &TABLICA_STRON)
 		numer_ramki = TABLICA_STRON[numer_strony][0];
 		odczytany_znak = RAM[numer_ramki * 16 + przesuniecie];
 	}
-
-
+*/
 
 	return odczytany_znak;
 }

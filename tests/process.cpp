@@ -13,6 +13,12 @@ int main() {
       "A long time ago in a galaxy far, far away....\n" );
 
   Process p1( "p1", Process::minPriority, p1PageTable );
+
+   typ_tablicy_stron& p2PageTable = Porcjuj_i_wloz(
+      "I'll be back\n" );
+
+  Process p2( "p2", Process::minPriority, p2PageTable );
+
   printProcessData( p1 );
 
   p1.increaseCurrentPriorityDuration();
@@ -29,11 +35,20 @@ int main() {
 
   // Zakomentowanie poni¿szych dwóch linijek powoduje rzucenie wyj¹tku
   p1.ready();
+  p2.ready();
   p1.run();
   
   p1.restoreOriginalPriority();
   p1.terminate();
   printProcessData( p1 );
+
+  for( int logicAddress = 0; logicAddress < 45; ++logicAddress )
+    std::cout << daj_mi_litere( logicAddress, p1.pageTable() );
+  std::cout << '\n';
+
+  for( int logicAddress = 0; logicAddress < 12; ++logicAddress )
+    std::cout << daj_mi_litere( logicAddress, p2.pageTable() );
+  std::cout << '\n';
 
   std::cout << "p1' page table content:\n\n" << p1.getPageTableContent()
       << '\n';
