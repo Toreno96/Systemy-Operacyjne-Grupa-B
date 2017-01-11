@@ -22,7 +22,7 @@ void Lock::displayProcessName()
 	if( blocking_IDs_list.size() > 0 )
 		std::cout << "Name of first process under lock: " << blocking_IDs_list.front() << std::endl;
 	else
-		std::cout << "There's no any process under lock\n";
+		std::cout << "There is no process under lock\n";
 }
 int Lock::getValue()
 {
