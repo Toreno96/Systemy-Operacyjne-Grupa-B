@@ -1,8 +1,10 @@
+Question mark indicates optional argument.
+
 logo
 systemName
 credits
 help
-createProcess <process name> <filename without extension> <file extension> <priority>
+createProcess <process name> <filename without extension> <file extension> ?<priority>
 readyProcess <process name>
 processInfo <process name>
 processesList
@@ -14,7 +16,7 @@ loadWindowsFile
 deleteFile
 fileContent
 filesList
-hardDriveContent <bitvector>
+hardDriveContent ?<bitvector>
 swapContent
 ramContent
 lockedProcesses
