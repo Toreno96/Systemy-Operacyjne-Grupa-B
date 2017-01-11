@@ -152,10 +152,7 @@ char daj_mi_litere(int adres_logiczny, typ_tablicy_stron &TABLICA_STRON)
 	int numer_ramki;
 	int przesuniecie = adres_logiczny % 16;
 
-	/*if (adres_logiczny > 255)
-		std::cout << adres_logiczny << '\n' << adres_logiczny / 16 << '\n';*/
 	numer_strony = adres_logiczny / 16;
-	/*std::cout << numer_strony << '\n';*/
 
 	auto& wiersz_tablicy_stron =
 			*( find_if( TABLICA_STRON.begin(), TABLICA_STRON.end(),
