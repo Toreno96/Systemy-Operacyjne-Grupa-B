@@ -1,28 +1,23 @@
-To na razie pomijamy:
 logo
 systemName
 credits
 help
-
-TO-DO:
-D createProcess <process name> <filename without extension> <file extension> <priority>
-D readyProcess <process name> // Mo¿na zrobiæ zabezpieczenia, ¿e tylko proces o stanie New u¿ytkownik mo¿e zmieniæ na Ready
-D processInfo <process name>
-D processesList
-D ? runningProcess
-D pageTable <process name>
-P cpuRegisters
-D ? registersBackup <process name>
-P loadFile/loadWindowsFile ?<filename>
-P deleteFile ?<filename>
-P fileContent ?<filename>
-P filesList
-P hardDriveContent <bool czy z bitvectorem> albo bezargumentowe polecenie wyœwietla bez bitvectora, a dodanie argumentu np. "bitvector" z nim.
-D swapContent
-D ramContent
-P lockedProcesses
-P ? firstLockedProcess
-
-Zrobione:
+createProcess <process name> <filename without extension> <file extension> <priority>
+readyProcess <process name>
+processInfo <process name>
+processesList
+runningProcess
+pageTable <process name>
+cpuRegisters
+registersBackup <process name>
+loadWindowsFile
+deleteFile
+fileContent
+filesList
+hardDriveContent <bitvector>
+swapContent
+ramContent
+lockedProcesses
+firstLockedProcess
 next <count>
 shutdown
