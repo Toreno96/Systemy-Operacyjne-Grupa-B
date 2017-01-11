@@ -62,6 +62,7 @@ void Interpreter::initInstructions()
 			std::cout << "Error during executing XR in " + processManager_->getRunningProcess().getName() + " Reason: " + e.what();
 			processManager_->getRunningProcess().terminate();
 		}
+		std::cout << std::endl << "Received Message: " << processManager_->getRunningProcess().getLastReceivedMessage();
 	};
 
 	instruction["XS"] = [this](std::vector<std::string> arguments) {
