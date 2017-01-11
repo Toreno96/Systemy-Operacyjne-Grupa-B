@@ -4,6 +4,4 @@ XS procesTestowy,TestowanieDzialaniaKomunikatow
 MN B,5
 MV A,B
 PO A
-XZ procesTestowy
-XD procesTestowy
-HTL
+HLT
