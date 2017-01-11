@@ -201,7 +201,7 @@ std::vector<std::string> Interpreter::loadInstruction()
 		}
 		else if (ch == ':')
 		{
-			 processManager_->getRunningProcess().saveLabelAddress(last, address+1);
+			 processManager_->getRunningProcess().saveLabelAddress(last, instructionCounter+1);
 			 processManager_->getRunningProcess().setInstructionCounter(instructionCounter+1);
 			 lastInstruction = ins;
 			return std::vector <std::string> {};
