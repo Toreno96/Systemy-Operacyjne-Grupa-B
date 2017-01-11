@@ -182,14 +182,12 @@ std::vector<std::string> Interpreter::loadInstruction()
 
 	typ_tablicy_stron& pageTable = processManager_->getRunningProcess().pageTable();
 	int instructionCounter = processManager_->getRunningProcess().getInstructionCounter();
-	int address = pageTable[ instructionCounter / 16 ][ 0 ] * 16 + (instructionCounter%16);
-	//if (address > 255) address = address -(( address/256)*256);
 	
 	while (ch != '\n')
 	{
+	int address = pageTable[ instructionCounter / 16 ][ 0 ] * 16 + (instructionCounter%16);
 	ch = daj_mi_litere(address, pageTable);
 	instructionCounter++;
-	address++;
 		if (ch == '\n')
 		{
 			ins.push_back(last);
