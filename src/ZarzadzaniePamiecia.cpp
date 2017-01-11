@@ -117,75 +117,8 @@ typ_tablicy_stron& Porcjuj_i_wloz(string kodprogramu)
 }
 void  przeniesStroniceDoRamu(int Numer_Strony, typ_tablicy_stron &TABLICA_STRON)
 {
-	int a;
-	int b;
-	switch (Numer_Strony)
-	{
-	case 0:
-		a = 0;
-		b = 15;
-		break;
-	case 1:
-		a = 16;
-		b = 31;
-		break;
-	case 2:
-		a = 32;
-		b = 47;
-		break;
-	case 3:
-		a = 48;
-		b = 63;
-		break;
-	case 4:
-		a = 64;
-		b = 79;
-		break;
-	case 5:
-		a = 80;
-		b = 95;
-		break;
-	case 6:
-		a = 96;
-		b = 111;
-		break;
-	case 7:
-		a = 112;
-		b = 127;
-		break;
-	case 8:
-		a = 128;
-		b = 143;
-		break;
-	case 9:
-		a = 144;
-		b = 159;
-		break;
-	case 10:
-		a = 160;
-		b = 175;
-		break;
-	case 11:
-		a = 176;
-		b = 191;
-		break;
-	case 12:
-		a = 192;
-		b = 207;
-		break;
-	case 13:
-		a = 208;
-		b = 223;
-		break;
-	case 14:
-		a = 224;
-		b = 239;
-		break;
-	case 15:
-		a = 240;
-		b = 255;
-		break;
-	}
+	int a = Numer_Strony * 16;
+	int b = a + 15;
 
 	for (int i = 0; i < 17; i++)  //bo tyle ramek w ramie + ramka 0 czyli 16
 	{
@@ -219,58 +152,10 @@ char daj_mi_litere(int adres_logiczny, typ_tablicy_stron &TABLICA_STRON)
 	int numer_ramki;
 	int przesuniecie = adres_logiczny % 16;
 
-	//numer_strony = adres_logiczny / 16;
-	//////////////////////////////////////////////////////////
-
-	if (adres_logiczny >= 0 && adres_logiczny < 16)
-		numer_strony = 0;
-
-	if (adres_logiczny >= 16 && adres_logiczny < 32)
-		numer_strony = 1;
-
-	if (adres_logiczny >= 32 && adres_logiczny <48)
-		numer_strony = 2;
-
-	if (adres_logiczny >= 48 && adres_logiczny < 64)
-		numer_strony = 3;
-
-	if (adres_logiczny >= 64 && adres_logiczny < 80)
-		numer_strony = 4;
-
-	if (adres_logiczny >= 80 && adres_logiczny <96)
-		numer_strony = 5;
-
-	if (adres_logiczny >= 96 && adres_logiczny <112)
-		numer_strony = 6;
-
-	if (adres_logiczny >= 112 && adres_logiczny < 128)
-		numer_strony = 7;
-
-	if (adres_logiczny >= 128 && adres_logiczny < 144)
-		numer_strony = 8;
-
-	if (adres_logiczny >= 144 && adres_logiczny <160)
-		numer_strony = 9;
-
-	if (adres_logiczny >= 160 && adres_logiczny <176)
-		numer_strony = 10;
-
-	if (adres_logiczny >= 176 && adres_logiczny <192)
-		numer_strony = 11;
-
-	if (adres_logiczny >= 192 && adres_logiczny < 208)
-		numer_strony = 12;
-
-	if (adres_logiczny >= 208 && adres_logiczny < 224)
-		numer_strony = 13;
-
-	if (adres_logiczny >= 224 && adres_logiczny <240)
-		numer_strony = 14;
-
-	if (adres_logiczny >= 240 && adres_logiczny <256)
-		numer_strony = 15;
-
-	//////////////////////////////////////////////////////////
+	/*if (adres_logiczny > 255)
+		std::cout << adres_logiczny << '\n' << adres_logiczny / 16 << '\n';*/
+	numer_strony = adres_logiczny / 16;
+	/*std::cout << numer_strony << '\n';*/
 
 	auto& wiersz_tablicy_stron =
 			*( find_if( TABLICA_STRON.begin(), TABLICA_STRON.end(),
