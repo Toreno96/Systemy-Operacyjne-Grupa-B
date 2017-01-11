@@ -281,40 +281,99 @@ using std::array;
 	}
 	int HardDrive::append_string_to_file(array <char, fn> filename_, array <char, tn> type_, string file_content)
 	{
-		while (!(file_content.empty()))
+		if (file_exist(filename_, type_))
 		{
-			//cout << "\nzamiana string na sektory";//zamiana string na sektory
-			array <bool, sn> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
-			array <char, sn> data = create_empty_data_array();
-			for (int i = 0; i < sn && !(file_content.empty()); i++)
+			//najpierw dopisujemy ile sie da do ostatniego niezapelnionego sektora
+			auto it = Catalog.begin();
+			for (; it != Catalog.end(); it++) // szukamy danego pliku
 			{
-				bitvector[i] = 0; // oznaczamy char jako uzywany
-				data[i] = *(file_content.begin()); // wyluskanie wartosci begin
-												   //cout << "\ndata " << i << ": " << data[i];
-				file_content.erase(file_content.begin()); // usuwa pierwszy element
+				if (it->get_filename() == filename_ && it->get_type() == type_)
+					break;
 			}
-			Sector sector;
-			sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
-												  //
-												  //auto temp = sector.get_data_as_string();
-												  //cout << "\ntemp: " << temp;
-			auto result = add_data_sector_to_file(filename_, type_, sector);
-			if (result == 1)//dodajmy sektor do pliku
+
+			if (it->get_filename() == filename_ && it->get_type() == type_)
 			{
-				//cout << "\nUdalo sie poprawnie dopisac sektor";
+				auto index_sector_ID = it->get_firstSectorID();
+				index_sector_ID = find_deep_index_sector_ID(index_sector_ID); // znajdujemy najglebszy sektor indeksowy
+																		//cout << "\n\nAktualny index_sector_ID: " << (int)index_sector_ID;
+				auto index_sector_bitvector = harddrive[index_sector_ID].get_bitvector();//kopiujemy bitvector ostatniego sektora indeksowego
+				auto index_sector_data = harddrive[index_sector_ID].get_data();//kopiujemy zawartosc ostatniego sektora indeksowego
+
+				//wyszukujemy ostatni sektor danych w sektorze indeksowym i wchodzimy do niego
+				auto it = index_sector_bitvector.begin();
+				auto it2 = index_sector_data.begin();
+				for (; it != index_sector_bitvector.end(); it++, it2++)
+				{
+					if (*(it+1) == 1)// gdy znajdujemy nastepujacy wolny element to oznacza, ze wskazujemy na element zajety
+					{
+						break;
+					}
+				}
+
+				if (*it != 1) // jesli bitvector nie wskazuje na element wolny
+				{
+					//kopiujemy znaleziony ostatni sektora z danymi
+					auto data_sector_bitvector = harddrive[*it2].get_bitvector();
+					auto data_sector_data = harddrive[*it2].get_data();
+
+					auto it_data = data_sector_bitvector.begin();
+					auto it2_data = data_sector_data.begin();
+					for (; it_data != data_sector_bitvector.end() && (!(file_content.empty())); it_data++, it2_data++)
+					{
+						if (*it_data == 1)// gdy znajdujemy wolny element to dopisujemy jeden char z naszego file_content
+						{
+							*it_data = 0; // w bitvectorze oznaczamy char jako zajety
+							*it2_data = *(file_content.begin()); // wyluskanie wartosci begin
+							//cout << "\nCzy " << *(file_content.begin()) << " == " << *it2;
+							file_content.erase(file_content.begin()); // usuwa pierwszy element ktory wlasnie przypisalismy
+						}
+					}
+					harddrive[*it2].save_data(data_sector_bitvector, data_sector_data, 1);
+				}
 			}
-			else if (result == 0)
+			else
 			{
-				//cout << "\nNo such file.";
-				return result;
+				//cout << "\nNieznany blad z plikiem";
+				return 0;
 			}
-			else if (result == 2)
+
+			//a potem dopiero robimy to wszystko co ponizej
+			while (!(file_content.empty()))
 			{
-				//cout << "\nNot enough space.";
-				return result;
+				//cout << "\nzamiana string na sektory";//zamiana string na sektory
+				array <bool, sn> bitvector = create_empty_bitvector(); //1 - blok wolny, 0 - blok zajety
+				array <char, sn> data = create_empty_data_array();
+				for (int i = 0; i < sn && !(file_content.empty()); i++)
+				{
+					bitvector[i] = 0; // oznaczamy char jako uzywany
+					data[i] = *(file_content.begin()); // wyluskanie wartosci begin
+													   //cout << "\ndata " << i << ": " << data[i];
+					file_content.erase(file_content.begin()); // usuwa pierwszy element
+				}
+				Sector sector;
+				sector.save_data(bitvector, data, 1); // 1 - przechowuje dane
+													  //
+													  //auto temp = sector.get_data_as_string();
+													  //cout << "\ntemp: " << temp;
+				auto result = add_data_sector_to_file(filename_, type_, sector);
+				if (result == 1)//dodajmy sektor do pliku
+				{
+					//cout << "\nUdalo sie poprawnie dopisac sektor";
+				}
+				else if (result == 0)
+				{
+					//cout << "\nNo such file.";
+					return result;
+				}
+				else if (result == 2)
+				{
+					//cout << "\nNot enough space.";
+					return result;
+				}
 			}
+			return 1;
 		}
-		return 1;
+		else return 0; // No such file
 	}
 	std::list <FCB> HardDrive::get_file_list()
 	{

@@ -16,6 +16,7 @@ int main()
 			<< "\n5 - load_file_from_Windows_and_save_on_harddrive"
 			<< "\n6 - create_file_based_on_string_system"
 			<< "\n7 - display_file"
+			<< "\n8 - add_to_file"
 			<< "\nYour choice: ";
 		cin >> choice;
 
@@ -63,9 +64,28 @@ int main()
 			display_file(harddrive);
 			break;
 		}
+		case 8:
+		{
+			string filename_as_string;
+			cout << "\nType a filename: "; //tylko filename
+			cin >> filename_as_string;
+			auto filename = convert_filename_to_array(filename_as_string);
+
+			string type_as_string;
+			cout << "\nType an extension: "; //tylko rozszerzenie
+			cin >> type_as_string;
+			auto type = convert_type_to_array(type_as_string);
+
+			cout << "\nPodaj tekst: ";
+			string file_content;
+			cin.ignore();
+			std::getline(cin, file_content);
+			auto jakiswynik = harddrive.append_string_to_file(filename, type, file_content);
+			cout << "\nJuz!";
+		}
 		default:
 			break;
 		}
-	} while (choice > 0 && choice <8);
+	} while (choice > 0 && choice <=8);
 	return 0;
 }
