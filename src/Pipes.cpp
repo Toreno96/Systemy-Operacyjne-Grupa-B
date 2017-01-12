@@ -126,7 +126,6 @@ void Pipes::sendMessage(Process &runningProcess, Process &process, std::string m
 		if (isWaiting(path)) {
 			messageReady(path);
 			process.ready();
-			process.run();
 			receiveMessage(process);
 		}
 	}
