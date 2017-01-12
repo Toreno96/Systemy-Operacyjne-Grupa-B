@@ -1,8 +1,10 @@
 MF silnia2
+MN A,1
 MN C,5
 SILNIA:
 MU A,C
 JM SILNIA
 WF silnia2,RESULT-
 WR silnia2,A
+WF silnia2,_
 HLT

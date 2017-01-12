@@ -3,11 +3,14 @@ MN A,3
 MN B,6
 AD A,B
 WF arytm2,Wynik3+6=
-WR arytm2,A	
+WR arytm2,A
+WF arytm2,_
 MU B,A
 WF arytm2,Wynik6*9=
 WR arytm2,B
+WF arytm2,_
 SB B,A
 WF arytm2,Wynik54-9=
 WR arytm2,B
+WF arytm2,_
 HLT
