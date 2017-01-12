@@ -58,7 +58,7 @@ void wpisz_do_TABLICY_STRON(typ_tablicy_stron &TABLICA_STRON, int Numer_Strony, 
 	auto& wiersz_tablicy_stron =
 			*( find_if( TABLICA_STRON.begin(), TABLICA_STRON.end(),
 					[ Numer_Strony ]( const std::vector< int >& wiersz ) {
-						return wiersz[ 0 ] == Numer_Strony;
+						return ( wiersz[ 1 ] == 0 && wiersz[ 0 ] == Numer_Strony );
 					} ) );
 	wiersz_tablicy_stron[1] = 1;
 	wiersz_tablicy_stron[0] = WOLNA_RAMKA_KTORA_BEDZIE_ZAJETA;
